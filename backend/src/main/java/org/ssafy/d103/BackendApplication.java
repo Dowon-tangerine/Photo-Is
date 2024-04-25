@@ -17,5 +17,4 @@ public class BackendApplication {
     public ResponseEntity<?> hello(){
         return ResponseEntity.ok("hello");
     }
-    // test
 }
