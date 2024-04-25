@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "부크크고딕";
+    src: url(/fonts/부크크고딕_얇은글씨.ttf);
+}
+
+@font-face {
+    font-family: "부크크고딕bold";
+    src: url(/fonts/부크크고딕_굵은글씨.ttf);
+}
+
+@font-face {
+    font-family: "부크크명조";
+    src: url(/fonts/부크크명조_얇은글씨.ttf);
+}
+
+@font-face {
+    font-family: "부크크명조bold";
+    src: url(/fonts/부크크명조_굵은글씨.ttf);
+}
