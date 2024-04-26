@@ -1,0 +1,7 @@
+.enterTitle {
+    @apply font-bookkMyungjoBold text-[50px] text-white;
+}
+
+.enterInfo {
+    @apply text-white font-bookkGothicBold text-[12px];
+}
