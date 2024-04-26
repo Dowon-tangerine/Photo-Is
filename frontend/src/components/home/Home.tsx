@@ -1,5 +1,4 @@
 import backgroundImage from "/imgs/homeMainPic.jpg";
-import React, { useEffect, useRef, useState } from "react";
 
 const Home: React.FC = () => {
     return (
@@ -8,7 +7,7 @@ const Home: React.FC = () => {
                 className="page w-full h-screen bg-cover bg-center"
                 style={{ backgroundImage: `url(${backgroundImage})` }}
             >
-                <div className="flex flex-col justify-center items-center h-full text-white font-bookkMyungjoBold text-[80px]">
+                <div className="flex flex-col justify-center items-center h-full text-white font-bookkMyungjoBold text-[60px]">
                     <p>TAKE YOUR </p>
                     <p>OWN PICTURE</p>
                     <p>AT</p>
