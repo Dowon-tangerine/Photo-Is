@@ -30,32 +30,39 @@ const Header = () => {
     const headerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // 외부 클릭 감지 함수
         function handleClickOutside(event: MouseEvent) {
             if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
                 setOpenMenu("");
             }
         }
 
-        // 문서 전체에 클릭 이벤트 리스너 추가
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            // 컴포넌트 언마운트 시 이벤트 리스너 제거
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [headerRef]);
 
+    const handleMenuClick = (item: string) => {
+        if (item === "Studio") {
+            navigate("/studio-enter"); // Studio 메뉴 클릭 시 이동
+        } else {
+            setOpenMenu(openMenu === item ? "" : item);
+        }
+    };
+
     return (
         <div ref={headerRef} className="header">
-            <header className="h-[60px] bg-black text-white font-bookkMyungjoBold p-3 flex justify-between items-center">
-                <button className={headerStyle.logo}>PhotoIs</button>
+            <header className="h-[80px] bg-black text-white font-bookkMyungjoBold p-3 flex justify-between items-center">
+                <button className={headerStyle.logo} onClick={() => navigate("/")}>
+                    PhotoIs
+                </button>
                 <div className="rightSection flex">
                     {Object.keys(menuItems).map((item) => (
-                        <div className="relative" onClick={() => setOpenMenu(openMenu === item ? "" : item)} key={item}>
+                        <div className="relative" onClick={() => handleMenuClick(item)} key={item}>
                             <button className={headerStyle.btn}>{item}</button>
                             {openMenu === item && menuItems[item].length > 0 && (
                                 <div
-                                    className={`absolute left-1/2 transform -translate-x-1/2 top-[43px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
+                                    className={`absolute left-1/2 transform -translate-x-1/2 top-[53px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
                                 >
                                     <ul>
                                         {menuItems[item].map((subItem: MenuItem) => (
