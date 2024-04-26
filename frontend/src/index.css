@@ -21,3 +21,14 @@
     font-family: "부크크명조bold";
     src: url(/fonts/부크크명조_굵은글씨.ttf);
 }
+
+/* 모든 요소에 대한 스크롤바 제거 */
+* {
+    /* 웹킷(Chrome, Safari, Edge) 기반 브라우저에서 스크롤바 제거 */
+    -webkit-scrollbar {
+        display: none;
+    }
+
+    /* Firefox에서 스크롤바 제거 */
+    scrollbar-width: none;
+}
