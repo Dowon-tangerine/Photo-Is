@@ -3,7 +3,7 @@
 }
 
 .logo {
-    @apply px-4 text-[18px];
+    @apply px-4 text-[25px];
 }
 
 .btn-signin {
