@@ -52,15 +52,17 @@ const Header = () => {
 
     return (
         <div ref={headerRef} className="header">
-            <header className="h-[60px] bg-black text-white font-bookkMyungjoBold p-3 flex justify-between items-center">
-                <button className={headerStyle.logo}>PhotoIs</button>
+            <header className="h-[80px] bg-black text-white font-bookkMyungjoBold p-3 flex justify-between items-center">
+                <button className={headerStyle.logo} onClick={() => navigate("/")}>
+                    PhotoIs
+                </button>
                 <div className="rightSection flex">
                     {Object.keys(menuItems).map((item) => (
                         <div className="relative" onClick={() => handleMenuClick(item)} key={item}>
                             <button className={headerStyle.btn}>{item}</button>
                             {openMenu === item && menuItems[item].length > 0 && (
                                 <div
-                                    className={`absolute left-1/2 transform -translate-x-1/2 top-[43px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
+                                    className={`absolute left-1/2 transform -translate-x-1/2 top-[53px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
                                 >
                                     <ul>
                                         {menuItems[item].map((subItem: MenuItem) => (
