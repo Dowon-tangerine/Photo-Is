@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import backgroundImage from "/imgs/homeMainPic.jpg";
 
 const Home: React.FC = () => {
-    const [sectionHeight, setSectionHeight] = useState("0vh"); // 초기 섹션 높이 설정
+    const [sectionHeight, setSectionHeight] = useState("45vh"); // 초기 섹션 높이 설정
 
     useEffect(() => {
         const handleResize = () => {
