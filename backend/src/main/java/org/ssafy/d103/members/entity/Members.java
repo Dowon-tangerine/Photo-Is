@@ -1,6 +1,7 @@
 package org.ssafy.d103.members.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -31,14 +32,14 @@ public class Members extends CreatedAndDeletedTime {
     private String nickname;
 
     @Column(name = "birth_year", nullable = false)
-    private Integer birthYear;
+    private int birthYear;
 
     @Column
     @Enumerated
     private Camera camera;
 
     @Column(name = "use_year", nullable = false)
-    private Integer useYear;
+    private int useYear;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
@@ -56,6 +57,53 @@ public class Members extends CreatedAndDeletedTime {
     private String city;
 
     @Column(name = "photo_cnt", nullable = false)
-    private Integer photoCnt;
+    private int photoCnt;
 
+    @Builder
+    public Members(
+            String email, String password, String nickname, int birthYear,
+            Camera camera, int useYear, String profileUrl, String backgroundUrl, String introduction,
+            String country, String city, int photoCnt
+    ) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.birthYear = birthYear;
+        this.camera = camera;
+        this.useYear = useYear;
+        this.profileUrl = profileUrl;
+        this.backgroundUrl = backgroundUrl;
+        this.introduction = introduction;
+        this.country = country;
+        this.city = city;
+        this.photoCnt = photoCnt;
+    }
+
+    public static Members of(String email, String password, String nickname, int birthYear, int useYear) {
+        return builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .birthYear(birthYear)
+                .camera(Camera.FUJI)
+                .useYear(useYear)
+                .profileUrl("testUrl")
+                .backgroundUrl("testUrl")
+                .introduction("자기소개가 없습니다.")
+                .build();
+    }
+
+    public void updateAllInfo(String nickname, int birthYear, int useYear, Camera camera, String profileUrl, String country, String city){
+        this.nickname = nickname;
+        this.birthYear = birthYear;
+        this.useYear = useYear;
+        this.camera = camera;
+        this.profileUrl = profileUrl;
+        this.country = country;
+        this.city = city;
+    }
+
+    public void updatePhotoCnt(int photoCnt) {
+        this.photoCnt = photoCnt;
+    }
 }
