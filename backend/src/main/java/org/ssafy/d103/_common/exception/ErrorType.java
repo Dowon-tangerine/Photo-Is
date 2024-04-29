@@ -9,6 +9,9 @@ public enum ErrorType {
 
     //-----------------------BAD_REQUEST-----------------------------
     BAD_REQUEST(400, "잘못된 요청입니다."),
+
+    //********************************[ Members ]********************************
+    DUPLICATED_MEMBER(400,"가입 정보가 존재합니다."),
     ;
 
     private final int code;
