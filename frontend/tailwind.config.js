@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./node_modules/flowbite/**/*.js"],
+    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./node_modules/flowbite/**/*.js","./src/**/*.{css,scss}",'./node_modules/xtendui/src/*.mjs'],
     theme: {
         extend: {
             fontFamily: {
@@ -11,13 +11,9 @@ export default {
             },
         },
     },
+    plugins: [],
     plugins: [require("kutty")],
-};
-
-module.exports = {
     presets: [
-      require('tailwindcss/defaultConfig'), require('xtendui/tailwind.preset'),
-    ],
-    // put other content e.g.: './src/**/*.{html,js}'
-    content: ['./node_modules/xtendui/src/*.mjs'],
-}
+        require('tailwindcss/defaultConfig'), require('xtendui/tailwind.preset'),
+      ],
+};
