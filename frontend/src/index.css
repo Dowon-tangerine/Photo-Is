@@ -1,14 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import "tailwindcss/base";
 
 @import "tailwindcss/components";
 
-@import "./_custom.css"; /* custom css here */
+/* @import "./_custom.css"; custom css here */
 
 @import "tailwindcss/utilities";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @font-face {
     font-family: "부크크고딕";
