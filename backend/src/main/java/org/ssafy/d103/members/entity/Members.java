@@ -6,6 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.ssafy.d103._common.entity.CreatedAndDeletedTime;
+import org.ssafy.d103.communities.entity.photo.Photo;
+import org.ssafy.d103.communities.entity.photo.PhotoComment;
+import org.ssafy.d103.communities.entity.photo.PhotoLike;
+import org.ssafy.d103.communities.entity.question.Question;
+import org.ssafy.d103.communities.entity.question.QuestionComment;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -58,6 +65,21 @@ public class Members extends CreatedAndDeletedTime {
 
     @Column(name = "photo_cnt", nullable = false)
     private int photoCnt;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Photo> photoList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PhotoLike> photoLikeList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PhotoComment> photoCommentList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Question> questionList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<QuestionComment> questionCommentList;
 
     @Builder
     public Members(
