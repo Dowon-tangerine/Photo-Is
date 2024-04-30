@@ -18,7 +18,7 @@ const menuItems: MenuItems = {
     ],
     Studio: [], // Studio에는 메뉴 아이템이 없으므로 never[] 타입을 유지
     Community: [
-        { name: "Gallery", path: "/community/topic1" },
+        { name: "Gallery", path: "/community/gallery" },
         { name: "Exhibition", path: "/community/topic2" },
         { name: "QnA", path: "/community/topic3" },
     ],
