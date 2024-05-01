@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.ssafy.d103._common.entity.CreatedAndDeletedTime;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -25,6 +29,14 @@ public class DictionaryTerm extends CreatedAndDeletedTime {
 
     @Column(nullable = false)
     private String description;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @Builder
     public DictionaryTerm(DictionaryCategory category, String term, String description) {
