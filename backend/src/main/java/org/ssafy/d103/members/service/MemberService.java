@@ -11,9 +11,7 @@ import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
 import org.ssafy.d103.members.dto.response.PostValidateMemberResponse;
 import org.ssafy.d103.members.entity.Members;
-import org.ssafy.d103.members.entity.Tokens;
 import org.ssafy.d103.members.repository.MemberRepository;
-import org.ssafy.d103.members.repository.TokenRepository;
 import org.ssafy.d103.members.service.jwt.JwtUtil;
 
 @Service
@@ -22,7 +20,6 @@ import org.ssafy.d103.members.service.jwt.JwtUtil;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final TokenRepository tokenRepository;
     private final JwtUtil jwtUtil;
 
     @Transactional
@@ -62,8 +59,6 @@ public class MemberService {
         String jwtAccessToken = jwtUtil.createToken(member, false);
         String jwtRefreshToken = jwtUtil.createToken(member, true);
         response.addHeader("Authorization", jwtAccessToken);
-
-        tokenRepository.save(new Tokens(String.valueOf(member.getId()), jwtRefreshToken, jwtAccessToken));
 
         return PostValidateMemberResponse.from(member);
     }
