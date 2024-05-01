@@ -9,6 +9,7 @@ public enum MsgType {
 
     //********************************[ Members ]********************************
     SIGNUP_SUCCESSFULLY("회원가입에 성공하였습니다."),
+    SIGN_IN_SUCCESSFULLY("로그인에 성공하였습니다."),
     ;
 
     private final String msg;
