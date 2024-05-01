@@ -3,7 +3,7 @@ package org.ssafy.d103.members.dto.request;
 import lombok.Getter;
 
 @Getter
-public class PostMemberRequest {
+public class PostAddMemberRequest {
 
     private String email;
     private String password;

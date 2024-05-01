@@ -31,3 +31,9 @@ cloud:
       auto: false
     s3:
       bucket: ${S3_BUCKET_NAME}
+
+jwt:
+  secret: ${JWT_SECRET}
+  token:
+    refresh-expiration-time: 259200000
+    access-expiration-time: 259200000
