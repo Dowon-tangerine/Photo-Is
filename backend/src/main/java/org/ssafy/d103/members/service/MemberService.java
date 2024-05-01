@@ -9,6 +9,7 @@ import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
+import org.ssafy.d103.members.dto.response.PostCheckElementsResponse;
 import org.ssafy.d103.members.dto.response.PostValidateMemberResponse;
 import org.ssafy.d103.members.entity.Members;
 import org.ssafy.d103.members.repository.MemberRepository;
@@ -61,5 +62,13 @@ public class MemberService {
         response.addHeader("Authorization", jwtAccessToken);
 
         return PostValidateMemberResponse.from(member);
+    }
+
+    public PostCheckElementsResponse checkNickname(String nickname) {
+
+        if(memberRepository.findMembersByNicknameAndDeletedAtIsNull(nickname).isEmpty()){
+            return new PostCheckElementsResponse(true);
+        }
+        throw new CustomException(ErrorType.DUPLICATED_NICKNAME);
     }
 }

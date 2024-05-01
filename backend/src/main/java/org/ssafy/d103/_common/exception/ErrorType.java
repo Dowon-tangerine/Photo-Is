@@ -12,6 +12,7 @@ public enum ErrorType {
 
     //********************************[ Members ]********************************
     DUPLICATED_MEMBER(400,"가입 정보가 존재합니다."),
+    DUPLICATED_NICKNAME(400, "중복된 닉네임입니다."),
     INVALID_TOKEN(400, "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(400, "만료된 토큰입니다."),
     TOKEN_NOT_FOUND(404, "토큰이 존재하지 않습니다."),

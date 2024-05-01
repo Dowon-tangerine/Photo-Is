@@ -13,4 +13,6 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
 
     Optional<Members> findMembersByEmailAndPasswordAndDeletedAtIsNull(String email, String password);
 
+    Optional<Members> findMembersByNicknameAndDeletedAtIsNull(String nickname);
+
 }
