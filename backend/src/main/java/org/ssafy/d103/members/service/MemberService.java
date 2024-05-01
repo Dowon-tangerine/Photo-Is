@@ -71,4 +71,12 @@ public class MemberService {
         }
         throw new CustomException(ErrorType.DUPLICATED_NICKNAME);
     }
+
+    public PostCheckElementsResponse checkEmail(String email) {
+
+        if(memberRepository.findMembersByEmailAndDeletedAtIsNull(email).isEmpty()){
+            return new PostCheckElementsResponse(true);
+        }
+        throw new CustomException(ErrorType.DUPLICATED_EMAIL);
+    }
 }
