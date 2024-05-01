@@ -44,4 +44,12 @@ public class MemberController {
     public ApiResponseDto<?> checkNickname(@PathVariable String nickname){
          return ResponseUtils.ok(memberService.checkNickname(nickname), MsgType.VALIDATE_NICKNAME_SUCCESSFULLY);
     }
+
+    /**
+     * 이메일 중복 검사 API
+     */
+    @GetMapping("/check-email/{email}")
+    public ApiResponseDto<?> checkEmail(@PathVariable String email){
+        return ResponseUtils.ok(memberService.checkEmail(email), MsgType.VALIDATE_EMAIL_SUCCESSFULLY);
+    }
 }
