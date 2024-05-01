@@ -37,8 +37,11 @@ public class MemberController {
         return ResponseUtils.ok(memberService.validateMember(request, response), MsgType.SIGN_IN_SUCCESSFULLY);
     }
 
-    @GetMapping("/test")
-    public void test(@AuthenticationPrincipal UserDetailsImpl userDetails){
-         log.warn("정보: {}", userDetails.getMember().getNickname());
+    /**
+     * 닉네임 중복 검사 API
+     */
+    @GetMapping("/check-nickname/{nickname}")
+    public ApiResponseDto<?> checkNickname(@PathVariable String nickname){
+         return ResponseUtils.ok(memberService.checkNickname(nickname), MsgType.VALIDATE_NICKNAME_SUCCESSFULLY);
     }
 }

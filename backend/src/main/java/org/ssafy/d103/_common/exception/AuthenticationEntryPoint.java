@@ -59,7 +59,7 @@ public class AuthenticationEntryPoint implements org.springframework.security.we
         try {
             String json = new ObjectMapper().writeValueAsString(ResponseUtils.fail(error));
             response.getWriter().write(json);
-            log.error(" 에러 내용={}", error.getMsg());
+            log.error("에러 내용: {}", error.getMsg());
         } catch (Exception e){
             log.error(e.getMessage());
         }
