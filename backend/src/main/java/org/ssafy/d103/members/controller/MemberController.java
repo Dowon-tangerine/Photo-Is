@@ -1,10 +1,7 @@
 package org.ssafy.d103.members.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
