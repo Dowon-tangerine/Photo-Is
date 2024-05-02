@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "dictionary_category")
-public class DictionaryCategory extends CreatedAndDeletedTime {
+public class DictionaryCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

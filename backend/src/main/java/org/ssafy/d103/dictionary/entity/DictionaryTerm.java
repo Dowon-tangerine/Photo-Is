@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Table(name = "dictionary_term")
-public class DictionaryTerm extends CreatedAndDeletedTime {
+public class DictionaryTerm{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
