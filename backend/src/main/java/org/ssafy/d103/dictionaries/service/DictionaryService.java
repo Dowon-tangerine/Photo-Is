@@ -1,14 +1,12 @@
-package org.ssafy.d103.dictionary.service;
+package org.ssafy.d103.dictionaries.service;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.ssafy.d103.dictionary.dto.DictionaryCategoryDto;
-import org.ssafy.d103.dictionary.dto.DictionaryTermDto;
-import org.ssafy.d103.dictionary.dto.DictionaryTermSimpleDto;
-import org.ssafy.d103.dictionary.repository.DictionaryCategoryRepository;
-import org.ssafy.d103.dictionary.repository.DictionaryTermRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ssafy.d103.dictionaries.dto.DictionaryCategoryDto;
+import org.ssafy.d103.dictionaries.dto.DictionaryTermDto;
+import org.ssafy.d103.dictionaries.dto.DictionaryTermSimpleDto;
+import org.ssafy.d103.dictionaries.repository.DictionaryCategoryRepository;
+import org.ssafy.d103.dictionaries.repository.DictionaryTermRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;

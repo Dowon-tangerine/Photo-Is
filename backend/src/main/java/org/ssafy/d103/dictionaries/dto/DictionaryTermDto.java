@@ -1,4 +1,4 @@
-package org.ssafy.d103.dictionary.dto;
+package org.ssafy.d103.dictionaries.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DictionaryTermDto {
-    private Long id;
+    private Long termId;
     private String term;
     private String description;
     private LocalDateTime createdAt;
