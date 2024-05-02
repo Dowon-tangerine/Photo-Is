@@ -1,10 +1,35 @@
+.searchContainer {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.searchInput {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-right: none;
+    color: #000000;  
+}
+
+.searchButton {
+    padding: 8px 12px;
+    background: #ccc;
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.searchButton:hover {
+    background-color: #aaa;
+}
+
 .container {
     display: flex;
     height: 100vh; /* 전체 화면 높이 */
 }
 
 .sidebar {
-    width: 200px;
+    width: 250px;
     background-color: #000000;
     color: white;
     padding: 20px;
@@ -16,23 +41,28 @@
     margin-bottom: 20px;
 }
 
-.sidebar ul {
+.sidebar ol {
     list-style: none;
     padding: 0;
 }
 
-.sidebar ul li {
-    margin-bottom: 10px;
+.sidebar button {
+    display: block;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: background-color 0.3s;
 }
 
-.sidebar ul li:hover {
-    color: #aaa;
+.sidebar button:hover {
+    background-color: #555;
 }
 
 .content {
     flex-grow: 1;
     padding: 20px;
-    overflow-y: auto; /* 필요할 경우 스크롤 */
 }
