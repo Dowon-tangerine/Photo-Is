@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final AccessDeniedHandler accessDeniedHandler;
     private final JwtUtil jwtUtil;
 
-    private final String[] whiteList = {"/api/**"};
+    private final String[] whiteList = {"/api/**", "/swagger-ui/**", "/api-docs/**", "/swagger-resources/**"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
