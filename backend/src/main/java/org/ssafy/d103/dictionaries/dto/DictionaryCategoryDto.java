@@ -1,4 +1,4 @@
-package org.ssafy.d103.dictionary.dto;
+package org.ssafy.d103.dictionaries.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DictionaryCategoryDto {
-    private Long id;
+    private Long categoryId;
     private String categoryName;
     private List<DictionaryTermSimpleDto> terms;
 }

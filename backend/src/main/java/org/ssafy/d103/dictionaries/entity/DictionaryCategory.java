@@ -1,4 +1,4 @@
-package org.ssafy.d103.dictionary.entity;
+package org.ssafy.d103.dictionaries.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.ssafy.d103._common.entity.CreatedAndDeletedTime;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

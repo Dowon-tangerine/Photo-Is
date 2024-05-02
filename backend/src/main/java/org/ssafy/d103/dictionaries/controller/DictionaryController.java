@@ -1,10 +1,9 @@
-package org.ssafy.d103.dictionary.controller;
+package org.ssafy.d103.dictionaries.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.ssafy.d103.dictionary.dto.DictionaryCategoryDto;
-import org.ssafy.d103.dictionary.dto.DictionaryTermDto;
-import org.ssafy.d103.dictionary.service.DictionaryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ssafy.d103.dictionaries.dto.DictionaryCategoryDto;
+import org.ssafy.d103.dictionaries.dto.DictionaryTermDto;
+import org.ssafy.d103.dictionaries.service.DictionaryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +22,8 @@ public class DictionaryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/terms/{termId}")
-    public ResponseEntity<DictionaryTermDto> getTermById(@PathVariable Long termId) {
+    @GetMapping("/terms/{term-id}")
+    public ResponseEntity<DictionaryTermDto> getTermById(@PathVariable("term-id") Long termId) {
         DictionaryTermDto termDto = dictionaryService.findTermById(termId);
         return termDto != null ? ResponseEntity.ok(termDto) : ResponseEntity.notFound().build();
     }
