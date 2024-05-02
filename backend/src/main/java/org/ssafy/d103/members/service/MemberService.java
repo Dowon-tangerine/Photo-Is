@@ -79,4 +79,24 @@ public class MemberService {
         }
         throw new CustomException(ErrorType.DUPLICATED_EMAIL);
     }
+
+    @Transactional
+    public PutMemberResponse updateMember(Members member, PutMemberRequest request) {
+
+        Members target = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
+
+        target.updateAllInfo(
+                request.getNickname(),
+                request.getBirthYear(),
+                request.getUseYear(),
+                request.getCamera(),
+                request.getProfileUrl(),
+                request.getCountry(),
+                request.getCity()
+        );
+        memberRepository.save(target);
+
+        return PutMemberResponse.from(target);
+    }
 }
