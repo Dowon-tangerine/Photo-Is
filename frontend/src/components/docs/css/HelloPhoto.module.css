@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    height: 100vh; /* 전체 화면 높이 */
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #000000;
+    color: white;
+    padding: 20px;
+    height: 100%; /* 부모 컨테이너의 높이에 맞춤 */
+    overflow-y: auto; /* 필요할 경우 스크롤 */
+}
+
+.sidebar h1 {
+    font-family: 'Bookk Myungjo', serif; /* 글꼴 설정 */
+    font-size: 15px; /* 글꼴 크기 설정 */
+    margin-bottom: 20px;
+}
+
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.sidebar ul li:hover {
+    color: #aaa;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto; /* 필요할 경우 스크롤 */
+}
