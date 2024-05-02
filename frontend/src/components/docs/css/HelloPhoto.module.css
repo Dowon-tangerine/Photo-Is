@@ -4,7 +4,7 @@
 }
 
 .sidebar {
-    width: 200px;
+    width: 250px;
     background-color: #000000;
     color: white;
     padding: 20px;
@@ -12,30 +12,52 @@
     overflow-y: auto; /* 필요할 경우 스크롤 */
 }
 
+.sidebar button.subItem {
+    display: block;
+    background: grey; 
+    color: inherit;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sidebar button.subItem:hover {
+    background-color: rgba(85, 85, 85, 0.8); /* 호버 시 조금 밝은 회색으로 변경, 80% 투명도 유지 */
+}
+
+
 .sidebar h1 {
     font-family: 'Bookk Myungjo', serif; /* 글꼴 설정 */
-    font-size: 15px; /* 글꼴 크기 설정 */
+    font-size: 20px; /* 글꼴 크기 설정 */
     margin-bottom: 20px;
 }
 
 
-.sidebar ul {
+.sidebar ol {
     list-style: none;
     padding: 0;
 }
 
-.sidebar ul li {
-    margin-bottom: 10px;
+.sidebar button {
+    display: block;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: background-color 0.3s;
 }
 
-.sidebar ul li:hover {
-    color: #aaa;
+.sidebar button:hover {
+    background-color: #555;
 }
 
 .content {
     flex-grow: 1;
     padding: 20px;
-    overflow-y: auto; /* 필요할 경우 스크롤 */
 }
