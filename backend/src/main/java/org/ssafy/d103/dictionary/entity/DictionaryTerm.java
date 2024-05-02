@@ -18,24 +18,25 @@ public class DictionaryTerm extends CreatedAndDeletedTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "dictionary_term_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "dictionary_category_id", nullable = false)
     private DictionaryCategory category;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 20)
     private String term;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name ="created_at",nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false)
+    @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
 
     @Builder
