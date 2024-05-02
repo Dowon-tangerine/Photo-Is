@@ -1,4 +1,4 @@
-package org.ssafy.d103.dictionaries.entity;
+package org.ssafy.d103.dictionary.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
