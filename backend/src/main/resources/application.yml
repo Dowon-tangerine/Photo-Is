@@ -7,6 +7,8 @@ spring:
     url: ${RDS_URL}
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
+    hikari:
+      max-lifetime: 177000
   jpa:
     hibernate:
       ddl-auto: update 
@@ -14,6 +16,11 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 cloud:
   aws:
@@ -26,3 +33,9 @@ cloud:
       auto: false
     s3:
       bucket: ${S3_BUCKET_NAME}
+
+jwt:
+  secret: ${JWT_SECRET}
+  token:
+    refresh-expiration-time: 259200000
+    access-expiration-time: 259200000
