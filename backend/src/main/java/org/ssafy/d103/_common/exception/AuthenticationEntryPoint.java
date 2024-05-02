@@ -47,6 +47,7 @@ public class AuthenticationEntryPoint implements org.springframework.security.we
                 exceptionHandler(response, ErrorType.NOT_FOUND_MEMBER);
             }
         } else {
+            authException.printStackTrace();
             exceptionHandler(response, ErrorType.ANOTHER_ERROR);
         }
     }
