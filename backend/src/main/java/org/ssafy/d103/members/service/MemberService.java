@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,15 @@ import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
+import org.ssafy.d103.members.dto.response.GetSelectMemberListResponse;
 import org.ssafy.d103.members.dto.response.GetSelectMemberResponse;
 import org.ssafy.d103.members.dto.response.PostCheckElementsResponse;
 import org.ssafy.d103.members.dto.response.PostValidateMemberResponse;
 import org.ssafy.d103.members.entity.Members;
 import org.ssafy.d103.members.repository.MemberRepository;
 import org.ssafy.d103.members.service.jwt.JwtUtil;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -111,4 +116,13 @@ public class MemberService {
         return GetSelectMemberResponse.from(target);
     }
 
+    public Page<Members> selectMemberList(Authentication authentication, String nickname, Pageable pageable) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Page<Members> members = memberRepository.findAllByMemberIdAndNickname(member.getId(), nickname, pageable)
+                .orElse(null);
+
+        return members;
+    }
 }

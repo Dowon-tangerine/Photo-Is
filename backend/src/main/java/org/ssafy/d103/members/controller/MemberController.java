@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.ssafy.d103._common.response.ApiResponseDto;
@@ -13,6 +14,7 @@ import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
 import org.ssafy.d103.members.service.MemberService;
+
 
 @Slf4j
 @RestController
@@ -76,4 +78,12 @@ public class MemberController {
         return ResponseUtils.ok(memberService.selectMember(authentication, memberId), MsgType.SELECT_MEMBER_SUCCESSFULLY);
     }
 
+    /**
+     * 닉네임 검색 API
+     */
+    @Operation(summary = "닉네임 검색 요청")
+    @GetMapping("/nickname/{nickname}")
+    public ApiResponseDto<?> selectMemberList(Authentication authentication, @PathVariable String nickname, Pageable pageable) {
+        return ResponseUtils.ok(memberService.selectMemberList(authentication, nickname, pageable), MsgType.SELECT_MEMBER_LIST_SUCCESSFULLY);
+    }
 }
