@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.ssafy.d103._common.entity.CreatedAndDeletedTime;
 import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.photo.PhotoComment;
@@ -81,11 +82,17 @@ public class Members extends CreatedAndDeletedTime {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<QuestionComment> questionCommentList;
 
+    @Column(name = "follower_cnt", nullable = false)
+    private int followerCnt;
+
+    @Column(name = "following_cnt", nullable = false)
+    private int followingCnt;
+
     @Builder
     public Members(
             String email, String password, String nickname, int birthYear,
             Camera camera, int useYear, String profileUrl, String backgroundUrl, String introduction,
-            String country, String city, int photoCnt
+            String country, String city, int photoCnt, int followerCnt, int followingCnt
     ) {
         this.email = email;
         this.password = password;
@@ -99,6 +106,8 @@ public class Members extends CreatedAndDeletedTime {
         this.country = country;
         this.city = city;
         this.photoCnt = photoCnt;
+        this.followerCnt = followerCnt;
+        this.followingCnt = followingCnt;
     }
 
     public static Members of(String email, String password, String nickname, int birthYear, int useYear) {
@@ -112,6 +121,8 @@ public class Members extends CreatedAndDeletedTime {
                 .profileUrl("testUrl")
                 .backgroundUrl("testUrl")
                 .introduction("자기소개가 없습니다.")
+                .followerCnt(0)
+                .followingCnt(0)
                 .build();
     }
 
@@ -127,5 +138,15 @@ public class Members extends CreatedAndDeletedTime {
 
     public void updatePhotoCnt(int photoCnt) {
         this.photoCnt = photoCnt;
+    }
+
+    public void updateFollowCnt(int followerCnt, int followingCnt) { this.followerCnt = followerCnt; this.followingCnt = followingCnt; }
+
+    public void hasPassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(plainPassword, this.password);
     }
 }
