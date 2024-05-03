@@ -7,11 +7,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AccessType {
 
-    PUBLIC("공개"),
-    PRIVATE("비공개"),
-    STUDIO("가상 스튜디오")
-    ;
+    PUBLIC("public"),
+    PRIVATE("private"),
+    STUDIO("studio");
 
     private final String AccessTypeName;
 
+    public static AccessType fromString(String accessTypeName) {
+        for (AccessType b : AccessType.values()) {
+            if (b.AccessTypeName.equalsIgnoreCase(accessTypeName)) {
+                return b;
+            }
+        }
+        throw new IllegalArgumentException("No constant with accessTypeName " + accessTypeName + " found");
+    }
 }
