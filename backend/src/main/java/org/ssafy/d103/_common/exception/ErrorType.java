@@ -18,6 +18,7 @@ public enum ErrorType {
     EXPIRED_TOKEN(400, "만료된 토큰입니다."),
     TOKEN_NOT_FOUND(404, "토큰이 존재하지 않습니다."),
     NOT_FOUND_MEMBER(404, "멤버가 존재하지 않습니다."),
+    INVALID_PASSWORD(400, "비밀번호가 일치하지 않습니다."),
 
     //********************************[ ETC ]********************************
     ANOTHER_ERROR(401, "기타 에러가 발생하였습니다."),
