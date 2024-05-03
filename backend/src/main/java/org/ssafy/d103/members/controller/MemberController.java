@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
+import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
 import org.ssafy.d103.members.service.MemberService;
 
@@ -54,5 +56,14 @@ public class MemberController {
     @GetMapping("/check-email/{email}")
     public ApiResponseDto<?> checkEmail(@PathVariable String email){
         return ResponseUtils.ok(memberService.checkEmail(email), MsgType.VALIDATE_EMAIL_SUCCESSFULLY);
+    }
+
+    /**
+     * 비밀번호 확인 API
+     */
+    @Operation(summary = "비밀번호 확인 요청")
+    @PostMapping("/check-password")
+    public ApiResponseDto<?> checkPassword(Authentication authentication, @RequestBody PostCheckPasswordRequest request) {
+        return ResponseUtils.ok(memberService.checkPassword(authentication, request), MsgType.VALIDATE_PASSWORD_SUCCESSFULLY);
     }
 }

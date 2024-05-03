@@ -4,11 +4,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
+import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
+import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
 import org.ssafy.d103.members.dto.response.PostCheckElementsResponse;
 import org.ssafy.d103.members.dto.response.PostValidateMemberResponse;
@@ -24,6 +27,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final CommonService commonService;
 
     @Transactional
     public String saveMember(PostAddMemberRequest request) {
@@ -90,5 +94,13 @@ public class MemberService {
         throw new CustomException(ErrorType.DUPLICATED_EMAIL);
     }
 
+    public PostCheckElementsResponse checkPassword(Authentication authentication, PostCheckPasswordRequest request) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+        if((member.checkPassword(request.getPassword(), passwordEncoder))) {
+            return new PostCheckElementsResponse(true);
+        }
+        throw new CustomException(ErrorType.INVALID_PASSWORD);
+    }
 
 }

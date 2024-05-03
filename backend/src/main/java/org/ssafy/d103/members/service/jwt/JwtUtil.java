@@ -10,16 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.ssafy.d103.members.dto.SecurityMemberDto;
 import org.ssafy.d103.members.entity.Members;
-import org.ssafy.d103.members.service.UserDetailsServiceImpl;
 
 import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -28,7 +25,6 @@ public class JwtUtil {
 
     private final Environment env;
 
-    private final UserDetailsServiceImpl userDetailsService;
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private static final String BEARER_PREFIX = "Bearer ";
@@ -63,7 +59,7 @@ public class JwtUtil {
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(member.getEmail())
+                        .setSubject(String.valueOf(member.getId()))
                         .setIssuedAt(new Date(now.getTime()))
                         .setExpiration(new Date(now.getTime() + TOKEN_TIME))
                         .signWith(key, signatureAlgorithm)
@@ -90,12 +86,19 @@ public class JwtUtil {
         }
     }
 
-    public Claims getUserInfoFromToken(String token) {
+    public Long getMemberId(String token) {
+        String subject = Jwts.parserBuilder()
+                .setSigningKey(key).build()
+                .parseClaimsJws(token)
+                .getBody().getSubject();
+        return Long.parseLong(subject);
+    }
+
+    public Claims getClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public Authentication createAuthentication(String userEmail) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    public Authentication getAuthentication(SecurityMemberDto securityMemberDto) {
+        return new UsernamePasswordAuthenticationToken(securityMemberDto, "", Collections.emptyList());
     }
 }
