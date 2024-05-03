@@ -12,6 +12,9 @@ public enum MsgType {
     SIGN_IN_SUCCESSFULLY("로그인에 성공하였습니다."),
     VALIDATE_NICKNAME_SUCCESSFULLY("닉네임 중복 검사에 성공하였습니다."),
     VALIDATE_EMAIL_SUCCESSFULLY("이메일 중복 검사에 성공하였습니다."),
+
+    //********************************[ Photos ]********************************
+    PHOTO_UPLOAD_SUCCESSFULLY("사진 업로드에 성공하였습니다.")
     ;
 
     private final String msg;

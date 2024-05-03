@@ -1,6 +1,10 @@
 package org.ssafy.d103.communities.entity.photo;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.ssafy.d103._common.entity.OnlyCreatedTime;
 import org.ssafy.d103.communities.entity.question.Question;
 import org.ssafy.d103.members.entity.Members;
@@ -8,6 +12,8 @@ import org.ssafy.d103.members.entity.Members;
 import java.util.List;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Photo extends OnlyCreatedTime {
 
     @Id
@@ -33,7 +39,7 @@ public class Photo extends OnlyCreatedTime {
     private Members member;
 
     @OneToOne(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Metadata metadata;
+    private PhotoMetadata photoMetadata;
 
     @OneToOne(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private PhotoDetail photoDetail;
@@ -50,4 +56,22 @@ public class Photo extends OnlyCreatedTime {
     @OneToMany(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PhotoHashtag> photoHashtagList;
 
+    @Builder
+    private Photo(String title, String imageUrl, String thumbnailUrl, AccessType accessType, Members member) {
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.thumbnailUrl = thumbnailUrl;
+        this.accessType = accessType;
+        this.member = member;
+    }
+
+    public static Photo of(String title, String imageUrl, String thumbnailUrl, AccessType accessType, Members member) {
+        return builder()
+                .title(title)
+                .imageUrl(imageUrl)
+                .thumbnailUrl(thumbnailUrl)
+                .accessType(accessType)
+                .member(member)
+                .build();
+    }
 }
