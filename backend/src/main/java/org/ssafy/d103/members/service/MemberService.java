@@ -79,9 +79,4 @@ public class MemberService {
         }
         throw new CustomException(ErrorType.DUPLICATED_EMAIL);
     }
-
-    public Members validateMemberByToken(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
-    }
 }
