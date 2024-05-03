@@ -14,12 +14,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
+import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.response.PostUploadPhotoResponse;
 import org.ssafy.d103.communities.entity.photo.AccessType;
@@ -30,8 +31,6 @@ import org.ssafy.d103.communities.repository.MetadataRepository;
 import org.ssafy.d103.communities.repository.PhotoDetailRepository;
 import org.ssafy.d103.communities.repository.PhotoRepository;
 import org.ssafy.d103.members.entity.Members;
-import org.ssafy.d103.members.repository.MemberRepository;
-import org.ssafy.d103.members.service.UserDetailsImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +42,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PhotoService {
 
-    private final MemberRepository memberRepository;
     private static final String SUFFIX = ".jpg";
     private static final String THUMBNAIL_TAIL = "-th";
 
@@ -58,13 +56,15 @@ public class PhotoService {
 
     private final PhotoDetailRepository photoDetailRepository;
 
+    private final CommonService commonService;
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Transactional
-    public PostUploadPhotoResponse uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails, MultipartFile multipartFile, PostUploadPhotoRequest postUploadPhotoRequest) {
+    public PostUploadPhotoResponse uploadPhoto(Authentication authentication, MultipartFile multipartFile, PostUploadPhotoRequest postUploadPhotoRequest) {
 
-        Members member = findMembersByAuthentication(userDetails);
+        Members member = commonService.findMemberByAuthentication(authentication);
 
         Photo photo = Photo.of(postUploadPhotoRequest.getTitle(), null, null, AccessType.fromString(postUploadPhotoRequest.getAccessType()), member);
 
@@ -194,11 +194,5 @@ public class PhotoService {
         }
 
         return lensModel;
-    }
-
-
-    public Members findMembersByAuthentication(UserDetailsImpl userDetailsImpl) {
-        return memberRepository.findMembersByEmailAndDeletedAtIsNull(userDetailsImpl.getMember().getEmail())
-                .orElseThrow(() -> new CustomException(ErrorType.BAD_REQUEST));
     }
 }
