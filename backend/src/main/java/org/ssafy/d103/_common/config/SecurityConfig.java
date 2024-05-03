@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.ssafy.d103._common.exception.AccessDeniedHandler;
 import org.ssafy.d103.members.service.jwt.JwtAuthFilter;
+import org.ssafy.d103.members.service.jwt.JwtUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
