@@ -13,6 +13,7 @@ import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
+import org.ssafy.d103.members.dto.response.GetSelectMemberResponse;
 import org.ssafy.d103.members.dto.response.PostCheckElementsResponse;
 import org.ssafy.d103.members.dto.response.PostValidateMemberResponse;
 import org.ssafy.d103.members.entity.Members;
@@ -101,6 +102,13 @@ public class MemberService {
             return new PostCheckElementsResponse(true);
         }
         throw new CustomException(ErrorType.INVALID_PASSWORD);
+    }
+
+    public GetSelectMemberResponse selectMember(Authentication authentication, Long memberId) {
+
+        Members target = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
+        return GetSelectMemberResponse.from(target);
     }
 
 }

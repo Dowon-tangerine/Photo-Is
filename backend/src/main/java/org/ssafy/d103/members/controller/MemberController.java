@@ -66,4 +66,14 @@ public class MemberController {
     public ApiResponseDto<?> checkPassword(Authentication authentication, @RequestBody PostCheckPasswordRequest request) {
         return ResponseUtils.ok(memberService.checkPassword(authentication, request), MsgType.VALIDATE_PASSWORD_SUCCESSFULLY);
     }
+
+    /**
+     * 멤버 프로필 조회 API
+     */
+    @Operation(summary = "멤버 프로필 조회 요청")
+    @GetMapping("/profile/{member-id}")
+    public ApiResponseDto<?> selectMember(Authentication authentication, @PathVariable("member-id") Long memberId) {
+        return ResponseUtils.ok(memberService.selectMember(authentication, memberId), MsgType.SELECT_MEMBER_SUCCESSFULLY);
+    }
+
 }
