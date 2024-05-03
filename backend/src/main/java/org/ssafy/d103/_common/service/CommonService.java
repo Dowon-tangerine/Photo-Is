@@ -1,7 +1,6 @@
 package org.ssafy.d103._common.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.ssafy.d103._common.exception.CustomException;
@@ -12,7 +11,6 @@ import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommonService {
@@ -37,5 +35,10 @@ public class CommonService {
 
     private Optional<Members> findMemberById(Long memberId) {
         return memberRepository.findById(memberId);
+    }
+
+    public Members validateMemberByToken(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
     }
 }

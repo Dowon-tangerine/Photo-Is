@@ -13,9 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.ssafy.d103._common.exception.ErrorType;
+import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.members.dto.SecurityMemberDto;
 import org.ssafy.d103.members.entity.Members;
-import org.ssafy.d103.members.service.MemberService;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final MemberService memberService;
+    private final CommonService commonService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -57,7 +57,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private void setAuthentication(Long memberId) {
-        Members member = memberService.validateMemberByToken(memberId);
+        Members member = commonService.validateMemberByToken(memberId);
         SecurityMemberDto securityMemberDto = SecurityMemberDto.from(member);
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
