@@ -32,7 +32,7 @@ public class SecurityConfig {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
-    private final JwtUtil jwtUtil;
+    private final JwtAuthFilter jwtAuthFilter;
 
     private final String[] whiteList = {"/api/**", "/swagger-ui/**", "/api-docs/**", "/swagger-resources/**"};
 
@@ -81,7 +81,7 @@ public class SecurityConfig {
 //                .exceptionHandling(authentication ->
 //                        authentication.authenticationEntryPoint(authenticationEntryPoint)
 //                                .accessDeniedHandler(accessDeniedHandler))
-                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

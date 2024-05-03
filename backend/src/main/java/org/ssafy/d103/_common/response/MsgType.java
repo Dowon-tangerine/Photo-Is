@@ -13,6 +13,7 @@ public enum MsgType {
     VALIDATE_NICKNAME_SUCCESSFULLY("닉네임 중복검사에 성공하였습니다."),
     VALIDATE_EMAIL_SUCCESSFULLY("이메일 중복검사에 성공하였습니다."),
     UPDATE_MEMBER_SUCCESSFULLY("회원정보 수정에 성공하였습니다."),
+    VALIDATE_PASSWORD_SUCCESSFULLY("비밀번호 확인에 성공하였습니다."),
     ;
 
     private final String msg;
