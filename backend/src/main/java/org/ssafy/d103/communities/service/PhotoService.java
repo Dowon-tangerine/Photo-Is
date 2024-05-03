@@ -23,18 +23,15 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.response.PostUploadPhotoResponse;
-import org.ssafy.d103.communities.entity.photo.AccessType;
-import org.ssafy.d103.communities.entity.photo.Photo;
-import org.ssafy.d103.communities.entity.photo.PhotoDetail;
-import org.ssafy.d103.communities.entity.photo.PhotoMetadata;
-import org.ssafy.d103.communities.repository.MetadataRepository;
-import org.ssafy.d103.communities.repository.PhotoDetailRepository;
-import org.ssafy.d103.communities.repository.PhotoRepository;
+import org.ssafy.d103.communities.entity.photo.*;
+import org.ssafy.d103.communities.repository.*;
 import org.ssafy.d103.members.entity.Members;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -56,6 +53,10 @@ public class PhotoService {
 
     private final PhotoDetailRepository photoDetailRepository;
 
+    private final HashtagRepository hashtagRepository;
+
+    private final PhotoHashtagRepository photoHashtagRepository;
+
     private final CommonService commonService;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -70,13 +71,13 @@ public class PhotoService {
 
         Photo savedPhoto = uploadImageFile(multipartFile, photo);
         saveMetadata(multipartFile, savedPhoto);
-
+        saveHashtag(postUploadPhotoRequest.getHashtagList(), savedPhoto);
         photoDetailRepository.save(PhotoDetail.init(savedPhoto));
 
         return PostUploadPhotoResponse.of(true);
     }
 
-    public Photo uploadImageFile(MultipartFile imageFile, Photo photo) {
+    private Photo uploadImageFile(MultipartFile imageFile, Photo photo) {
         try {
             String uuid = UUID.randomUUID().toString();
             String originalUrl = putS3(imageFile, uuid);
@@ -128,7 +129,7 @@ public class PhotoService {
         }
     }
 
-    public void saveMetadata(MultipartFile file, Photo photo) {
+    private void saveMetadata(MultipartFile file, Photo photo) {
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(file.getInputStream());
 
@@ -171,7 +172,7 @@ public class PhotoService {
         }
     }
 
-    public String extractLensModel(Metadata metadata) {
+    private String extractLensModel(Metadata metadata) {
         String lensModel = null;
 
         // 일반적인 EXIF 디렉토리에서 렌즈 정보 추출 시도
@@ -194,5 +195,18 @@ public class PhotoService {
         }
 
         return lensModel;
+    }
+
+    private void saveHashtag(List<String> hashtagList, Photo photo) {
+        for (String tag : hashtagList) {
+            Optional<Hashtag> findHashtag = hashtagRepository.findHashtagByTagText(tag);
+
+            if (findHashtag.isPresent()) {
+                photoHashtagRepository.save(PhotoHashtag.of(photo, findHashtag.get()));
+            } else {
+                Hashtag hashtag = hashtagRepository.save(Hashtag.of(tag));
+                photoHashtagRepository.save(PhotoHashtag.of(photo, hashtag));
+            }
+        }
     }
 }
