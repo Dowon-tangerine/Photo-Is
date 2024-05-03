@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
@@ -22,6 +23,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public String saveMember(PostAddMemberRequest request) {
@@ -34,34 +36,42 @@ public class MemberService {
             throw new CustomException(ErrorType.DUPLICATED_MEMBER);
         }
 
-        // 처음 가입한 사용자
-        memberRepository.save(
-                Members.of(
-                        request.getEmail(),
-                        request.getPassword(),
-                        request.getNickname(),
-                        request.getBirthYear(),
-                        request.getUseYear()
-                )
+        Members newMember = Members.of(
+                request.getEmail(),
+                request.getPassword(),
+                request.getNickname(),
+                request.getBirthYear(),
+                request.getUseYear()
         );
+
+        // 비밀번호 암호화
+        newMember.hasPassword(passwordEncoder);
+
+        // 처음 가입한 사용자
+        memberRepository.save(newMember);
 
         return null;
     }
 
     public PostValidateMemberResponse validateMember(PostValidateMemberRequest request, HttpServletResponse response) {
 
-        Members member = memberRepository.findMembersByEmailAndPasswordAndDeletedAtIsNull(request.getEmail(), request.getPassword())
+        Members member = memberRepository.findMembersByEmailAndDeletedAtIsNull(request.getEmail())
                 .orElse(null);
 
+        // 멤버가 존재하지 않을 때
         if(member == null) {
             throw new CustomException(ErrorType.NOT_FOUND_MEMBER);
         }
 
-        String jwtAccessToken = jwtUtil.createToken(member, false);
-        String jwtRefreshToken = jwtUtil.createToken(member, true);
-        response.addHeader("Authorization", jwtAccessToken);
+        // 멤버의 비밀번호를 비교 후 일치하면 토큰 생성
+        if(member.checkPassword(request.getPassword(), passwordEncoder)) {
+            String jwtAccessToken = jwtUtil.createToken(member, false);
+            String jwtRefreshToken = jwtUtil.createToken(member, true);
+            response.addHeader("Authorization", jwtAccessToken);
 
-        return PostValidateMemberResponse.from(member);
+            return PostValidateMemberResponse.from(member);
+        }
+        throw new CustomException(ErrorType.INVALID_PASSWORD);
     }
 
     public PostCheckElementsResponse checkNickname(String nickname) {
@@ -80,23 +90,5 @@ public class MemberService {
         throw new CustomException(ErrorType.DUPLICATED_EMAIL);
     }
 
-    @Transactional
-    public PutMemberResponse updateMember(Members member, PutMemberRequest request) {
 
-        Members target = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
-
-        target.updateAllInfo(
-                request.getNickname(),
-                request.getBirthYear(),
-                request.getUseYear(),
-                request.getCamera(),
-                request.getProfileUrl(),
-                request.getCountry(),
-                request.getCity()
-        );
-        memberRepository.save(target);
-
-        return PutMemberResponse.from(target);
-    }
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.ssafy.d103._common.entity.CreatedAndDeletedTime;
 import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.photo.PhotoComment;
@@ -127,5 +128,13 @@ public class Members extends CreatedAndDeletedTime {
 
     public void updatePhotoCnt(int photoCnt) {
         this.photoCnt = photoCnt;
+    }
+
+    public void hasPassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(plainPassword, this.password);
     }
 }
