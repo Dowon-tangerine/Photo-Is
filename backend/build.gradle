@@ -51,6 +51,9 @@ dependencies {
     // Spring Security 세팅 😋
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // Swagger 세팅 😋
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
     // Validation(유효성 검사) 😋
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 

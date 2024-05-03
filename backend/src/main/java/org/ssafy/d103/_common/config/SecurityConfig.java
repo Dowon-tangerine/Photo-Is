@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.ssafy.d103._common.exception.AccessDeniedHandler;
 import org.ssafy.d103.members.service.jwt.JwtAuthFilter;
-import org.ssafy.d103.members.service.jwt.JwtUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,9 +31,9 @@ public class SecurityConfig {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
-    private final JwtUtil jwtUtil;
+    private final JwtAuthFilter jwtAuthFilter;
 
-    private final String[] whiteList = {"/api/**"};
+    private final String[] whiteList = {"/api/**", "/swagger-ui/**", "/api-docs/**", "/swagger-resources/**"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -81,7 +80,7 @@ public class SecurityConfig {
 //                .exceptionHandling(authentication ->
 //                        authentication.authenticationEntryPoint(authenticationEntryPoint)
 //                                .accessDeniedHandler(accessDeniedHandler))
-                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
