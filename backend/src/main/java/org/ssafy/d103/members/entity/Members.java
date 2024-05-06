@@ -149,4 +149,8 @@ public class Members extends CreatedAndDeletedTime {
     public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(plainPassword, this.password);
     }
+
+    public void updateBackgroundImg(String backgroundUrl) {
+        this.backgroundUrl = backgroundUrl;
+    }
 }
