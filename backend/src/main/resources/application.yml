@@ -63,3 +63,7 @@ springdoc:
   model-and-view-allowed: true
   paths-to-match:
     - /api/**
+
+dummy:
+  photos:
+    photo-url: ${PHOTO_URL}
