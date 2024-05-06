@@ -7,13 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
+import org.ssafy.d103.members.dto.request.PutUpdateMemberRequest;
 import org.ssafy.d103.members.service.MemberService;
+
+import java.io.IOException;
 
 
 @Slf4j
@@ -85,5 +89,23 @@ public class MemberController {
     @GetMapping("/nickname/{nickname}")
     public ApiResponseDto<?> selectMemberList(Authentication authentication, @PathVariable String nickname, Pageable pageable) {
         return ResponseUtils.ok(memberService.selectMemberList(authentication, nickname, pageable), MsgType.SELECT_MEMBER_LIST_SUCCESSFULLY);
+    }
+
+    /**
+     * 회원정보 수정 API
+     */
+    @Operation(summary = "회원정보 수정 요청")
+    @PutMapping("/")
+    public ApiResponseDto<?> updateMember(Authentication authentication, @RequestPart(value = "memberInfo") PutUpdateMemberRequest request, @RequestPart(value = "photo", required = false) MultipartFile multipartFile) throws IOException {
+        return ResponseUtils.ok(memberService.updateMember(authentication, multipartFile, request), MsgType.UPDATE_MEMBER_SUCCESSFULLY);
+    }
+
+    /**
+     * 배경화면 수정 API
+     */
+    @Operation(summary = "배경화면 수정 요청")
+    @PutMapping("/change-background")
+    public ApiResponseDto<?> updateBackgroundImg(Authentication authentication, @RequestPart(value = "background") MultipartFile multipartFile) throws IOException {
+        return ResponseUtils.ok(memberService.updateBackgroundImg(authentication, multipartFile), MsgType.UPDATE_BACKGROUND_IMG_SUCCESSFULLY);
     }
 }

@@ -8,11 +8,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.ssafy.d103.members.entity.Members;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Members, Long> {
+    interface MemberDtoMapping {
+        Long getMemberId();
+        String getProfileUrl();
+        String getNickname();
+        Integer getPhotoCnt();
+        Integer getFollowingCnt();
+        Integer getFollowerCnt();
+        Integer getIsFollowing();
+
+    }
 
     Optional<Members> findMembersByEmailAndDeletedAtIsNull(String email);
 
@@ -23,11 +32,15 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
     @Query(value =
             "SELECT m.member_id as memberId, m.profile_url as profileUrl, m.nickname as nickname, m.photo_cnt as photoCnt, m.following_cnt as followingCnt, m.follower_cnt as followerCnt, " +
                     "CASE " +
-                        "WHEN EXISTS (SELECT 1 FROM follows f WHERE f.follower_id = :memberId AND f.following_id = m.member_id) THEN TRUE " +
-                        "ELSE FALSE " +
-                    "END AS is_following " +
+                    "WHEN EXISTS (SELECT 1 FROM follows f WHERE f.follower_id = :memberId AND f.following_id = m.member_id) THEN TRUE " +
+                    "ELSE FALSE " +
+                    "END AS isFollowing " +
             "FROM members m " +
-            "WHERE m.nickname = :nickname ", nativeQuery = true)
-    Optional<Page<Members>> findAllByMemberIdAndNickname(@Param("memberId") Long memberId, @Param("nickname") String nickname, Pageable pageable);
+            "WHERE m.nickname LIKE CONCAT('%', :nickname, '%') ",
+            countQuery = "SELECT COUNT(*) " +
+                    "FROM members m " +
+                    "WHERE m.nickname LIKE CONCAT('%', :nickname, '%') ",
+            nativeQuery = true)
+    Optional<Page<MemberDtoMapping>> findAllByMemberIdAndNickname(@Param("memberId") Long memberId, @Param("nickname") String nickname, Pageable pageable);
 
 }

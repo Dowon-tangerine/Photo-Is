@@ -16,6 +16,7 @@ public enum MsgType {
     VALIDATE_PASSWORD_SUCCESSFULLY("비밀번호 확인에 성공하였습니다."),
     SELECT_MEMBER_SUCCESSFULLY("멤버정보 조회에 성공하였습니다."),
     SELECT_MEMBER_LIST_SUCCESSFULLY("멤버목록 조회에 성공하였습니다."),
+    UPDATE_BACKGROUND_IMG_SUCCESSFULLY("배경화면 변경에 성공하였습니다."),
 
     //********************************[ Photos ]********************************
     PHOTO_UPLOAD_SUCCESSFULLY("사진 업로드에 성공하였습니다.")
