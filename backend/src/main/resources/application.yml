@@ -66,4 +66,4 @@ springdoc:
 
 dummy:
   photos:
-    photo-url: ${PHOTO_URL}
+    photo-url: ${PHOTO_URL_1}, ${PHOTO_URL_2}, ${PHOTO_URL_3}, ${PHOTO_URL_4}, ${PHOTO_URL_5},
