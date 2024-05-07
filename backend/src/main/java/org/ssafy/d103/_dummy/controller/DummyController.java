@@ -12,7 +12,7 @@ import org.ssafy.d103._dummy.service.DummyService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/dummy")
 public class DummyController {
 
     private final DummyService dummyService;
