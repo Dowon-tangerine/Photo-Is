@@ -19,7 +19,8 @@ public enum MsgType {
     //********************************[ Photos ]********************************
     PHOTO_UPLOAD_SUCCESSFULLY("사진 업로드에 성공하였습니다."),
     PHOTO_MODIFY_SUCCESSFULLY("사진 정보 변경에 성공하였습니다."),
-    PHOTO_DELETE_SUCCESSFULLY("사진 삭제에 성공하였습니다.");
+    PHOTO_DELETE_SUCCESSFULLY("사진 삭제에 성공하였습니다."),
+    PHOTO_GET_SUCCESSFULLY("사진 조회에 성공하였습니다.");
 
     private final String msg;
 

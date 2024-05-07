@@ -39,4 +39,9 @@ public class PhotoController {
         return ResponseUtils.ok(photoService.deletePhoto(authentication, photoId), MsgType.PHOTO_DELETE_SUCCESSFULLY);
     }
 
+    @GetMapping("/{access-type}")
+    public ApiResponseDto<?> deleteRemovePhoto(Authentication authentication, @PathVariable("access-type") String accessType) {
+        return ResponseUtils.ok(photoService.getPhotoByAccessType(authentication, accessType), MsgType.PHOTO_GET_SUCCESSFULLY);
+    }
+
 }
