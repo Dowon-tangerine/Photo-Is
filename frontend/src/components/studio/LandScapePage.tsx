@@ -28,7 +28,7 @@ function LandScapePage() {
         <>
             <div className={StudioStyle.container}>
                 <div className={StudioStyle.canvasContainer}>
-                    <Canvas shadows camera={{ rotation: [10, 0, 0], position: [162, 5, 60], far: 10000 }}>
+                    <Canvas shadows camera={{ rotation: [10, 0, 0], position: [162, 3, 60], far: 10000 }}>
                         <ambientLight intensity={1} />
                         <directionalLight ref={lightRef} castShadow position={[0, 100, -40]} intensity={2} />
                         <Sky distance={40000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
@@ -38,6 +38,10 @@ function LandScapePage() {
                 </div>
                 <div className="absolute top-0 right-0 w-[300px] bg-black bg-opacity-90 h-full flex flex-col items-center">
                     <p className="text-white font-bookkMyungjoBold text-[25px] p-5">Setting</p>
+                    <button className=" rounded-[80px] flex items-center justify-center bg-white w-[170px] h-[60px]">
+                        <p className="font-bookkGothicBold mr-2 text-[18px]">SHOOT</p>
+                        <img src="./imgs/camera.png" alt="Camera Icon" className="w-[25px]" />
+                    </button>
                 </div>
             </div>
         </>
