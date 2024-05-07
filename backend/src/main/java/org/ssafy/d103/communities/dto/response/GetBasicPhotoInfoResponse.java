@@ -1,11 +1,11 @@
-package org.ssafy.d103.communities.dto.listDto;
+package org.ssafy.d103.communities.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
 import org.ssafy.d103.communities.entity.photo.Photo;
 
 @Getter
-public class BasicPhotoInfo {
+public class GetBasicPhotoInfoResponse {
 
     private Long photoId;
     private String thumbnailUrl;
@@ -13,14 +13,14 @@ public class BasicPhotoInfo {
     private Integer likeCnt;
 
     @Builder
-    private BasicPhotoInfo(Long photoId, String thumbnailUrl, String title, Integer likeCnt) {
+    private GetBasicPhotoInfoResponse(Long photoId, String thumbnailUrl, String title, Integer likeCnt) {
         this.photoId = photoId;
         this.thumbnailUrl = thumbnailUrl;
         this.title = title;
         this.likeCnt = likeCnt;
     }
 
-    public static BasicPhotoInfo from(Photo photo, Integer likeCnt) {
+    public static GetBasicPhotoInfoResponse from(Photo photo, Integer likeCnt) {
         return builder()
                 .photoId(photo.getId())
                 .thumbnailUrl(photo.getThumbnailUrl())
