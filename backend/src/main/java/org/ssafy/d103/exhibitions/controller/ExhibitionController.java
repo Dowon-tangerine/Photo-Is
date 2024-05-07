@@ -37,4 +37,13 @@ public class ExhibitionController {
     public ApiResponseDto<?> selectMyExhibitionList(Authentication authentication) {
         return ResponseUtils.ok(exhibitionService.selectMyExhibitionList(authentication), MsgType.SELECT_MY_EXHIBITION_LIST_SUCCESSFULLY);
     }
+
+    /**
+     * 전시회 상세정보 조회 API
+     */
+    @Operation(summary = "전시회 상세정보 조회 요청")
+    @GetMapping("/{exhibition-id}")
+    public ApiResponseDto<?> selectExhibition(@PathVariable(name = "exhibition-id") Long exhibitionId) {
+        return ResponseUtils.ok(exhibitionService.selectExhibition(exhibitionId), MsgType.SELECT_EXHIBITION_SUCCESSFULLY);
+    }
 }
