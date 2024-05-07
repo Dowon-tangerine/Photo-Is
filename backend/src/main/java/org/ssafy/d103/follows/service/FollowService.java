@@ -44,4 +44,18 @@ public class FollowService {
         return memberId;
     }
 
+    @Transactional
+    public Long unfollowMember(Authentication authentication, Long memberId) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+        Members target = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
+
+        Follows follow = followRepository.findAllByFollowerIdAndFollowingId(member, target)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_FOLLOW));
+
+        followRepository.delete(follow);
+
+        return memberId;
+    }
 }
