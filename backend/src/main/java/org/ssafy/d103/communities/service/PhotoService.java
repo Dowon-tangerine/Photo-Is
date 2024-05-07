@@ -21,10 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.dto.listDto.BasicPhotoInfo;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.dto.response.DeleteRemovePhotoResponse;
+import org.ssafy.d103.communities.dto.response.GetBasicPhotoInfoResponse;
 import org.ssafy.d103.communities.dto.response.PostUploadPhotoResponse;
 import org.ssafy.d103.communities.dto.response.PutModifyPhotoResponse;
 import org.ssafy.d103.communities.entity.photo.*;
@@ -269,18 +269,18 @@ public class PhotoService {
         return parts[parts.length - 1];
     }
 
-    public List<BasicPhotoInfo> getPhotoByAccessType(Authentication authentication, String accessType) {
+    public List<GetBasicPhotoInfoResponse> getPhotoByAccessType(Authentication authentication, String accessType) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
         List<Photo> MemberPhotoList = photoRepository.findAllByMemberAndAccessType(member, AccessType.fromString(accessType));
-        List<BasicPhotoInfo> basicPhotoInfoList = new ArrayList<>();
+        List<GetBasicPhotoInfoResponse> getBasicPhotoInfoResponseList = new ArrayList<>();
 
         for (Photo photo : MemberPhotoList) {
             PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
                     .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
-            basicPhotoInfoList.add(BasicPhotoInfo.from(photo, photoDetail.getLikeCnt()));
+            getBasicPhotoInfoResponseList.add(GetBasicPhotoInfoResponse.from(photo, photoDetail.getLikeCnt()));
         }
 
-        return basicPhotoInfoList;
+        return getBasicPhotoInfoResponseList;
     }
 }
