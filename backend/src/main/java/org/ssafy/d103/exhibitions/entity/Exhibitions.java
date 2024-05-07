@@ -35,13 +35,17 @@ public class Exhibitions extends OnlyCreatedTime {
     @Column(name = "end_date", nullable = false)
     private LocalDateTime endDate;
 
+    @Column(name = "like_cnt", nullable = false)
+    private int likeCnt;
+
     @Builder
-    private Exhibitions(Long id, Members memberId, String posterUrl, String title, String description, LocalDateTime endDate) {
+    private Exhibitions(Long id, Members memberId, String posterUrl, String title, String description, LocalDateTime endDate, int likeCnt) {
         this.id = id;
         this.memberId = memberId;
         this.posterUrl = posterUrl;
         this.title = title;
         this.description = description;
         this.endDate = endDate;
+        this.likeCnt = likeCnt;
     }
 }

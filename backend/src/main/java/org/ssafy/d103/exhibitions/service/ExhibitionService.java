@@ -11,6 +11,7 @@ import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.repository.PhotoRepository;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
+import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionResponse;
 import org.ssafy.d103.exhibitions.dto.response.GetSelectMyExhibitionListResponse;
 import org.ssafy.d103.exhibitions.entity.ExhibitionPhoto;
 import org.ssafy.d103.exhibitions.entity.Exhibitions;
@@ -71,4 +72,10 @@ public class ExhibitionService {
         return GetSelectMyExhibitionListResponse.from(exhibitionList);
     }
 
+    public GetSelectExhibitionResponse selectExhibition(Long exhibitionId) {
+
+        Exhibitions exhibition = exhibitionRepository.findById(exhibitionId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+        return GetSelectExhibitionResponse.from(exhibition);
+    }
 }
