@@ -16,10 +16,12 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
     void deleteByIdAndMember(Long id, Members member);
 
-    List<Photo> findAllByMemberAndAccessType(Members member, AccessType accessType);
+    List<Photo> findAllByMemberAndAccessTypeOrderByCreatedAtDesc(Members member, AccessType accessType);
 
     List<Photo> findAllByMemberOrderByCreatedAtDesc(Members member);
 
     List<Photo> findAllByOrderByCreatedAtDesc();
+
+    Optional<Photo> findPhotoById(Long id);
 
 }

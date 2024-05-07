@@ -47,7 +47,7 @@ public class PhotoService {
 
     private final PhotoRepository photoRepository;
 
-    private final MetadataRepository metadataRepository;
+    private final PhotoMetadataRepository photoMetadataRepository;
 
     private final PhotoDetailRepository photoDetailRepository;
 
@@ -165,7 +165,7 @@ public class PhotoService {
 
             }
 
-            metadataRepository.save(PhotoMetadata.of(time, cameraType, cameraModel, lensModel, aperture, focusDistance, shutterSpeed, iso, latitude, longitude, photo));
+            photoMetadataRepository.save(PhotoMetadata.of(time, cameraType, cameraModel, lensModel, aperture, focusDistance, shutterSpeed, iso, latitude, longitude, photo));
 
         } catch (IOException | ImageProcessingException e) {
             e.getStackTrace();
@@ -271,7 +271,7 @@ public class PhotoService {
     public List<GetBasicPhotoInfoResponse> getPhotoByAccessType(Authentication authentication, String accessType) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
-        List<Photo> MemberPhotoList = photoRepository.findAllByMemberAndAccessType(member, AccessType.fromString(accessType));
+        List<Photo> MemberPhotoList = photoRepository.findAllByMemberAndAccessTypeOrderByCreatedAtDesc(member, AccessType.fromString(accessType));
         return getBasicPhotoInfo(MemberPhotoList);
     }
 
@@ -297,10 +297,6 @@ public class PhotoService {
     public List<GetGalleryPhotoInfoResponse> getGalleryPhoto(Authentication authentication) {
         // 전체 갤러리 사진 리스트
         List<Photo> allGalleryPhotoList = photoRepository.findAllByOrderByCreatedAtDesc();
-
-        for (Photo photo : allGalleryPhotoList) {
-            log.info("!!!!!!!!!!!!{}", photo.getTitle());
-        }
 
         // 결과 반환 리스트
         List<GetGalleryPhotoInfoResponse> getGalleryPhotoInfoResponseList = new ArrayList<>();
@@ -336,5 +332,34 @@ public class PhotoService {
         }
 
         return getGalleryPhotoInfoResponseList;
+    }
+
+    public GetPhotoDetailInfoResponse getPhotoDetail(Authentication authentication, Long photoId) {
+
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        PhotoMetadata findMetadata = photoMetadataRepository.findPhotoMetadataByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_METADATA));
+
+        List<PhotoHashtag> photoHashtagList = photoHashtagRepository.findAllByPhoto(photo);
+        List<String> hashtagList = new ArrayList<>();
+
+        for (PhotoHashtag photoHashtag : photoHashtagList) {
+            hashtagList.add(photoHashtag.getHashtag().getTagText());
+        }
+
+        // 토큰 O -> 로그인 O
+        if (authentication != null) {
+            Members member = commonService.findMemberByAuthentication(authentication);
+            return GetPhotoDetailInfoResponse.of(photo, photoDetail, photoLikeRepository.findPhotoLikeByMemberAndPhoto(member, photo).isPresent(), PhotoMetadata.from(findMetadata), hashtagList);
+        }
+        // 토큰 X -> 로그인 X
+        else {
+            return GetPhotoDetailInfoResponse.of(photo, photoDetail, false, PhotoMetadata.from(findMetadata), hashtagList);
+        }
     }
 }
