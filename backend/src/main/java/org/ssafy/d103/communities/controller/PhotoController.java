@@ -37,7 +37,7 @@ public class PhotoController {
         return ResponseUtils.ok(photoService.deletePhoto(authentication, photoId), MsgType.PHOTO_DELETE_SUCCESSFULLY);
     }
 
-    @GetMapping("/{access-type}")
+    @GetMapping("/my/{access-type}")
     public ApiResponseDto<?> getPhotoByAccessType(Authentication authentication, @PathVariable("access-type") String accessType) {
         return ResponseUtils.ok(photoService.getPhotoByAccessType(authentication, accessType), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
@@ -50,6 +50,11 @@ public class PhotoController {
     @GetMapping("/gallery")
     public ApiResponseDto<?> getGalleryPhoto(Authentication authentication) {
         return ResponseUtils.ok(photoService.getGalleryPhoto(authentication), MsgType.PHOTO_GET_SUCCESSFULLY);
+    }
+
+    @GetMapping("/{photo-id}")
+    public ApiResponseDto<?> getPhotoDetail(Authentication authentication, @PathVariable("photo-id") Long photoId) {
+        return ResponseUtils.ok(photoService.getPhotoDetail(authentication, photoId), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
 
 }
