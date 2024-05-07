@@ -1,10 +1,13 @@
 package org.ssafy.d103.communities.entity.photo;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PhotoDetail {
 
     @Id
