@@ -44,4 +44,13 @@ public class FollowController {
     public ApiResponseDto<?> selectFollowList(Authentication authentication) {
         return ResponseUtils.ok(followService.selectFollowList(authentication), MsgType.SELECT_FOLLOW_LIST_SUCCESSFULLY);
     }
+
+    /**
+     * 팔로워 목록 조회 API
+     */
+    @Operation(summary = "팔로워 목록 조회 요청")
+    @GetMapping("/follower-list")
+    public ApiResponseDto<?> selectFollowerList(Authentication authentication) {
+        return ResponseUtils.ok(followService.selectFollowerList(authentication), MsgType.SELECT_FOLLOWER_LIST_SUCCESSFULLY);
+    }
 }
