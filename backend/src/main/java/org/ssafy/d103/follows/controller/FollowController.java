@@ -35,4 +35,13 @@ public class FollowController {
     public ApiResponseDto<?> unfollowMember(Authentication authentication, @PathVariable(name = "member-id") Long memberId) {
         return ResponseUtils.ok(followService.unfollowMember(authentication, memberId), MsgType.UPDATE_FOLLOW_SUCCESSFULLY);
     }
+
+    /**
+     * 팔로우 목록 조회 API
+     */
+    @Operation(summary = "팔로우 목록 조회 요청")
+    @GetMapping("/following-list")
+    public ApiResponseDto<?> selectFollowList(Authentication authentication) {
+        return ResponseUtils.ok(followService.selectFollowList(authentication), MsgType.SELECT_FOLLOW_LIST_SUCCESSFULLY);
+    }
 }

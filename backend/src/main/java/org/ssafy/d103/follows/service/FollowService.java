@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
+import org.ssafy.d103.follows.dto.FollowingDto;
 import org.ssafy.d103.follows.entity.Follows;
 import org.ssafy.d103.follows.repository.FollowRepository;
 import org.ssafy.d103.members.entity.Members;
 import org.ssafy.d103.members.repository.MemberRepository;
-import org.ssafy.d103.members.service.MemberService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +60,14 @@ public class FollowService {
         followRepository.delete(follow);
 
         return memberId;
+    }
+
+    public List<FollowingDto> selectFollowList(Authentication authentication) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+        List<Follows> followsList = followRepository.findFollowingIdByFollowerId(member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_FOLLOW));
+
+        return followsList.stream().map(FollowingDto::from).collect(Collectors.toList());
     }
 }

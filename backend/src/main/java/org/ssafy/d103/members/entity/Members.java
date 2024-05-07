@@ -1,5 +1,6 @@
 package org.ssafy.d103.members.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,18 +68,23 @@ public class Members extends CreatedAndDeletedTime {
     @Column(name = "photo_cnt", nullable = false)
     private int photoCnt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Photo> photoList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PhotoLike> photoLikeList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PhotoComment> photoCommentList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Question> questionList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<QuestionComment> questionCommentList;
 
