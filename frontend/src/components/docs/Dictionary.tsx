@@ -4,6 +4,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useLoader } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
+import * as THREE from 'three'; // three 모듈에서 필요한 것을 가져옵니다.
 import styles from './css/Dictionary.module.css';
 
 const modelUrl = '../src/assets/models/FujiFilm_X_T4.obj.glb';
@@ -27,6 +28,21 @@ function CameraController() {
   }, [camera]);
   return null;
 }
+
+function Lights() {
+    const { scene } = useThree();
+    useEffect(() => {
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1.5); // 밝기를 1.5로 증가
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1); // 밝기를 1로 설정
+      dirLight.position.set(5, 10, 7.5);
+      scene.add(hemiLight, dirLight);
+      return () => {
+        scene.remove(hemiLight, dirLight);
+      };
+    }, [scene]);
+  
+    return null;
+  }
 
 const Dictionary = () => {
   const navigate = useNavigate();
@@ -80,9 +96,10 @@ const Dictionary = () => {
         </ol>
       </div>
       <div className={styles.content} ref={canvasRef}>
-        <Canvas>
+      <Canvas>
           <CameraController />
-          <ambientLight intensity={1.5} />
+          <Lights />
+          <ambientLight intensity={0.5} />
           <pointLight position={[10, 10, 10]} />
           <Suspense fallback={<Html><div>Loading Model...</div></Html>}>
             <Model />
