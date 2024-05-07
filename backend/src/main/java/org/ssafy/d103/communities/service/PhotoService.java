@@ -273,9 +273,20 @@ public class PhotoService {
         Members member = commonService.findMemberByAuthentication(authentication);
 
         List<Photo> MemberPhotoList = photoRepository.findAllByMemberAndAccessType(member, AccessType.fromString(accessType));
+        return getBasicPhotoInfo(MemberPhotoList);
+    }
+
+    public List<GetBasicPhotoInfoResponse> getPhotoAll(Authentication authentication) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        List<Photo> MemberPhotoList = photoRepository.findAllByMemberOrderByCreatedAtDesc(member);
+        return getBasicPhotoInfo(MemberPhotoList);
+    }
+
+    private List<GetBasicPhotoInfoResponse> getBasicPhotoInfo(List<Photo> memberPhotoList) {
         List<GetBasicPhotoInfoResponse> getBasicPhotoInfoResponseList = new ArrayList<>();
 
-        for (Photo photo : MemberPhotoList) {
+        for (Photo photo : memberPhotoList) {
             PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
                     .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
             getBasicPhotoInfoResponseList.add(GetBasicPhotoInfoResponse.from(photo, photoDetail.getLikeCnt()));

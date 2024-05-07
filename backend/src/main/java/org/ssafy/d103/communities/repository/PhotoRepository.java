@@ -18,4 +18,6 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
     List<Photo> findAllByMemberAndAccessType(Members member, AccessType accessType);
 
+    List<Photo> findAllByMemberOrderByCreatedAtDesc(Members member);
+
 }
