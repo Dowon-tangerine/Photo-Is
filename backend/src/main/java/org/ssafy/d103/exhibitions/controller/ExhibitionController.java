@@ -46,4 +46,13 @@ public class ExhibitionController {
     public ApiResponseDto<?> selectExhibition(@PathVariable(name = "exhibition-id") Long exhibitionId) {
         return ResponseUtils.ok(exhibitionService.selectExhibition(exhibitionId), MsgType.SELECT_EXHIBITION_SUCCESSFULLY);
     }
+
+    /**
+     * 전시회 한줄평 목록 조회 API
+     */
+    @Operation(summary = "전시회 한줄평 목록 조회 요청")
+    @GetMapping("/comment/{exhibition-id}")
+    public ApiResponseDto<?> selectExhibitionComment(@PathVariable(name = "exhibition-id") Long exhibitionId) {
+        return ResponseUtils.ok(exhibitionService.selectExhibitionCommentList(exhibitionId), MsgType.SELECT_EXHIBITION_COMMENT_LIST_SUCCESSFULLY);
+    }
 }
