@@ -1,30 +1,43 @@
-import React from "react";
-import { Canvas } from "@react-three/fiber";
-import { ThreeElement } from "./element/ThreeElement";
+import React, { useRef, useEffect } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Sky } from "@react-three/drei";
-import StudioStyle from "./css/Studio.module.css"; // CSS 모듈 임포트 확인
+import { DirectionalLight, VSMShadowMap } from "three";
+import StudioStyle from "./css/Studio.module.css";
 import AmusementPark from "./element/AmusementPark";
+
 function LandScapePage() {
-    console.log(Canvas);
+    const lightRef = useRef<DirectionalLight>(null);
+
+    useEffect(() => {
+        if (lightRef.current) {
+            const light = lightRef.current;
+            light.castShadow = true;
+            light.shadow.bias = -0.0001;
+            light.shadow.mapSize.width = 4096;
+            light.shadow.mapSize.height = 4096;
+            light.shadow.camera.near = 0.5;
+            light.shadow.camera.far = 1500;
+            light.shadow.camera.left = -1000;
+            light.shadow.camera.right = 1000;
+            light.shadow.camera.top = 1000;
+            light.shadow.camera.bottom = -1000;
+        }
+    }, []);
+
     return (
         <>
             <div className={StudioStyle.container}>
                 <div className={StudioStyle.canvasContainer}>
-                    <Canvas camera={{ position: [150, 5, 60], fov: 50, far: 10000 }}>
-                        <ambientLight intensity={2} />
-                        <Sky
-                            distance={450000} // Sky의 반지름
-                            sunPosition={[0, 1, 0]} // 태양의 위치
-                            inclination={0} // 경사
-                            azimuth={0.25} // 방위각
-                        />
+                    <Canvas shadows camera={{ rotation: [10, 0, 0], position: [162, 5, 60], far: 10000 }}>
+                        <ambientLight intensity={1} />
+                        <directionalLight ref={lightRef} castShadow position={[0, 100, -40]} intensity={2} />
+                        <Sky distance={40000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
                         <OrbitControls />
-                        <ThreeElement></ThreeElement>
-                        <AmusementPark></AmusementPark>
+                        <AmusementPark />
                     </Canvas>
                 </div>
-                <div className="absolute top-0 right-0 w-[300px] bg-black bg-opacity-90  h-full flex flex-col items-center">
-                    <p className="text-white font-bookkMyungjoBold text-[30px] p-5">Setting</p>
+                <div className="absolute top-0 right-0 w-[300px] bg-black bg-opacity-90 h-full flex flex-col items-center">
+                    <p className="text-white font-bookkMyungjoBold text-[25px] p-5">Setting</p>
                 </div>
             </div>
         </>
