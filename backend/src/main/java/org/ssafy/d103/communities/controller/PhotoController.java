@@ -40,8 +40,13 @@ public class PhotoController {
     }
 
     @GetMapping("/{access-type}")
-    public ApiResponseDto<?> deleteRemovePhoto(Authentication authentication, @PathVariable("access-type") String accessType) {
+    public ApiResponseDto<?> getPhotoByAccessType(Authentication authentication, @PathVariable("access-type") String accessType) {
         return ResponseUtils.ok(photoService.getPhotoByAccessType(authentication, accessType), MsgType.PHOTO_GET_SUCCESSFULLY);
+    }
+
+    @GetMapping("/all")
+    public ApiResponseDto<?> getPhotoAll(Authentication authentication) {
+        return ResponseUtils.ok(photoService.getPhotoAll(authentication), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
 
 }
