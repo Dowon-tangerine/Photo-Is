@@ -10,8 +10,10 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.repository.PhotoRepository;
 import org.ssafy.d103.exhibitions.dto.ExhibitionCommentDto;
+import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
+import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionPhotoListResponse;
 import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionResponse;
 import org.ssafy.d103.exhibitions.dto.response.GetSelectMyExhibitionListResponse;
 import org.ssafy.d103.exhibitions.entity.ExhibitionComment;
@@ -60,7 +62,8 @@ public class ExhibitionService {
             exhibitionPhotoList.add(
                     ExhibitionPhoto.builder()
                             .exhibitionId(exhibition)
-                            .photoId(e.getPhotoId())
+                            .photoId(photoRepository.findById(e.getPhotoId())
+                                    .orElseThrow(() -> new CustomException(ErrorType.ANOTHER_ERROR)))
                             .number(cnt++)
                             .build());
         }
@@ -93,5 +96,21 @@ public class ExhibitionService {
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION_COMMENT));
 
         return exhibitionCommentList.stream().map(ExhibitionCommentDto::from).collect(Collectors.toList());
+    }
+
+    public GetSelectExhibitionPhotoListResponse selectExhibitionPhotoList(Long exhibitionId) {
+
+        Exhibitions exhibition = exhibitionRepository.findById(exhibitionId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        List<ExhibitionPhoto> exhibitionPhotoList = exhibitionPhotoRepository.findAllByExhibitionId(exhibition)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION_PHOTO));
+
+        return GetSelectExhibitionPhotoListResponse.from(
+                exhibitionPhotoList
+                        .stream()
+                        .map(ExhibitionPhotoDto::from)
+                        .collect(Collectors.toList())
+        );
     }
 }
