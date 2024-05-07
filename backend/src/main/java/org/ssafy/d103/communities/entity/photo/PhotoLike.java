@@ -1,10 +1,15 @@
 package org.ssafy.d103.communities.entity.photo;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.ssafy.d103._common.entity.OnlyCreatedTime;
 import org.ssafy.d103.members.entity.Members;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PhotoLike extends OnlyCreatedTime {
 
     @Id

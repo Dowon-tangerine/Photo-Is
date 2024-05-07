@@ -23,10 +23,7 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
-import org.ssafy.d103.communities.dto.response.DeleteRemovePhotoResponse;
-import org.ssafy.d103.communities.dto.response.GetBasicPhotoInfoResponse;
-import org.ssafy.d103.communities.dto.response.PostUploadPhotoResponse;
-import org.ssafy.d103.communities.dto.response.PutModifyPhotoResponse;
+import org.ssafy.d103.communities.dto.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
 import org.ssafy.d103.communities.repository.*;
 import org.ssafy.d103.members.entity.Members;
@@ -57,6 +54,8 @@ public class PhotoService {
     private final HashtagRepository hashtagRepository;
 
     private final PhotoHashtagRepository photoHashtagRepository;
+
+    private final PhotoLikeRepository photoLikeRepository;
 
     private final CommonService commonService;
 
@@ -293,5 +292,49 @@ public class PhotoService {
         }
 
         return getBasicPhotoInfoResponseList;
+    }
+
+    public List<GetGalleryPhotoInfoResponse> getGalleryPhoto(Authentication authentication) {
+        // 전체 갤러리 사진 리스트
+        List<Photo> allGalleryPhotoList = photoRepository.findAllByOrderByCreatedAtDesc();
+
+        for (Photo photo : allGalleryPhotoList) {
+            log.info("!!!!!!!!!!!!{}", photo.getTitle());
+        }
+
+        // 결과 반환 리스트
+        List<GetGalleryPhotoInfoResponse> getGalleryPhotoInfoResponseList = new ArrayList<>();
+
+        // 토큰 O -> 로그인 O
+        if (authentication != null) {
+            Members member = commonService.findMemberByAuthentication(authentication);
+
+            // 해당 멤버가 좋아요 목록 가져옴
+            List<PhotoLike> photoLikeList = photoLikeRepository.findAllByMember(member);
+
+            // 좋아요한 사진들의 Photo ID만 추출
+            List<Long> photoIdList = new ArrayList<>();
+
+            for (PhotoLike photoLike : photoLikeList) {
+                photoIdList.add(photoLike.getPhoto().getId());
+            }
+
+            // 갤러리 사진 목록 전체에 대한 좋아요 여부 표시
+            for (Photo photo : allGalleryPhotoList) {
+                PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                getGalleryPhotoInfoResponseList.add(GetGalleryPhotoInfoResponse.from(photo, photoDetail.getLikeCnt(), photoIdList.contains(photo.getId())));
+            }
+        }
+        // 토큰 X -> 로그인 X
+        else {
+            for (Photo photo : allGalleryPhotoList) {
+                PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                getGalleryPhotoInfoResponseList.add(GetGalleryPhotoInfoResponse.from(photo, photoDetail.getLikeCnt(), false));
+            }
+        }
+
+        return getGalleryPhotoInfoResponseList;
     }
 }

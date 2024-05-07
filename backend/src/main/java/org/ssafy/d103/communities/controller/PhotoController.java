@@ -13,8 +13,6 @@ import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.service.PhotoService;
 
-import java.io.IOException;
-
 @Tag(name = "communities", description = "Communities API")
 @Slf4j
 @RestController
@@ -25,7 +23,7 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @PostMapping("/upload")
-    public ApiResponseDto<?> postUploadPhoto(Authentication authentication, @RequestPart(value = "photoInfo") PostUploadPhotoRequest postUploadPhotoRequest, @RequestPart(value = "photo", required = false) MultipartFile multipartFile) throws IOException {
+    public ApiResponseDto<?> postUploadPhoto(Authentication authentication, @RequestPart(value = "photoInfo") PostUploadPhotoRequest postUploadPhotoRequest, @RequestPart(value = "photo", required = false) MultipartFile multipartFile) {
         return ResponseUtils.ok(photoService.uploadPhoto(authentication, multipartFile, postUploadPhotoRequest), MsgType.PHOTO_UPLOAD_SUCCESSFULLY);
     }
 
@@ -47,6 +45,11 @@ public class PhotoController {
     @GetMapping("/all")
     public ApiResponseDto<?> getPhotoAll(Authentication authentication) {
         return ResponseUtils.ok(photoService.getPhotoAll(authentication), MsgType.PHOTO_GET_SUCCESSFULLY);
+    }
+
+    @GetMapping("/gallery")
+    public ApiResponseDto<?> getGalleryPhoto(Authentication authentication) {
+        return ResponseUtils.ok(photoService.getGalleryPhoto(authentication), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
 
 }
