@@ -1,5 +1,6 @@
 package org.ssafy.d103.exhibitions.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -10,6 +11,7 @@ import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.repository.PhotoRepository;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
+import org.ssafy.d103.exhibitions.dto.response.GetSelectMyExhibitionListResponse;
 import org.ssafy.d103.exhibitions.entity.ExhibitionPhoto;
 import org.ssafy.d103.exhibitions.entity.Exhibitions;
 import org.ssafy.d103.exhibitions.repository.ExhibitionPhotoRepository;
@@ -30,6 +32,7 @@ public class ExhibitionService {
     private final PhotoRepository photoRepository;
     private final CommonService commonService;
 
+    @Transactional
     public Boolean insertExhibition(Authentication authentication, PostInsertExhibitionRequest request) {
 
         Members member = commonService.findMemberByAuthentication(authentication);
@@ -58,6 +61,14 @@ public class ExhibitionService {
         exhibitionPhotoRepository.saveAll(exhibitionPhotoList);
 
         return true;
+    }
+
+    public GetSelectMyExhibitionListResponse selectMyExhibitionList(Authentication authentication) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+        List<Exhibitions> exhibitionList = exhibitionRepository.findExhibitionsByMemberId(member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+        return GetSelectMyExhibitionListResponse.from(exhibitionList);
     }
 
 }

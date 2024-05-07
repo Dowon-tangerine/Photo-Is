@@ -26,6 +26,7 @@ public enum MsgType {
     //********************************[ Exhibitions ]********************************
     INSERT_EXHIBITION_SUCCESSFULLY("전시회 등록에 성공하였습니다."),
     SELECT_EXHIBITION_LIST_SUCCESSFULLY("전시회 전체목록 조회에 성공하였습니다."),
+    SELECT_MY_EXHIBITION_LIST_SUCCESSFULLY("내 전시회 전체목록 조회에 성공하였습니다."),
 
     //********************************[ Photos ]********************************
     PHOTO_UPLOAD_SUCCESSFULLY("사진 업로드에 성공하였습니다.")

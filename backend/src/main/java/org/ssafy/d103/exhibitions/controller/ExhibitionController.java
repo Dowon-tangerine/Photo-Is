@@ -28,4 +28,13 @@ public class ExhibitionController {
     public ApiResponseDto<?> insertExhibition(Authentication authentication, @RequestBody PostInsertExhibitionRequest request) {
         return ResponseUtils.ok(exhibitionService.insertExhibition(authentication, request), MsgType.INSERT_EXHIBITION_SUCCESSFULLY);
     }
+
+    /**
+     * 내 전시회 전체 목록 조회 API
+     */
+    @Operation(summary = "내 전시회 전체 목록 조회 요청")
+    @GetMapping("/my")
+    public ApiResponseDto<?> selectMyExhibitionList(Authentication authentication) {
+        return ResponseUtils.ok(exhibitionService.selectMyExhibitionList(authentication), MsgType.SELECT_MY_EXHIBITION_LIST_SUCCESSFULLY);
+    }
 }

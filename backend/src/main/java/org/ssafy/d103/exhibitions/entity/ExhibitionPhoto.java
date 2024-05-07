@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.ssafy.d103.communities.entity.photo.Photo;
-import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 
 @Entity
 @Getter
