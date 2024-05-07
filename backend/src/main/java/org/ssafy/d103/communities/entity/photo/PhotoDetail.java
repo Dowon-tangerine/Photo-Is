@@ -1,10 +1,15 @@
 package org.ssafy.d103.communities.entity.photo;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PhotoDetail {
 
     @Id
@@ -35,6 +40,7 @@ public class PhotoDetail {
         this.viewCnt = viewCnt;
         this.photo = photo;
     }
+
     static public PhotoDetail init(Photo photo) {
         return builder()
                 .commentCnt(0)

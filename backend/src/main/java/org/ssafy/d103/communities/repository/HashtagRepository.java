@@ -11,4 +11,6 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
 
     Optional<Hashtag> findHashtagByTagText(String tagText);
 
+    Optional<Hashtag> findHashtagById(Long id);
+
 }
