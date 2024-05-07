@@ -75,3 +75,44 @@ body, html {
     overflow: hidden; /* 내부 스크롤 방지 */
   }
   
+
+  .chatBotModal {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    padding: 20px;
+  }
+  
+  .closeButton {
+    float: right;
+    font-size: 25px;
+    cursor: pointer;
+  }
+  
+  .chatButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #000; /* 검은색 배경 */
+    color: white;
+    border: none;
+    border-radius: 50%; /* 원형 버튼 */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* 그림자 추가 */
+  }
+  
+  

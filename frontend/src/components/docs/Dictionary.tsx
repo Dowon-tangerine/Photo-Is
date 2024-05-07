@@ -4,7 +4,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useLoader } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
-import * as THREE from 'three'; // three 모듈에서 필요한 것을 가져옵니다.
+import * as THREE from 'three'; 
 import styles from './css/Dictionary.module.css';
 
 const modelUrl = '../src/assets/models/FujiFilm_X_T4.obj.glb';
@@ -24,7 +24,7 @@ function Model() {
 function CameraController() {
   const { camera } = useThree();
   useEffect(() => {
-    camera.position.set(13, 13, 13);
+    camera.position.set(12, 12, 12);
   }, [camera]);
   return null;
 }
@@ -44,10 +44,26 @@ function Lights() {
     return null;
   }
 
-const Dictionary = () => {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const canvasRef = useRef<HTMLDivElement>(null);
+  function ChatBotModal({ isOpen, onClose }) {
+    return (
+      isOpen && (
+        <div className={styles.chatBotModal}>
+          <div className={styles.modalContent}>
+            <span className={styles.closeButton} onClick={onClose}>&times;</span>
+            <p>AI 챗봇과 대화를 시작하세요.</p>
+            {/* 대화 내용을 여기에 추가 */}
+          </div>
+        </div>
+      )
+    );
+  }
+  
+
+  const Dictionary = () => {
+    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isModalOpen, setModalOpen] = useState(false);
+    const canvasRef = useRef<HTMLDivElement>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -57,6 +73,9 @@ const Dictionary = () => {
     console.log("Searching for:", searchTerm);
     navigate(`/search/${searchTerm}`);
   };
+
+  const toggleModal = () => setModalOpen(!isModalOpen);
+
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
@@ -107,6 +126,8 @@ const Dictionary = () => {
           <OrbitControls />
         </Canvas>
       </div>
+      <button onClick={toggleModal} className={styles.chatButton}><img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" /></button>
+      <ChatBotModal isOpen={isModalOpen} onClose={toggleModal} />
     </div>
   );
 };
