@@ -22,17 +22,17 @@ import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
+import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
+import org.ssafy.d103.communities.dto.response.DeleteRemovePhotoResponse;
 import org.ssafy.d103.communities.dto.response.PostUploadPhotoResponse;
+import org.ssafy.d103.communities.dto.response.PutModifyPhotoResponse;
 import org.ssafy.d103.communities.entity.photo.*;
 import org.ssafy.d103.communities.repository.*;
 import org.ssafy.d103.members.entity.Members;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -208,5 +208,63 @@ public class PhotoService {
                 photoHashtagRepository.save(PhotoHashtag.of(photo, hashtag));
             }
         }
+    }
+
+    @Transactional
+    public PutModifyPhotoResponse modifyPhoto(Authentication authentication, PutModifyPhotoRequest putModifyPhotoRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoByIdAndMember(putModifyPhotoRequest.getPhotoId(), member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        photo.modifyPhoto(putModifyPhotoRequest);
+
+        photoHashtagRepository.deletePhotoHashtagByPhoto(photo);
+        saveHashtag(putModifyPhotoRequest.getHashtagList(), photo);
+
+        List<PhotoHashtag> photoHashtagList = photoHashtagRepository.findAllByPhoto(photo);
+        List<String> hashtagList = new ArrayList<>();
+        for (PhotoHashtag photoHashtag : photoHashtagList) {
+            Hashtag hashtag = hashtagRepository.findHashtagById(photoHashtag.getHashtag().getId())
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_HASHTAG));
+            hashtagList.add(hashtag.getTagText());
+        }
+
+        return PutModifyPhotoResponse.of(photo.getTitle(), photo.getAccessType(), photo.getCreatedAt(), hashtagList);
+    }
+
+    @Transactional
+    public DeleteRemovePhotoResponse deletePhoto(Authentication authentication, Long photoId) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        // 삭제할 사진을 데이터베이스에서 가져옴
+        Photo photo = photoRepository.findPhotoByIdAndMember(photoId, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        // S3에서 썸네일 이미지와 원본 이미지를 삭제
+        deleteS3Image(photo.getImageUrl());
+        deleteS3Image(photo.getThumbnailUrl());
+
+        // 데이터베이스에서 사진 삭제
+        try {
+            photoRepository.deleteByIdAndMember(photoId, member);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomException(ErrorType.DB_DELETE_ERROR);
+        }
+
+        // !!!!!!!!!!!!!!!!!!!! Question API 구현 후, 사진 삭제에 따른 질문 삭제도 구현해야함 !!!!!!!!!!!!!!!!!!!!
+
+        return DeleteRemovePhotoResponse.of(true);
+    }
+
+    private void deleteS3Image(String imageUrl) {
+        String fileName = extractFileNameFromUrl(imageUrl);
+        amazonS3Client.deleteObject(bucket, fileName);
+    }
+
+    private String extractFileNameFromUrl(String imageUrl) {
+        String[] parts = imageUrl.split("/");
+        return parts[parts.length - 1];
     }
 }
