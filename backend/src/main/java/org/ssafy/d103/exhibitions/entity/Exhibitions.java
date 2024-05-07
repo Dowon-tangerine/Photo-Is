@@ -48,4 +48,8 @@ public class Exhibitions extends OnlyCreatedTime {
         this.endDate = endDate;
         this.likeCnt = likeCnt;
     }
+
+    public void updateLikeCnt(int likeCnt) {
+        this.likeCnt = likeCnt;
+    }
 }

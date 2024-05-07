@@ -13,13 +13,17 @@ import org.ssafy.d103.exhibitions.dto.ExhibitionCommentDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
+import org.ssafy.d103.exhibitions.dto.request.PutExhibitionLikeRequest;
 import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionPhotoListResponse;
 import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionResponse;
 import org.ssafy.d103.exhibitions.dto.response.GetSelectMyExhibitionListResponse;
+import org.ssafy.d103.exhibitions.dto.response.PutExhibitionLikeResponse;
 import org.ssafy.d103.exhibitions.entity.ExhibitionComment;
+import org.ssafy.d103.exhibitions.entity.ExhibitionLike;
 import org.ssafy.d103.exhibitions.entity.ExhibitionPhoto;
 import org.ssafy.d103.exhibitions.entity.Exhibitions;
 import org.ssafy.d103.exhibitions.repository.ExhibitionCommentRepository;
+import org.ssafy.d103.exhibitions.repository.ExhibitionLikeRepository;
 import org.ssafy.d103.exhibitions.repository.ExhibitionPhotoRepository;
 import org.ssafy.d103.exhibitions.repository.ExhibitionRepository;
 import org.ssafy.d103.members.entity.Members;
@@ -37,6 +41,7 @@ public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
     private final ExhibitionPhotoRepository exhibitionPhotoRepository;
     private final ExhibitionCommentRepository exhibitionCommentRepository;
+    private final ExhibitionLikeRepository exhibitionLikeRepository;
     private final PhotoRepository photoRepository;
     private final CommonService commonService;
 
@@ -112,5 +117,39 @@ public class ExhibitionService {
                         .map(ExhibitionPhotoDto::from)
                         .collect(Collectors.toList())
         );
+    }
+
+    @Transactional
+    public PutExhibitionLikeResponse updateLike(Authentication authentication, PutExhibitionLikeRequest request) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Exhibitions exhibition = exhibitionRepository.findById(request.getExhibitionId())
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        ExhibitionLike exhibitionLike = exhibitionLikeRepository.findAllByMemberIdAndExhibitionId(member, exhibition)
+                .orElse(null);
+
+        boolean flag = false;
+        if(exhibitionLike == null) {
+            exhibitionLikeRepository.save(
+                    ExhibitionLike
+                            .builder()
+                            .exhibitionId(exhibition)
+                            .memberId(member)
+                            .build()
+            );
+
+            exhibition.updateLikeCnt(exhibition.getLikeCnt()+1);
+            exhibitionRepository.save(exhibition);
+            flag = true;
+        }
+        else {
+            exhibitionLikeRepository.delete(exhibitionLike);
+            exhibition.updateLikeCnt(exhibition.getLikeCnt()-1);
+            exhibitionRepository.save(exhibition);
+        }
+
+        return PutExhibitionLikeResponse.of(flag, exhibition);
     }
 }

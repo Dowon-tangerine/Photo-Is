@@ -30,6 +30,7 @@ public enum MsgType {
     SELECT_EXHIBITION_SUCCESSFULLY("전시회 상세정보 조회에 성공하였습니다."),
     SELECT_EXHIBITION_COMMENT_LIST_SUCCESSFULLY("전시회 한줄평 목록 조회에 성공하였습니다."),
     SELECT_EXHIBITION_PHOTO_LIST_SUCCESSFULLY("전시회 사진 목록 조회에 성공하였습니다."),
+    UPDATE_EXHIBITION_LIKE_SUCCESSFULLY("전시회 좋아요 상태 변경에 성공하였습니다."),
 
     //********************************[ Photos ]********************************
     PHOTO_UPLOAD_SUCCESSFULLY("사진 업로드에 성공하였습니다.")

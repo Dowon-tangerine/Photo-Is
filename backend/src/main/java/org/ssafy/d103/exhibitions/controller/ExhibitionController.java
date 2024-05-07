@@ -9,6 +9,7 @@ import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
+import org.ssafy.d103.exhibitions.dto.request.PutExhibitionLikeRequest;
 import org.ssafy.d103.exhibitions.service.ExhibitionService;
 
 
@@ -59,9 +60,18 @@ public class ExhibitionController {
     /**
      * 전시회 사진 목록 조회 API
      */
-    @Operation(summary = "전시회 사진 목록 조회 API")
+    @Operation(summary = "전시회 사진 목록 조회 요청")
     @GetMapping("/photos/{exhibition-id}")
     public ApiResponseDto<?> selectExhibitionPhotoList(@PathVariable(name = "exhibition-id") Long exhibitionId) {
         return ResponseUtils.ok(exhibitionService.selectExhibitionPhotoList(exhibitionId), MsgType.SELECT_EXHIBITION_PHOTO_LIST_SUCCESSFULLY);
+    }
+
+    /**
+     * 전시회 좋아요 API
+     */
+    @Operation(summary = "전시회 좋아요 요청")
+    @PutMapping("/change-like")
+    public ApiResponseDto<?> updateExhibitionLike(Authentication authentication, @RequestBody PutExhibitionLikeRequest request) {
+        return ResponseUtils.ok(exhibitionService.updateLike(authentication, request), MsgType.UPDATE_EXHIBITION_LIKE_SUCCESSFULLY);
     }
 }
