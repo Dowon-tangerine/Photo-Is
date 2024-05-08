@@ -9,10 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
-import org.ssafy.d103.communities.dto.request.PostChangePhotoLikeRequest;
-import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
-import org.ssafy.d103.communities.dto.request.PostWriteCommentRequest;
-import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
+import org.ssafy.d103.communities.dto.request.*;
 import org.ssafy.d103.communities.service.PhotoService;
 
 @Tag(name = "communities", description = "Communities API")
@@ -67,6 +64,16 @@ public class PhotoController {
     @PostMapping("/{photo-id}/comment")
     public ApiResponseDto<?> postWriteComment(Authentication authentication, @PathVariable("photo-id") Long photoId, @RequestBody PostWriteCommentRequest postWriteCommentRequest) {
         return ResponseUtils.ok(photoService.writeComment(authentication, photoId, postWriteCommentRequest), MsgType.PHOTO_COMMENT_WRITE_SUCCESSFULLY);
+    }
+
+    @GetMapping("/{photo-id}/comment")
+    public ApiResponseDto<?> getPhotoCommentList(@PathVariable("photo-id") Long photoId) {
+        return ResponseUtils.ok(photoService.getPhotoCommentList(photoId), MsgType.PHOTO_COMMENT_LIST_GET_SUCCESSFULLY);
+    }
+
+    @DeleteMapping("/{photo-id}/comment")
+    public ApiResponseDto<?> deletePhotoComment(Authentication authentication, @PathVariable("photo-id") Long photoId, @RequestBody DeletePhotoCommentRequest deletePhotoCommentRequest) {
+        return ResponseUtils.ok(photoService.removePhotoComment(authentication, photoId, deletePhotoCommentRequest), MsgType.PHOTO_COMMENT_DELETE_SUCCESSFULLY);
     }
 
 }
