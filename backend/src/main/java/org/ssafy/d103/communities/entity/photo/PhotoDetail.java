@@ -63,4 +63,17 @@ public class PhotoDetail {
         return likeCnt;
     }
 
+    public Integer updateCommentCnt(boolean operation) {
+        // operation이 true면 증가
+        if (operation) {
+            this.commentCnt++;
+        }
+        // operation이 false면 감소
+        else {
+            this.commentCnt--;
+        }
+
+        return commentCnt;
+    }
+
 }
