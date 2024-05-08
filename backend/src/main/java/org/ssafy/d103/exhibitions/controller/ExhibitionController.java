@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
+import org.ssafy.d103.exhibitions.dto.request.PostExhibitionCommentRequest;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
 import org.ssafy.d103.exhibitions.dto.request.PutExhibitionLikeRequest;
 import org.ssafy.d103.exhibitions.service.ExhibitionService;
@@ -73,5 +74,14 @@ public class ExhibitionController {
     @PutMapping("/change-like")
     public ApiResponseDto<?> updateExhibitionLike(Authentication authentication, @RequestBody PutExhibitionLikeRequest request) {
         return ResponseUtils.ok(exhibitionService.updateLike(authentication, request), MsgType.UPDATE_EXHIBITION_LIKE_SUCCESSFULLY);
+    }
+
+    /**
+     * 전시회 한줄평 작성 API
+     */
+    @Operation(summary = "전시회 한줄평 작성 요청")
+    @PostMapping("/comment")
+    public ApiResponseDto<?> saveExhibitionComment(Authentication authentication, @RequestBody PostExhibitionCommentRequest request) {
+        return ResponseUtils.ok(exhibitionService.saveExhibitionComment(authentication, request), MsgType.INSERT_EXHIBITION_COMMENT_SUCCESSFULLY);
     }
 }

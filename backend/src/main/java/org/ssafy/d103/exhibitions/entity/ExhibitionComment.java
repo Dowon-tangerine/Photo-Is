@@ -21,7 +21,7 @@ public class ExhibitionComment extends OnlyCreatedTime {
     private Exhibitions exhibitionId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(referencedColumnName = "member_id", name = "member_id", nullable = false)
     private Members memberId;
 
     @Column
