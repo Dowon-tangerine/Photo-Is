@@ -92,43 +92,52 @@ function Lights() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <h1>Dictionary</h1>
-        <div className={styles.searchContainer}>
+  <div className={styles.sidebar}>
+    <div className={styles.sidebarTop}>
+      <h1>Dictionary</h1>
+      <div className={styles.searchContainer}>
+        <div className={styles.inputGroup}>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search"
             value={searchTerm}
             onChange={handleSearchChange}
             className={styles.searchInput}
             onKeyPress={(event) => event.key === 'Enter' && handleSearch()}
           />
-          <button onClick={handleSearch} className={styles.searchButton}>🔍</button>
+          <button onClick={handleSearch} className={styles.searchButton}>
+            <img src="/imgs/magnifier.png" alt="Search" />
+          </button>
         </div>
-        <ol>
-          <button onClick={() => navigate("/docs/product2")}>카메라의 기본 구성</button>
-          <button onClick={() => navigate("/docs/product2")}>노출의 3요소</button>
-          <button onClick={() => navigate("/docs/product2")}>촬영모드와 설정</button>
-          <button onClick={() => navigate("/docs/product2")}>사진의 구도</button>
-          <button onClick={() => navigate("/docs/product2")}>카메라 액세서리</button>
-          <button onClick={() => navigate("/docs/product2")}>조명의 원리</button>
-        </ol>
       </div>
-      <div className={styles.content} ref={canvasRef}>
-      <Canvas>
-          <CameraController />
-          <Lights />
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
-          <Suspense fallback={<Html><div>Loading Model...</div></Html>}>
-            <Model />
-          </Suspense>
-          <OrbitControls />
-        </Canvas>
-      </div>
-      <button onClick={toggleModal} className={styles.chatButton}><img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" /></button>
-      <ChatBotModal isOpen={isModalOpen} onClose={toggleModal} />
     </div>
+    <div className={styles.sidebarBottom}>
+      <ol>
+        <button onClick={() => navigate("/docs/product2")}>카메라의 기본 구성</button>
+        <button onClick={() => navigate("/docs/product2")}>노출의 3요소</button>
+        <button onClick={() => navigate("/docs/product2")}>촬영모드와 설정</button>
+        <button onClick={() => navigate("/docs/product2")}>사진의 구도</button>
+        <button onClick={() => navigate("/docs/product2")}>카메라 액세서리</button>
+        <button onClick={() => navigate("/docs/product2")}>조명의 원리</button>
+      </ol>
+    </div>
+  </div>
+  <div className={styles.content} ref={canvasRef}>
+    <Canvas>
+      <CameraController />
+      <Lights />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} />
+      <Suspense fallback={<Html><div>Loading Model...</div></Html>}>
+        <Model />
+      </Suspense>
+      <OrbitControls />
+    </Canvas>
+  </div>
+  <button onClick={toggleModal} className={styles.chatButton}><img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" /></button>
+  <ChatBotModal isOpen={isModalOpen} onClose={toggleModal} />
+</div>
+
   );
 };
 
