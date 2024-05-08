@@ -11,6 +11,16 @@ const modelUrl = '../src/assets/models/FujiFilm_X_T4.obj.glb';
 
 function Model() {
   const gltf = useLoader(GLTFLoader, modelUrl);
+
+  useEffect(() => {
+    gltf.scene.traverse(child => {
+      if (child.isMesh) {
+        child.material.roughness = 0.5;  // 물체의 표면 거칠기 조절
+        child.material.metalness = 0.8;  // 물체가 금속 같은 느낌을 내도록 설정
+      }
+    });
+  }, [gltf]);
+
   return (
     <>
       <primitive object={gltf.scene} />
@@ -21,6 +31,7 @@ function Model() {
   );
 }
 
+
 function CameraController() {
   const { camera } = useThree();
   useEffect(() => {
@@ -30,19 +41,41 @@ function CameraController() {
 }
 
 function Lights() {
-    const { scene } = useThree();
-    useEffect(() => {
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1.5); // 밝기를 1.5로 증가
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1); // 밝기를 1로 설정
-      dirLight.position.set(5, 10, 7.5);
-      scene.add(hemiLight, dirLight);
-      return () => {
-        scene.remove(hemiLight, dirLight);
-      };
-    }, [scene]);
-  
-    return null;
-  }
+  const { scene } = useThree();
+
+  useEffect(() => {
+    // 기존 조명 제거
+    scene.children.slice().forEach(child => {
+      if (child.isLight || child.isLightHelper) {
+        scene.remove(child);
+      }
+    });
+
+    // 환경 조명 추가
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // 전반적인 빛의 밝기를 조절
+    scene.add(ambientLight);
+
+    // 직사광 조명 추가
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(0, 50, 30);  // 빛의 위치 조정
+    directionalLight.target.position.set(0, 0, 0);
+    scene.add(directionalLight);
+    scene.add(directionalLight.target);
+
+    // 이펙트 제거를 위한 클린업 함수
+    return () => {
+      scene.children.slice().forEach(child => {
+        if (child.isLight || child.isLightHelper) {
+          scene.remove(child);
+        }
+      });
+    };
+  }, [scene]);
+
+  return null;
+}
+
+
 
   function ChatBotModal({ isOpen, onClose }) {
     return (

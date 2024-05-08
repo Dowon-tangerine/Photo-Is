@@ -67,7 +67,7 @@ body, html {
   .searchInput {
     flex-grow: 1;
     padding: 8px 32px 8px 8px;  /* 우측에 버튼이 있으므로 padding을 조정 */
-    border-radius: 4px 0 0 4px;
+    border-radius: 4px 4px 4px 4px;
     border: 1px solid #ccc;
     background: #fff;
     color: #000;
