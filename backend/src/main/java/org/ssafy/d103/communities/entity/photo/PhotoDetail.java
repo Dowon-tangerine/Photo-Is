@@ -76,4 +76,17 @@ public class PhotoDetail {
         return commentCnt;
     }
 
+    public Integer updateViewCnt(boolean operation) {
+        // operation이 true면 증가
+        if (operation) {
+            this.viewCnt++;
+        }
+        // operation이 false면 감소
+        else {
+            this.viewCnt--;
+        }
+
+        return viewCnt;
+    }
+
 }
