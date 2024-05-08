@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface ExhibitionCommentRepository extends JpaRepository<ExhibitionComment, Long> {
 
     Optional<List<ExhibitionComment>> findAllByExhibitionId(Exhibitions exhibition);
+
+    Optional<ExhibitionComment> findExhibitionCommentByExhibitionId(Exhibitions exhibition);
 }

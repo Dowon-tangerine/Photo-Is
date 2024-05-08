@@ -12,6 +12,7 @@ import org.ssafy.d103.communities.repository.PhotoRepository;
 import org.ssafy.d103.exhibitions.dto.ExhibitionCommentDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
+import org.ssafy.d103.exhibitions.dto.request.PostExhibitionCommentRequest;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
 import org.ssafy.d103.exhibitions.dto.request.PutExhibitionLikeRequest;
 import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionPhotoListResponse;
@@ -151,5 +152,25 @@ public class ExhibitionService {
         }
 
         return PutExhibitionLikeResponse.of(flag, exhibition);
+    }
+
+    @Transactional
+    public List<ExhibitionCommentDto> saveExhibitionComment(Authentication authentication, PostExhibitionCommentRequest request) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Exhibitions exhibition = exhibitionRepository.findById(request.getExhibitionId())
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        exhibitionCommentRepository.save(
+                ExhibitionComment
+                        .builder()
+                        .exhibitionId(exhibition)
+                        .memberId(member)
+                        .comment(request.getComment())
+                        .build()
+        );
+
+        return selectExhibitionCommentList(request.getExhibitionId());
     }
 }
