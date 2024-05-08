@@ -1,4 +1,4 @@
-package org.ssafy.d103.communities.dto.request;
+package org.ssafy.d103.communities.dto.photo.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -12,13 +12,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostUploadPhotoRequest {
 
-    @NotBlank(message = "제목이 없습니다.")
+    @NotBlank(message = "제목을 입력해주세요.")
     private String title;
 
-    @NotBlank(message = "accessType이 없습니다.")
+    @NotBlank(message = "accessType을 입력해주세요.")
     private String accessType;
 
-    @NotBlank(message = "해시태그 리스트가 없습니다.")
+    @NotBlank(message = "해시태그 리스트를 입력해주세요.")
     private List<String> hashtagList;
 
 }
