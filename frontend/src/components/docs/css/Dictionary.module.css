@@ -21,16 +21,11 @@ body, html {
     overflow-y: auto; /* 내부적으로만 스크롤 허용 */
   }
   
-  .sidebar h1 {
+  .sidebarTop, .sidebarBottom {
     margin-bottom: 20px;
   }
-  
-  .sidebar ol {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar button {
+
+  .sidebarBottom button {
     display: block;
     background: none;
     color: inherit;
@@ -41,35 +36,64 @@ body, html {
     cursor: pointer;
     transition: background-color 0.3s;
   }
+
+ .sidebarTop h1 {
+  margin-bottom: 20px;
+}
   
-  .sidebar button:hover {
-    background-color: #555;
-  }
+.sidebarBottom ol {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebarbottom button:hover {
+  background-color: #555;
+}
   
   .searchContainer {
     display: flex;
+    justify-content: center;
+    width: 100%;
     margin-bottom: 20px;
+  }
+  
+  .inputGroup {
+    position: relative;
+    display: flex;
+    width: 100%;
+    max-width: 300px;
   }
   
   .searchInput {
     flex-grow: 1;
-    padding: 8px;
+    padding: 8px 32px 8px 8px;  /* 우측에 버튼이 있으므로 padding을 조정 */
+    border-radius: 4px 0 0 4px;
     border: 1px solid #ccc;
-    border-right: none;
+    background: #fff;
     color: #000;
   }
   
   .searchButton {
-    padding: 8px 12px;
-    background: #ccc;
+    position: absolute;
+    left: 183px;  /* 왼쪽에서의 위치를 0에서 1px로 조정하여 더 정확하게 맞춤 */
+    top: 1px;  /* 상단에서의 위치도 조정 */
+    width: 34px;  /* 버튼의 폭을 지정 */
+    height: calc(100% - 2px);  /* 버튼 높이를 입력창과 동일하게 조정 */
     border: none;
+    background: transparent;  /* 배경을 투명하게 설정 */
+    padding: 0;  /* 패딩 제거 */
     cursor: pointer;
-  }
+    /* border-radius: 0 4px 4px 0;  오른쪽 끝의 라운드 */
+    }
   
-  .searchButton:hover {
-    background-color: #aaa;
+  .searchButton img {
+    width: 24px;
+    height: 24px;
   }
+
+ 
   
+
   .content {
     flex-grow: 1;
     overflow: hidden; /* 내부 스크롤 방지 */
