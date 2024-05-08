@@ -21,10 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.dto.request.*;
-import org.ssafy.d103.communities.dto.response.*;
+import org.ssafy.d103.communities.dto.photo.request.*;
+import org.ssafy.d103.communities.dto.photo.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
-import org.ssafy.d103.communities.repository.*;
+import org.ssafy.d103.communities.repository.photo.*;
 import org.ssafy.d103.members.entity.Members;
 
 import java.io.File;
@@ -234,7 +234,7 @@ public class PhotoService {
     }
 
     @Transactional
-    public DeleteRemovePhotoResponse deletePhoto(Authentication authentication, Long photoId) {
+    public DeletePhotoResponse deletePhoto(Authentication authentication, Long photoId) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
         // 삭제할 사진을 데이터베이스에서 가져옴
@@ -255,7 +255,7 @@ public class PhotoService {
 
         // !!!!!!!!!!!!!!!!!!!! Question API 구현 후, 사진 삭제에 따른 질문 삭제도 구현해야함 !!!!!!!!!!!!!!!!!!!!
 
-        return DeleteRemovePhotoResponse.of(true);
+        return DeletePhotoResponse.of(true);
     }
 
     private void deleteS3Image(String imageUrl) {

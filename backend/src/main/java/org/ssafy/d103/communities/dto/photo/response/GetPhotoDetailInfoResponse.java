@@ -1,4 +1,4 @@
-package org.ssafy.d103.communities.dto.response;
+package org.ssafy.d103.communities.dto.photo.response;
 
 import lombok.Builder;
 import lombok.Getter;

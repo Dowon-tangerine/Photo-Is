@@ -1,4 +1,4 @@
-package org.ssafy.d103.communities.repository;
+package org.ssafy.d103.communities.repository.photo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

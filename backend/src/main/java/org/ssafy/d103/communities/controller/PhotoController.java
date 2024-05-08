@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
-import org.ssafy.d103.communities.dto.request.*;
+import org.ssafy.d103.communities.dto.photo.request.*;
 import org.ssafy.d103.communities.service.PhotoService;
 
 @Tag(name = "communities", description = "Communities API")
@@ -32,7 +32,7 @@ public class PhotoController {
     }
 
     @DeleteMapping("/remove/{photo-id}")
-    public ApiResponseDto<?> deleteRemovePhoto(Authentication authentication, @PathVariable("photo-id") Long photoId) {
+    public ApiResponseDto<?> deletePhoto(Authentication authentication, @PathVariable("photo-id") Long photoId) {
         return ResponseUtils.ok(photoService.deletePhoto(authentication, photoId), MsgType.PHOTO_DELETE_SUCCESSFULLY);
     }
 

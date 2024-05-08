@@ -1,4 +1,4 @@
-package org.ssafy.d103.communities.dto.request;
+package org.ssafy.d103.communities.dto.photo.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

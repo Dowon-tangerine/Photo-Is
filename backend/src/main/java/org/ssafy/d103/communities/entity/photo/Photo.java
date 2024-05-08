@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.ssafy.d103._common.entity.OnlyCreatedTime;
-import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
+import org.ssafy.d103.communities.dto.photo.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.entity.question.Question;
 import org.ssafy.d103.members.entity.Members;
 
@@ -80,4 +80,5 @@ public class Photo extends OnlyCreatedTime {
         this.title = putModifyPhotoRequest.getTitle();
         this.accessType = AccessType.fromString(putModifyPhotoRequest.getAccessType());
     }
+
 }
