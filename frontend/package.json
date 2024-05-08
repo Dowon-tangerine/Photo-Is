@@ -12,10 +12,7 @@
   "dependencies": {
     "@react-three/drei": "^9.105.6",
     "@react-three/fiber": "^8.16.3",
-<<<<<<< HEAD
-=======
     "@types/three": "^0.164.0",
->>>>>>> origin/fe
     "gsap": "^3.12.5",
     "hugo": "^0.0.3",
     "kutty": "^0.6.0",
@@ -23,11 +20,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.0",
     "three": "^0.164.1",
-<<<<<<< HEAD
     "three-fbx-loader": "^1.0.3",
     "three-stdlib": "^2.29.10",
-=======
->>>>>>> origin/fe
     "xtendui": "^1.4.2"
   },
   "devDependencies": {
