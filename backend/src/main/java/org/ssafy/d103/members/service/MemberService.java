@@ -4,21 +4,29 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
+import org.ssafy.d103._common.service.S3Uploader;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
+import org.ssafy.d103.members.dto.request.PutUpdateMemberRequest;
 import org.ssafy.d103.members.dto.response.GetSelectMemberResponse;
 import org.ssafy.d103.members.dto.response.PostCheckElementsResponse;
 import org.ssafy.d103.members.dto.response.PostValidateMemberResponse;
+import org.ssafy.d103.members.dto.response.PutUpdateMemberResponse;
 import org.ssafy.d103.members.entity.Members;
 import org.ssafy.d103.members.repository.MemberRepository;
 import org.ssafy.d103.members.service.jwt.JwtUtil;
+
+import java.io.IOException;
 
 @Service
 @Slf4j
@@ -29,6 +37,7 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final CommonService commonService;
+    private final S3Uploader s3Uploader;
 
     @Transactional
     public String saveMember(PostAddMemberRequest request) {
@@ -106,9 +115,51 @@ public class MemberService {
 
     public GetSelectMemberResponse selectMember(Authentication authentication, Long memberId) {
 
+        Members member = commonService.findMemberByAuthentication(authentication);
         Members target = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
         return GetSelectMemberResponse.from(target);
     }
 
+    public Page<MemberRepository.MemberDtoMapping> selectMemberList(Authentication authentication, String nickname, Pageable pageable) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        return memberRepository.findAllByMemberIdAndNickname(member.getId(), nickname, pageable)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
+    }
+
+    @Transactional
+    public PutUpdateMemberResponse updateMember(Authentication authentication, MultipartFile multipartFile, PutUpdateMemberRequest request) throws IOException {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+        String photoUrl = null;
+        if(multipartFile != null) {
+            photoUrl = s3Uploader.upload(multipartFile, "profile");
+        }
+
+        member.updateAllInfo(
+                request.getNickname(),
+                request.getBirthYear(),
+                request.getUseYear(),
+                request.getCamera(),
+                photoUrl != null ? photoUrl : member.getProfileUrl(),
+                request.getCountry(),
+                request.getCity()
+        );
+
+        memberRepository.save(member);
+
+        return PutUpdateMemberResponse.from(member);
+    }
+
+    @Transactional
+    public String updateBackgroundImg(Authentication authentication, MultipartFile multipartFile) throws IOException{
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+        String backgroundUrl = s3Uploader.upload(multipartFile, "background");
+        member.updateBackgroundImg(backgroundUrl);
+        memberRepository.save(member);
+        return backgroundUrl;
+    }
 }
