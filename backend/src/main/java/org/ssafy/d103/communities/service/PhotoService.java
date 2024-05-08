@@ -23,6 +23,7 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.request.PostChangePhotoLikeRequest;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
+import org.ssafy.d103.communities.dto.request.PostWriteCommentRequest;
 import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.dto.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
@@ -57,6 +58,8 @@ public class PhotoService {
     private final PhotoHashtagRepository photoHashtagRepository;
 
     private final PhotoLikeRepository photoLikeRepository;
+
+    private final PhotoCommentRepository photoCommentRepository;
 
     private final CommonService commonService;
 
@@ -391,5 +394,22 @@ public class PhotoService {
             photoLikeRepository.save(PhotoLike.of(member, photo));
             return PostChangePhotoLikeResponse.of(true, photoDetail.updateLikeCnt(true));
         }
+    }
+
+    @Transactional
+    public PostWriteCommentResponse writeComment(Authentication authentication, Long photoId, PostWriteCommentRequest postWriteCommentRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        photoCommentRepository.save(PhotoComment.of(postWriteCommentRequest.getComment(), member, photo));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
+
+        return PostWriteCommentResponse.of(photoDetail.updateCommentCnt(true), photoCommentList);
     }
 }
