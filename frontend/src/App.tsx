@@ -12,6 +12,7 @@ export default function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/studio-enter" element={<StudioEnterPage />} />
                 </Route>
+
                 <Route element={<StudioLayout />}>
                     <Route path="/landscape" element={<LandScapePage />}></Route>
                 </Route>
