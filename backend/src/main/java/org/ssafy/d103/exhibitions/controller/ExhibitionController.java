@@ -84,4 +84,13 @@ public class ExhibitionController {
     public ApiResponseDto<?> saveExhibitionComment(Authentication authentication, @RequestBody PostExhibitionCommentRequest request) {
         return ResponseUtils.ok(exhibitionService.saveExhibitionComment(authentication, request), MsgType.INSERT_EXHIBITION_COMMENT_SUCCESSFULLY);
     }
+
+    /**
+     * 전시회 전체목록 조회
+     */
+    @Operation(summary = "전시회 전체목록 조회 요청")
+    @GetMapping("/")
+    public ApiResponseDto<?> selectExhibitionList(Authentication authentication) {
+        return ResponseUtils.ok(exhibitionService.selectExhibitionList(authentication), MsgType.SELECT_EXHIBITION_LIST_SUCCESSFULLY);
+    }
 }

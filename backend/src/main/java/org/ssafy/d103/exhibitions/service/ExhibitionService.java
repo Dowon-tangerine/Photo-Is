@@ -15,10 +15,7 @@ import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 import org.ssafy.d103.exhibitions.dto.request.PostExhibitionCommentRequest;
 import org.ssafy.d103.exhibitions.dto.request.PostInsertExhibitionRequest;
 import org.ssafy.d103.exhibitions.dto.request.PutExhibitionLikeRequest;
-import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionPhotoListResponse;
-import org.ssafy.d103.exhibitions.dto.response.GetSelectExhibitionResponse;
-import org.ssafy.d103.exhibitions.dto.response.GetSelectMyExhibitionListResponse;
-import org.ssafy.d103.exhibitions.dto.response.PutExhibitionLikeResponse;
+import org.ssafy.d103.exhibitions.dto.response.*;
 import org.ssafy.d103.exhibitions.entity.ExhibitionComment;
 import org.ssafy.d103.exhibitions.entity.ExhibitionLike;
 import org.ssafy.d103.exhibitions.entity.ExhibitionPhoto;
@@ -27,6 +24,8 @@ import org.ssafy.d103.exhibitions.repository.ExhibitionCommentRepository;
 import org.ssafy.d103.exhibitions.repository.ExhibitionLikeRepository;
 import org.ssafy.d103.exhibitions.repository.ExhibitionPhotoRepository;
 import org.ssafy.d103.exhibitions.repository.ExhibitionRepository;
+import org.ssafy.d103.follows.entity.Follows;
+import org.ssafy.d103.follows.repository.FollowRepository;
 import org.ssafy.d103.members.entity.Members;
 
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ public class ExhibitionService {
     private final ExhibitionPhotoRepository exhibitionPhotoRepository;
     private final ExhibitionCommentRepository exhibitionCommentRepository;
     private final ExhibitionLikeRepository exhibitionLikeRepository;
+    private final FollowRepository followRepository;
     private final PhotoRepository photoRepository;
     private final CommonService commonService;
 
@@ -172,5 +172,30 @@ public class ExhibitionService {
         );
 
         return selectExhibitionCommentList(request.getExhibitionId());
+    }
+
+    public GetExhibitionListResponse selectExhibitionList(Authentication authentication){
+
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        List<Follows> followList = followRepository.findFollowsByFollowerId(member)
+                .orElse(null);
+        log.warn("{}", followList.size());
+
+        List<Exhibitions> exhibitionList = exhibitionRepository.findAllExhibitions()
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        List<Exhibitions> followExhibitionList = new ArrayList<>();
+
+        for(Exhibitions e: exhibitionList) {
+            for(Follows f: followList) {
+                log.warn("{} vs {}", e.getMemberId().getId(), f.getFollowingId().getId());
+                if(e.getMemberId().getId() == f.getFollowingId().getId()) {
+                    followExhibitionList.add(e);
+                }
+            }
+        }
+
+        return GetExhibitionListResponse.from(followExhibitionList, exhibitionList);
     }
 }

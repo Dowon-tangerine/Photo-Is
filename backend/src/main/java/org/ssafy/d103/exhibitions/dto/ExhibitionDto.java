@@ -15,6 +15,7 @@ public class ExhibitionDto {
 
     private Long exhibitionId;
     private Long memberId;
+    private String nickname;
     private String title;
     private String posterUrl;
     private LocalDateTime startDate;
@@ -22,9 +23,10 @@ public class ExhibitionDto {
     private int likeCnt;
 
     @Builder
-    private ExhibitionDto(Long exhibitionId, Long memberId, String title, String posterUrl, LocalDateTime startDate, LocalDateTime endDate, int likeCnt) {
+    private ExhibitionDto(Long exhibitionId, Long memberId, String nickname, String title, String posterUrl, LocalDateTime startDate, LocalDateTime endDate, int likeCnt) {
         this.exhibitionId = exhibitionId;
         this.memberId = memberId;
+        this.nickname = nickname;
         this.title = title;
         this.posterUrl = posterUrl;
         this.startDate = startDate;
@@ -35,6 +37,8 @@ public class ExhibitionDto {
     public static ExhibitionDto from(Exhibitions exhibition) {
         return builder()
                 .exhibitionId(exhibition.getId())
+                .memberId(exhibition.getMemberId().getId())
+                .nickname(exhibition.getMemberId().getNickname())
                 .title(exhibition.getTitle())
                 .posterUrl(exhibition.getPosterUrl())
                 .startDate(exhibition.getCreatedAt())
