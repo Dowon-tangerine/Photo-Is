@@ -37,6 +37,9 @@ public enum ErrorType {
     NOT_FOUND_EXHIBITION_COMMENT(404, "전시회 한줄평이 존재하지 않습니다."),
     NOT_FOUND_EXHIBITION_PHOTO(404, "전시회 사진이 존재하지 않습니다."),
 
+    //********************************[ Questions ]********************************
+    NOT_FOUND_QUESTION_PAGE(404, "해당 질문 페이지가 존재하지 않습니다."),
+
     //********************************[ ETC ]********************************
     ANOTHER_ERROR(401, "기타 에러가 발생하였습니다."),
     DB_SAVE_ERROR(500, "DB 저장중 오류가 발생하였습니다."),
