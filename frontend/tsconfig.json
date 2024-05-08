@@ -9,10 +9,9 @@
         /*tree setting*/
         "typeRoots": ["./node_modules/@types", "./src/types"],
         "esModuleInterop": true,
-        "moduleResolution": "node",
 
         /* Bundler mode */
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
