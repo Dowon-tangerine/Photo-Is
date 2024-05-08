@@ -42,6 +42,9 @@ public enum MsgType {
     PHOTO_COMMENT_WRITE_SUCCESSFULLY("댓글 작성에 성공하였습니다."),
     PHOTO_COMMENT_LIST_GET_SUCCESSFULLY("댓글 조회에 성공하였습니다."),
     PHOTO_COMMENT_DELETE_SUCCESSFULLY("댓글 삭제에 성공하였습니다."),
+
+    //********************************[ Questions ]********************************
+    QUESTION_UPLOAD_SUCCESSFULLY("질문 업로드에 성공하였습니다."),
     ;
 
     private final String msg;

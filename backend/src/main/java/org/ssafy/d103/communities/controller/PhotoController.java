@@ -12,7 +12,7 @@ import org.ssafy.d103._common.response.ResponseUtils;
 import org.ssafy.d103.communities.dto.photo.request.*;
 import org.ssafy.d103.communities.service.PhotoService;
 
-@Tag(name = "communities", description = "Communities API")
+@Tag(name = "Communities - Photo", description = "Communities Photo API")
 @Slf4j
 @RestController
 @RequestMapping("/api/photos")
