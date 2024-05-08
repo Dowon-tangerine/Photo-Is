@@ -41,7 +41,7 @@ public class PhotoDetail {
         this.photo = photo;
     }
 
-    static public PhotoDetail init(Photo photo) {
+    public static PhotoDetail init(Photo photo) {
         return builder()
                 .commentCnt(0)
                 .likeCnt(0)
@@ -49,4 +49,18 @@ public class PhotoDetail {
                 .photo(photo)
                 .build();
     }
+
+    public Integer updateLikeCnt(boolean operation) {
+        // operation이 true면 증가
+        if (operation) {
+            this.likeCnt++;
+        }
+        // operation이 false면 감소
+        else {
+            this.likeCnt--;
+        }
+
+        return likeCnt;
+    }
+
 }

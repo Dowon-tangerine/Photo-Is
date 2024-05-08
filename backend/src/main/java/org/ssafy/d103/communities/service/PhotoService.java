@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
+import org.ssafy.d103.communities.dto.request.PostChangePhotoLikeRequest;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.dto.response.*;
@@ -360,6 +361,35 @@ public class PhotoService {
         // 토큰 X -> 로그인 X
         else {
             return GetPhotoDetailInfoResponse.of(photo, photoDetail, false, PhotoMetadata.from(findMetadata), hashtagList);
+        }
+    }
+
+    @Transactional
+    public PostChangePhotoLikeResponse changePhotoLike(Authentication authentication, PostChangePhotoLikeRequest postChangePhotoLikeRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoById(postChangePhotoLikeRequest.getPhotoId())
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        // 본인 사진 좋아요 불가
+        if (photo.getMember().equals(member)) {
+            throw new CustomException(ErrorType.SELF_LIKE_NOT_ALLOWED);
+        }
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        Optional<PhotoLike> findPhotoLike = photoLikeRepository.findPhotoLikeByMemberAndPhoto(member, photo);
+
+        // 좋아요 기록이 있다면 Delete
+        if (findPhotoLike.isPresent()) {
+            photoLikeRepository.delete(findPhotoLike.get());
+            return PostChangePhotoLikeResponse.of(false, photoDetail.updateLikeCnt(false));
+        }
+        // 좋아요 기록이 없다면 Insert
+        else {
+            photoLikeRepository.save(PhotoLike.of(member, photo));
+            return PostChangePhotoLikeResponse.of(true, photoDetail.updateLikeCnt(true));
         }
     }
 }

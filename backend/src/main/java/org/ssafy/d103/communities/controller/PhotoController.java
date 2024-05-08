@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
+import org.ssafy.d103.communities.dto.request.PostChangePhotoLikeRequest;
 import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.service.PhotoService;
@@ -55,6 +56,11 @@ public class PhotoController {
     @GetMapping("/{photo-id}")
     public ApiResponseDto<?> getPhotoDetail(Authentication authentication, @PathVariable("photo-id") Long photoId) {
         return ResponseUtils.ok(photoService.getPhotoDetail(authentication, photoId), MsgType.PHOTO_GET_SUCCESSFULLY);
+    }
+
+    @PostMapping("/change-like")
+    public ApiResponseDto<?> postChangePhotoLike(Authentication authentication, @RequestBody PostChangePhotoLikeRequest postChangePhotoLikeRequest) {
+        return ResponseUtils.ok(photoService.changePhotoLike(authentication, postChangePhotoLikeRequest), MsgType.PHOTO_LIKE_CHANGE_SUCCESSFULLY);
     }
 
 }

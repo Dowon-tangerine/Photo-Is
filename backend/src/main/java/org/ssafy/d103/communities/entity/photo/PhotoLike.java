@@ -2,6 +2,7 @@ package org.ssafy.d103.communities.entity.photo;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.ssafy.d103._common.entity.OnlyCreatedTime;
@@ -24,5 +25,18 @@ public class PhotoLike extends OnlyCreatedTime {
     @ManyToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
+
+    @Builder
+    private PhotoLike(Members member, Photo photo) {
+        this.member = member;
+        this.photo = photo;
+    }
+
+    public static PhotoLike of(Members member, Photo photo) {
+        return builder()
+                .member(member)
+                .photo(photo)
+                .build();
+    }
 
 }
