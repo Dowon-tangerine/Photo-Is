@@ -373,11 +373,6 @@ public class PhotoService {
         Photo photo = photoRepository.findPhotoById(postChangePhotoLikeRequest.getPhotoId())
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
-        // 본인 사진 좋아요 불가
-        if (photo.getMember().equals(member)) {
-            throw new CustomException(ErrorType.SELF_LIKE_NOT_ALLOWED);
-        }
-
         PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
 
