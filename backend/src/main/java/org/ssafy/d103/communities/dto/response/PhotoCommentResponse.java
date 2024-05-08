@@ -3,12 +3,11 @@ package org.ssafy.d103.communities.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import org.ssafy.d103.communities.entity.photo.PhotoComment;
-import org.ssafy.d103.members.entity.Members;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class PhotoCommentListResponse {
+public class PhotoCommentResponse {
 
     private Long commentId;
     private String nickname;
@@ -17,7 +16,7 @@ public class PhotoCommentListResponse {
     private LocalDateTime createdAt;
 
     @Builder
-    private PhotoCommentListResponse(Long commentId, String nickname, String profileUrl, String comment, LocalDateTime createdAt) {
+    private PhotoCommentResponse(Long commentId, String nickname, String profileUrl, String comment, LocalDateTime createdAt) {
         this.commentId = commentId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
@@ -25,7 +24,7 @@ public class PhotoCommentListResponse {
         this.createdAt = createdAt;
     }
 
-    public static PhotoCommentListResponse from(PhotoComment photoComment) {
+    public static PhotoCommentResponse from(PhotoComment photoComment) {
         return builder()
                 .commentId(photoComment.getId())
                 .nickname(photoComment.getMember().getNickname())

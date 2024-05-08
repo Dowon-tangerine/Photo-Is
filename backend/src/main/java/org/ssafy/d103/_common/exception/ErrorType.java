@@ -27,6 +27,7 @@ public enum ErrorType {
     NOT_FOUND_HASHTAG(404, "해시태그가 존재하지 않습니다."),
     NOT_FOUND_PHOTO_METADATA(404, "사진의 메타데이터가 존재하지 않습니다."),
     SELF_LIKE_NOT_ALLOWED(400, "본인의 사진에 대한 좋아요를 허용하지 않습니다."),
+    NOT_FOUND_PHOTO_COMMENT(404, "해당 댓글이 존재하지 않습니다."),
 
     //********************************[ ETC ]********************************
     ANOTHER_ERROR(401, "기타 에러가 발생하였습니다."),

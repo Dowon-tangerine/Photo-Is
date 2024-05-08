@@ -23,6 +23,8 @@ public enum MsgType {
     PHOTO_GET_SUCCESSFULLY("사진 조회에 성공하였습니다."),
     PHOTO_LIKE_CHANGE_SUCCESSFULLY("사진 좋아요 변경에 성공하였습니다."),
     PHOTO_COMMENT_WRITE_SUCCESSFULLY("댓글 작성에 성공하였습니다."),
+    PHOTO_COMMENT_LIST_GET_SUCCESSFULLY("댓글 조회에 성공하였습니다."),
+    PHOTO_COMMENT_DELETE_SUCCESSFULLY("댓글 삭제에 성공하였습니다."),
     ;
 
     private final String msg;

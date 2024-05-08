@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class PostWriteCommentResponse {
+public class DeletePhotoCommentResponse {
 
     private Integer commentCnt;
     private List<PhotoCommentResponse> commentList;
 
     @Builder
-    private PostWriteCommentResponse(Integer commentCnt, List<PhotoCommentResponse> commentList) {
+    private DeletePhotoCommentResponse(Integer commentCnt, List<PhotoCommentResponse> commentList) {
         this.commentCnt = commentCnt;
         this.commentList = commentList;
     }
 
-    public static PostWriteCommentResponse of(Integer commentCnt, List<PhotoComment> commentList) {
+    public static DeletePhotoCommentResponse of(Integer commentCnt, List<PhotoComment> commentList) {
         List<PhotoCommentResponse> responseList = commentList.stream()
                 .map(PhotoCommentResponse::from)
                 .collect(Collectors.toList());

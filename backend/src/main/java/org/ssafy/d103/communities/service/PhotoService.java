@@ -21,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.dto.request.PostChangePhotoLikeRequest;
-import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
-import org.ssafy.d103.communities.dto.request.PostWriteCommentRequest;
-import org.ssafy.d103.communities.dto.request.PutModifyPhotoRequest;
+import org.ssafy.d103.communities.dto.request.*;
 import org.ssafy.d103.communities.dto.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
 import org.ssafy.d103.communities.repository.*;
@@ -413,5 +410,38 @@ public class PhotoService {
         List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
 
         return PostWriteCommentResponse.of(photoDetail.updateCommentCnt(true), photoCommentList);
+    }
+
+    @Transactional
+    public GetPhotoCommentListResponse getPhotoCommentList(Long photoId) {
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
+
+        return GetPhotoCommentListResponse.of(photoDetail.getCommentCnt(), photoCommentList);
+    }
+
+    @Transactional
+    public DeletePhotoCommentResponse removePhotoComment(Authentication authentication, Long photoId, DeletePhotoCommentRequest deletePhotoCommentRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        PhotoComment photoComment = photoCommentRepository.findPhotoCommentByIdAndPhotoAndMember(deletePhotoCommentRequest.getCommentId(), photo, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_COMMENT));
+
+        photoCommentRepository.delete(photoComment);
+
+        List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
+
+        return DeletePhotoCommentResponse.of(photoDetail.updateCommentCnt(false), photoCommentList);
     }
 }
