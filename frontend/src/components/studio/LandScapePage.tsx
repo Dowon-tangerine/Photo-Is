@@ -1,39 +1,16 @@
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { DirectionalLight } from "three";
 import StudioStyle from "./css/Studio.module.css";
 import AmusementPark from "./element/AmusementPark";
 
 function LandScapePage() {
-    const lightRef = useRef<DirectionalLight>(null);
-
     const [showSettings, setShowSettings] = useState(false);
-
-    useEffect(() => {
-        if (lightRef.current) {
-            const light = lightRef.current;
-            light.castShadow = true;
-            light.shadow.bias = -0.0001;
-            light.shadow.mapSize.width = 4096;
-            light.shadow.mapSize.height = 4096;
-            light.shadow.camera.near = 0.5;
-            light.shadow.camera.far = 1500;
-            light.shadow.camera.left = -1000;
-            light.shadow.camera.right = 1000;
-            light.shadow.camera.top = 1000;
-            light.shadow.camera.bottom = -1000;
-        }
-    }, []);
 
     return (
         <>
             <div className={StudioStyle.container}>
                 <div className={`${StudioStyle.canvasContainer} ${showSettings ? StudioStyle.shrink : ""}`}>
                     <Canvas shadows camera={{ rotation: [10, 0, 0], position: [162, 3, 60], far: 10000 }}>
-                        <ambientLight intensity={1} />
-                        <directionalLight ref={lightRef} castShadow position={[0, 100, -40]} intensity={2} />
-                        <OrbitControls />
                         <AmusementPark />
                     </Canvas>
                 </div>
