@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { useRef, useEffect, useState } from "react";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { DirectionalLight } from "three";
 import StudioStyle from "./css/Studio.module.css";
@@ -7,8 +7,7 @@ import AmusementPark from "./element/AmusementPark";
 
 function LandScapePage() {
     const lightRef = useRef<DirectionalLight>(null);
-    const [capturedImage, setCapturedImage] = useState(null);
-    const captureRef = useRef();
+
     const [showSettings, setShowSettings] = useState(false);
 
     useEffect(() => {
