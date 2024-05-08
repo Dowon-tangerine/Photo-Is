@@ -68,7 +68,6 @@ public class PhotoService {
 
     @Transactional
     public PostUploadPhotoResponse uploadPhoto(Authentication authentication, MultipartFile multipartFile, PostUploadPhotoRequest postUploadPhotoRequest) {
-
         Members member = commonService.findMemberByAuthentication(authentication);
 
         Photo photo = Photo.of(postUploadPhotoRequest.getTitle(), null, null, AccessType.fromString(postUploadPhotoRequest.getAccessType()), member);
@@ -338,13 +337,16 @@ public class PhotoService {
         return getGalleryPhotoInfoResponseList;
     }
 
+    @Transactional
     public GetPhotoDetailInfoResponse getPhotoDetail(Authentication authentication, Long photoId) {
-
         Photo photo = photoRepository.findPhotoById(photoId)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
         PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        // 조회수 증가
+        photoDetail.updateViewCnt(true);
 
         PhotoMetadata findMetadata = photoMetadataRepository.findPhotoMetadataByPhoto(photo)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_METADATA));

@@ -17,25 +17,27 @@ public class GetPhotoDetailInfoResponse {
     private String nickname;
     private String title;
     private String imageUrl;
+    private Integer viewCnt;
+    private Integer commentCnt;
     private Integer likeCnt;
     private Boolean isLiked;
     private LocalDateTime createdAt;
-    private Integer commentCnt;
     private String accessType;
     private PhotoMetadata metadata;
     private List<String> hashtagList;
 
     @Builder
-    private GetPhotoDetailInfoResponse(Long photoId, Long memberId, String nickname, String title, String imageUrl, Integer likeCnt, Boolean isLiked, LocalDateTime createdAt, Integer commentCnt, String accessType, PhotoMetadata metadata, List<String> hashtagList) {
+    private GetPhotoDetailInfoResponse(Long photoId, Long memberId, String nickname, String title, String imageUrl, Integer viewCnt, Integer commentCnt, Integer likeCnt, Boolean isLiked, LocalDateTime createdAt, String accessType, PhotoMetadata metadata, List<String> hashtagList) {
         this.photoId = photoId;
         this.memberId = memberId;
         this.nickname = nickname;
         this.title = title;
         this.imageUrl = imageUrl;
+        this.viewCnt = viewCnt;
+        this.commentCnt = commentCnt;
         this.likeCnt = likeCnt;
         this.isLiked = isLiked;
         this.createdAt = createdAt;
-        this.commentCnt = commentCnt;
         this.accessType = accessType;
         this.metadata = metadata;
         this.hashtagList = hashtagList;
@@ -48,10 +50,11 @@ public class GetPhotoDetailInfoResponse {
                 .nickname(photo.getMember().getNickname())
                 .title(photo.getTitle())
                 .imageUrl(photo.getImageUrl())
+                .viewCnt(photoDetail.getViewCnt())
+                .commentCnt(photoDetail.getCommentCnt())
                 .likeCnt(photoDetail.getLikeCnt())
                 .isLiked(isLiked)
                 .createdAt(photo.getCreatedAt())
-                .commentCnt(photoDetail.getCommentCnt())
                 .accessType(photo.getAccessType().toString())
                 .metadata(metadata)
                 .hashtagList(hashtagList)
