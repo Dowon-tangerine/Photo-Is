@@ -6,11 +6,15 @@ import { Paper, Button } from '@mui/material'
 import { PackingGrid } from "@egjs/react-grid";
 import Masonry from 'react-masonry-css';
 import axios from 'axios';
+import MapComponent from './MapComponent';
 
 
-interface dogImgInterface {
-    id: string;
-    dogUrl: string;
+interface imgInterface {
+    id: number;
+    url: string;
+    likeCnt: number,
+    liked: boolean,
+    title: string,
   }
   
 const Gallery: React.FC = () => {
@@ -21,7 +25,8 @@ const Gallery: React.FC = () => {
     const [tabIndex, settabIndex] = useState<number>(0);
     const [sortType, setSortType] = useState<String>("최신");
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
-    const [isRotated2, setIsRotated2] = useState<boolean>(false);    
+    const [isRotated2, setIsRotated2] = useState<boolean>(false);
+    const [imgDetail, setImgDetail] = useState<boolean>(false);
 
     const toggleRotation = () => {
         setIsRotated(!isRotated);
@@ -240,21 +245,24 @@ const Gallery: React.FC = () => {
 
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
-    const [dogImgArr, setDogImgArr] = useState<dogImgInterface[]>([]);
+    const [dogImgArr, setDogImgArr] = useState<imgInterface[]>([]);
 
     useEffect(() => {
       console.log("로드");
   
       // key가 없으면 응답은 10개씩
       const API_URL =
-        "https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=0&limit=10";
+        "https://k10d103.p.ssafy.io/api/dummy/photos/";
       axios.get(API_URL).then((res) => {
         console.log(res);
         
         // id값과 url만 저장
-        const gotData = res.data.map((dogImg: { id: string; url: string }) => ({
-          id: dogImg.id,
-          dogUrl: dogImg.url,
+        const gotData = res.data.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
+          id: imgs.photoId,
+          url: imgs.thumbnailUrl,
+          likeCnt: imgs.likeCnt,
+          liked: imgs.liked,
+          title: imgs.title,
         }));
         setDogImgArr(gotData);
       });
@@ -299,11 +307,14 @@ const Gallery: React.FC = () => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const API_URL = `https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=${page}&limit=10`;
+            const API_URL = `https://k10d103.p.ssafy.io/api/dummy/photos/?page=${page}&limit=10`;
             const response = await axios.get(API_URL);
-            const newData = response.data.map((Imgs: { id: string; url: string }) => ({
-                id: Imgs.id,
-                dogUrl: Imgs.url,
+            const newData = response.data.data.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
+                id: imgs.photoId,
+                url: imgs.thumbnailUrl,
+                likeCnt: imgs.likeCnt,
+                liked: imgs.liked,
+                title: imgs.title,
             }));
             setDogImgArr((prevData) => [...prevData, ...newData]);
         } catch (error) {
@@ -311,18 +322,6 @@ const Gallery: React.FC = () => {
         }
         setIsLoading(false);
     };
-
-    
-    useEffect(() => {
-        const API_URL = "https://api.thedogapi.com/v1/images/search?size=small&format=json&has_breeds=true&order=ASC&page=0&limit=10";
-        axios.get(API_URL).then((res) => {
-            const gotData = res.data.map((Imgs: { id: string; url: string }) => ({
-                id: Imgs.id,
-                dogUrl: Imgs.url,
-            }));
-            setImageData2(gotData);
-        });
-    }, []);
 
 
     const rankTabArr=[{
@@ -341,9 +340,9 @@ const Gallery: React.FC = () => {
                 <Carousel indicators={false}>   
                     {slice_rank_arr.map(
                         (slice_arr, i) => (
-                            <div className={styles.rank_photos} >
+                            <div className={styles.rank_photos} key={i + 'a'}>
                                 {slice_arr.map((item, idx) => (
-                                    <div className={styles.rank_photo_frame}>
+                                    <div className={styles.rank_photo_frame} key={idx + 'b'} onClick={() => {openPhotoDetails();}}>
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
@@ -380,9 +379,9 @@ const Gallery: React.FC = () => {
                 <Carousel indicators={false}>   
                     {slice_rank_arr.map(
                         (slice_arr, i) => (
-                            <div className={styles.rank_photos} >
+                            <div className={styles.rank_photos} key={i + 'c'}>
                                 {slice_arr.map((item, idx) => (
-                                    <div className={styles.rank_photo_frame}>
+                                    <div className={styles.rank_photo_frame} key={idx + 'd'} onClick={() => {openPhotoDetails();}}>
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
@@ -419,9 +418,9 @@ const Gallery: React.FC = () => {
                 <Carousel indicators={false}>   
                     {slice_rank_arr.map(
                         (slice_arr, i) => (
-                            <div className={styles.rank_photos} >
+                            <div className={styles.rank_photos} key={i + 'e'}>
                                 {slice_arr.map((item, idx) => (
-                                    <div className={styles.rank_photo_frame}>
+                                    <div className={styles.rank_photo_frame} key={idx + 'f'} onClick={() => {openPhotoDetails();}}>
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
@@ -446,14 +445,195 @@ const Gallery: React.FC = () => {
     }    
     ]
 
+    const openPhotoDetails = function(){
+        setImgDetail(!imgDetail);
+    }
+
+    const [photoLiked, setPhotoLiked] = useState<boolean>(false);
+
+    const clickHeart = function(){
+        setPhotoLiked(!photoLiked);
+    }
+
+    const [uploadPhoto, setUploadPhoto] = useState<boolean>(false);
+
+    const openUploadModal = function(){
+        setUploadPhoto(!uploadPhoto);
+    }
+
+    const tags = [
+        {
+            tag : "하이",
+        },        
+        {
+            tag : "벚꽃",
+        },
+        {
+            tag : "버스",
+        },
+        {
+            tag : "도로",
+        },
+        {
+            tag : "봄",
+        },
+        {
+            tag : "나무",
+        },
+        {
+            tag : "봄향기",
+        },
+        {
+            tag : "분홍분홍",
+        },
+
+    ]
+
+    const comments = [
+        {
+            profile : '/imgs/profile1.jpg',
+            name : '마구리구리',
+            content : '사진 너무 이쁘쁘쁘 렉거렸다',
+            time : '12 : 12',
+        },
+        {
+            profile : '/imgs/profile1.jpg',
+            name : '마구리구리',
+            content : '사진 너무 이쁘쁘쁘 렉거렸다 뻥이지롱 하하하하하 좋아요 많아서 좋겠다 사실 안부럽지롱 메롱메롱',
+            time : '12 : 12',
+        },
+        {
+            profile : '/imgs/profile1.jpg',
+            name : '마구리구리',
+            content : '사진 너무 이쁘쁘쁘 렉거렸다',
+            time : '12 : 12',
+        },
+        {
+            profile : '/imgs/profile1.jpg',
+            name : '마구리구리',
+            content : '사진 너무 이쁘쁘쁘 렉거렸다',
+            time : '12 : 12',
+        },
+        {
+            profile : '/imgs/profile1.jpg',
+            name : '마구리구리',
+            content : '사진 너무 이쁘쁘쁘 렉거렸다',
+            time : '12 : 12',
+        },
+        {
+            profile : '/imgs/profile1.jpg',
+            name : '마구리구리',
+            content : '사진 너무 이쁘쁘쁘 렉거렸다',
+            time : '12 : 12',
+        },
+
+    ]
 
     return (
+        <>
+        {imgDetail && (
+            <>
+                <div className={styles.modal_background}></div>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails();}}></img>
+                <div className={styles.photo_modal_container}>
+                    <div className={styles.img_container}>
+                        <img src='/imgs/photo1.jpg' alt='사진' className={styles.photo}></img>
+                        <div className={styles.detail_photo_info}>
+                            <img src='/imgs/profile1.jpg' alt='프로필' className={styles.detail_photo_profile}></img>
+                            <div className={styles.detail_photo_info_container}>
+                                <p className={styles.photo_title}>버스버스 스타벅스</p>
+                                <p className={styles.photo_date}>October 31, 2017 by 바다탐험대</p>
+                            </div>
+                            <div className={styles.detail_photo_like}>
+                                <p className={styles.heart_txt}>123</p>
+                                <img src={`/imgs/${photoLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.other_info_container}>
+                        <div style={{width : '300px', height : 'fit-content', display : 'flex', justifyContent : 'center', alignItems: 'center', background : 'white'}}>
+                            <p className={styles.camera_info_title}>Information</p>
+                        </div>
+                        <div className={styles.camera_info}>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>카메라 모델 : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>렌즈 모델 : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>조리개 / F : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>초점 거리 : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>셔터 스피드 / SS : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>심도 / ISO : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                            </div>
+                            <div><MapComponent/></div>
+                        </div>
+                        <div style={{width : '300px', height : 'fit-content', display : 'flex', justifyContent : 'center', alignItems: 'center', marginTop : '10px', background : 'white'}}>
+                            <p className={styles.camera_info_title}>Tags</p>
+                        </div>
+                        <div className={styles.tags_container}>
+                            <div className={styles.tags}>
+                                {tags.map((tag, index)=>{
+                                return <a key={index + 'k'} href='#'>#{tag.tag} </a>
+
+                                })}
+                            </div>
+                        </div>
+                        <div style={{width : '300px', height : 'fit-content', display : 'flex', alignItems: 'center', marginTop : '10px', background : 'white'}}>
+                                <p className={styles.camera_info_title2}>{comments.length} Comments</p>
+                        </div>
+                        <div className={styles.comment_container}>
+                            {comments.map((comment, index)=>{
+                                return <div key={index + 'm'} style={{padding : '5px', display : 'flex'}}>
+                                    <img src={comment.profile} alt='프로필' className={styles.comment_profile}></img>
+                                    <div className={styles.comment_info}>
+                                        <p style={{fontFamily : '부크크고딕bold', fontSize : '14px'}}>{comment.name}</p>
+                                        <p style={{fontFamily : '부크크고딕', fontSize : '12px', marginTop : '-10px', color : 'black'}}>{comment.content}</p>
+                                        <p style={{fontFamily : '부크크고딕', fontSize : '10px', marginTop : '-10px', color : 'gray'}}>{comment.time}</p>
+                                    </div>
+                                </div>
+
+                            })}
+                        </div>
+                        <div className={styles.send_comment_container}>
+                            <div className={styles.send_box}>
+                                <input className={styles.input_box2} type="text" placeholder="댓글" ></input>
+                                <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기'></img>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </>
+        )}
+
+        {uploadPhoto && (
+            <>
+                <div className={styles.modal_background}></div>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadModal();}}></img>
+                <div  className={styles.upload_modal_container}>
+
+                </div>
+            </>
+        )}
         <div className={styles.main_container}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
-                    <div className={styles.dropdown_container}>
+                    <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
                         <p className={styles.dropdown_txt}>{type}</p>
-                        <FaAngleDown  className={`${styles.dropdown_icon} ${isRotated ? styles.rotated : ''}`}  onClick={() => {openTypeList(); toggleRotation();}}/>
+                        <FaAngleDown  className={`${styles.dropdown_icon} ${isRotated ? styles.rotated : ''}`} />
                     </div>
 
                     {typeList && (
@@ -489,13 +669,13 @@ const Gallery: React.FC = () => {
 
             <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
             <div className={styles.btn_container}>
-                <div className={styles.photo_btn}>
+                <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
                     <p>사진 업로드</p>
                 </div>
                 <div className={styles.sort_btn}>
-                    <div className={styles.dropdown_container}>
+                    <div className={styles.dropdown_container} onClick={() => {openSortTypeList();}}>
                         <p className={styles.dropdown_txt2}>{sortType}순</p>
-                        <FaAngleDown  className={`${styles.dropdown_icon2} ${isRotated2 ? styles.rotated : ''}`}  onClick={() => {openSortTypeList();}}/>
+                        <FaAngleDown  className={`${styles.dropdown_icon2} ${isRotated2 ? styles.rotated : ''}`}/>
                     </div>
 
                     {sortTypeList && (
@@ -515,39 +695,26 @@ const Gallery: React.FC = () => {
                     
                     {/* <div className="dog-imgs-container"> */}
                         {dogImgArr &&
-                            dogImgArr.map((Imgs: dogImgInterface) => (
-                                <div key={Imgs.id} className="dog-img-card">
-                                    <img src={Imgs.dogUrl} />
-                                    <p>cute_{Imgs.id}</p>
+                            dogImgArr.map((Imgs: imgInterface, idx) => (
+                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails();}}>
+                                    <img src={Imgs.url} />
+                                    <div className={styles.photo_info2}>
+                                        <p className={styles.info_txt2}>{Imgs.title}</p>
+                                        <div className={styles.like_container2}>
+                                            <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
+                                            <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
+                                        </div>
+                                    </div>
                                 </div>
                                 ))}
-
-                    {/* {imageData.map(
-                        (item, i) => (
-                            <div>
-                            <img src={item.url} alt='사진'></img>
-                            {isLoading && <p>Loading...</p>}
-                            <div id="observer" style={{ height: "10px" }}></div>
-                            </div>
-                    ))} */}
             </Masonry>
             {isLoading && <p>Loading...</p>}
-                           
-                           <div className="dog-imgs-container"> 
-                           <div id="observer" style={{ height: "10px" }}></div>
-                           </div>
-            {/* <div className="dog-imgs-container">
-                {dogImgArr &&
-                    dogImgArr.map((dogImg: dogImgInterface) => (
-                    <div key={dogImg.id} className="dog-img-card">
-                        <img src={dogImg.dogUrl} />
-                        <p>cute_{dogImg.id}</p>
-                    </div>
-                    ))}
-                {isLoading && <p>Loading...</p>}
-                <div id="observer" style={{ height: "10px" }}></div>
-            </div> */}
+            
+            <div className="dog-imgs-container"> 
+            <div id="observer" style={{ height: "10px" }}></div>
+            </div>
         </div>
+        </>
     );
 };
 
