@@ -1,12 +1,15 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, Sky } from "@react-three/drei";
-import { DirectionalLight, VSMShadowMap } from "three";
+import { OrbitControls } from "@react-three/drei";
+import { DirectionalLight } from "three";
 import StudioStyle from "./css/Studio.module.css";
 import AmusementPark from "./element/AmusementPark";
 
 function LandScapePage() {
     const lightRef = useRef<DirectionalLight>(null);
+    const [capturedImage, setCapturedImage] = useState(null);
+    const captureRef = useRef();
+    const [showSettings, setShowSettings] = useState(false);
 
     useEffect(() => {
         if (lightRef.current) {
@@ -27,22 +30,42 @@ function LandScapePage() {
     return (
         <>
             <div className={StudioStyle.container}>
-                <div className={StudioStyle.canvasContainer}>
+                <div className={`${StudioStyle.canvasContainer} ${showSettings ? StudioStyle.shrink : ""}`}>
                     <Canvas shadows camera={{ rotation: [10, 0, 0], position: [162, 3, 60], far: 10000 }}>
                         <ambientLight intensity={1} />
                         <directionalLight ref={lightRef} castShadow position={[0, 100, -40]} intensity={2} />
-                        <Sky distance={40000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
                         <OrbitControls />
                         <AmusementPark />
                     </Canvas>
                 </div>
-                <div className="absolute top-0 right-0 w-[300px] bg-black bg-opacity-90 h-full flex flex-col items-center">
-                    <p className="text-white font-bookkMyungjoBold text-[25px] p-5">Setting</p>
-                    <button className=" rounded-[80px] flex items-center justify-center bg-white w-[170px] h-[60px]">
-                        <p className="font-bookkGothicBold mr-2 text-[18px]">SHOOT</p>
-                        <img src="./imgs/camera.png" alt="Camera Icon" className="w-[25px]" />
+                {!showSettings && (
+                    <button
+                        onClick={() => setShowSettings(true)}
+                        className="camera-btn flex flex-col justify-center items-center absolute bottom-5 right-5 z-50 bg-white rounded-[100%] w-[80px] h-[80px] border-1 border-black"
+                    >
+                        <img src="./imgs/camera.png" alt="Camera Icon" className="w-[30px]" />
+                        <p className="font-bookkMyungjoBold text-[10px]">CAMERA</p>
                     </button>
-                </div>
+                )}
+                {showSettings && (
+                    <div className="absolute top-0 right-0 w-[300px] bg-black bg-opacity-90 h-full flex flex-col items-center">
+                        <div className="title  items-center flex w-[100%] py-3">
+                            <button
+                                className=" w-[40px] flex items-center mx-2 "
+                                onClick={() => setShowSettings(false)}
+                            >
+                                <img src="./imgs/cancel.png" alt="Right Arrow" />
+                            </button>
+
+                            <p className="text-white font-bookkMyungjoBold text-[25px] ml-[65px]">Setting</p>
+                        </div>
+
+                        <button className="rounded-[80px] flex items-center justify-center bg-white w-[170px] h-[50px]">
+                            <p className="font-bookkGothicBold mr-2 text-[18px]">SHOOT</p>
+                            <img src="./imgs/camera.png" alt="Camera Icon" className="w-[25px]" />
+                        </button>
+                    </div>
+                )}
             </div>
         </>
     );

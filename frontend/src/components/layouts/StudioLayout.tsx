@@ -12,7 +12,8 @@ function StudioLayout() {
             <button onClick={goBack} className=" flex items-center absolute top-5 left-5 z-50">
                 <img src="./imgs/rightArrow.png" alt="" className="w-[40px] mr-2" />
                 <p className="text-[25px] font-bookkMyungjoBold">BACK</p>
-            </button>{" "}
+            </button>
+
             <Outlet />
         </div>
     );
