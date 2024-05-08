@@ -1,4 +1,4 @@
-package org.ssafy.d103.communities.dto.response;
+package org.ssafy.d103.communities.dto.photo.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class PostWriteCommentResponse {
+public class GetPhotoCommentListResponse {
 
     private Integer commentCnt;
     private List<PhotoCommentResponse> commentList;
 
     @Builder
-    private PostWriteCommentResponse(Integer commentCnt, List<PhotoCommentResponse> commentList) {
+    private GetPhotoCommentListResponse(Integer commentCnt, List<PhotoCommentResponse> commentList) {
         this.commentCnt = commentCnt;
         this.commentList = commentList;
     }
 
-    public static PostWriteCommentResponse of(Integer commentCnt, List<PhotoComment> commentList) {
+    public static GetPhotoCommentListResponse of(Integer commentCnt, List<PhotoComment> commentList) {
         List<PhotoCommentResponse> responseList = commentList.stream()
                 .map(PhotoCommentResponse::from)
                 .collect(Collectors.toList());
