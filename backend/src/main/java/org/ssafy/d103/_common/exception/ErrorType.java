@@ -20,6 +20,15 @@ public enum ErrorType {
     NOT_FOUND_MEMBER(404, "멤버가 존재하지 않습니다."),
     INVALID_PASSWORD(400, "비밀번호가 일치하지 않습니다."),
 
+    //********************************[ Photos ]********************************
+    NOT_FOUND_PHOTO(404, "사진이 존재하지 않습니다."),
+    NOT_FOUND_PHOTO_DETAIL(404, "사진의 상세정보가 존재하지 않습니다."),
+    NOT_FOUND_GALLERY_PHOTO(404, "갤러리 사진이 존재하지 않습니다."),
+    NOT_FOUND_HASHTAG(404, "해시태그가 존재하지 않습니다."),
+    NOT_FOUND_PHOTO_METADATA(404, "사진의 메타데이터가 존재하지 않습니다."),
+    SELF_LIKE_NOT_ALLOWED(400, "본인의 사진에 대한 좋아요를 허용하지 않습니다."),
+    NOT_FOUND_PHOTO_COMMENT(404, "해당 댓글이 존재하지 않습니다."),
+
     //********************************[ Follows ]********************************
     ALREADY_FOLLOWING(400, "이미 팔로잉 중입니다."),
     NOT_FOUND_FOLLOW(404, "팔로우 정보가 존재하지 않습니다."),
@@ -31,7 +40,8 @@ public enum ErrorType {
 
     //********************************[ ETC ]********************************
     ANOTHER_ERROR(401, "기타 에러가 발생하였습니다."),
-    DB_SAVE_ERROR(500, "DB 저장중 오류가 발생하였습니다.");
+    DB_SAVE_ERROR(500, "DB 저장중 오류가 발생하였습니다."),
+    DB_DELETE_ERROR(500, "DB 삭제중 오류가 발생하였습니다.");
 
     private final int code;
     private final String msg;

@@ -21,18 +21,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.dto.request.PostUploadPhotoRequest;
-import org.ssafy.d103.communities.dto.response.PostUploadPhotoResponse;
+import org.ssafy.d103.communities.dto.photo.request.*;
+import org.ssafy.d103.communities.dto.photo.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
-import org.ssafy.d103.communities.repository.*;
+import org.ssafy.d103.communities.repository.photo.*;
 import org.ssafy.d103.members.entity.Members;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -49,13 +46,17 @@ public class PhotoService {
 
     private final PhotoRepository photoRepository;
 
-    private final MetadataRepository metadataRepository;
+    private final PhotoMetadataRepository photoMetadataRepository;
 
     private final PhotoDetailRepository photoDetailRepository;
 
     private final HashtagRepository hashtagRepository;
 
     private final PhotoHashtagRepository photoHashtagRepository;
+
+    private final PhotoLikeRepository photoLikeRepository;
+
+    private final PhotoCommentRepository photoCommentRepository;
 
     private final CommonService commonService;
 
@@ -64,7 +65,6 @@ public class PhotoService {
 
     @Transactional
     public PostUploadPhotoResponse uploadPhoto(Authentication authentication, MultipartFile multipartFile, PostUploadPhotoRequest postUploadPhotoRequest) {
-
         Members member = commonService.findMemberByAuthentication(authentication);
 
         Photo photo = Photo.of(postUploadPhotoRequest.getTitle(), null, null, AccessType.fromString(postUploadPhotoRequest.getAccessType()), member);
@@ -165,7 +165,7 @@ public class PhotoService {
 
             }
 
-            metadataRepository.save(PhotoMetadata.of(time, cameraType, cameraModel, lensModel, aperture, focusDistance, shutterSpeed, iso, latitude, longitude, photo));
+            photoMetadataRepository.save(PhotoMetadata.of(time, cameraType, cameraModel, lensModel, aperture, focusDistance, shutterSpeed, iso, latitude, longitude, photo));
 
         } catch (IOException | ImageProcessingException e) {
             e.getStackTrace();
@@ -208,5 +208,240 @@ public class PhotoService {
                 photoHashtagRepository.save(PhotoHashtag.of(photo, hashtag));
             }
         }
+    }
+
+    @Transactional
+    public PutModifyPhotoResponse modifyPhoto(Authentication authentication, PutModifyPhotoRequest putModifyPhotoRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoByIdAndMember(putModifyPhotoRequest.getPhotoId(), member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        photo.modifyPhoto(putModifyPhotoRequest);
+
+        photoHashtagRepository.deletePhotoHashtagByPhoto(photo);
+        saveHashtag(putModifyPhotoRequest.getHashtagList(), photo);
+
+        List<PhotoHashtag> photoHashtagList = photoHashtagRepository.findAllByPhoto(photo);
+        List<String> hashtagList = new ArrayList<>();
+        for (PhotoHashtag photoHashtag : photoHashtagList) {
+            Hashtag hashtag = hashtagRepository.findHashtagById(photoHashtag.getHashtag().getId())
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_HASHTAG));
+            hashtagList.add(hashtag.getTagText());
+        }
+
+        return PutModifyPhotoResponse.of(photo.getTitle(), photo.getAccessType(), photo.getCreatedAt(), hashtagList);
+    }
+
+    @Transactional
+    public DeletePhotoResponse deletePhoto(Authentication authentication, Long photoId) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        // 삭제할 사진을 데이터베이스에서 가져옴
+        Photo photo = photoRepository.findPhotoByIdAndMember(photoId, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        // S3에서 썸네일 이미지와 원본 이미지를 삭제
+        deleteS3Image(photo.getImageUrl());
+        deleteS3Image(photo.getThumbnailUrl());
+
+        // 데이터베이스에서 사진 삭제
+        try {
+            photoRepository.deleteByIdAndMember(photoId, member);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomException(ErrorType.DB_DELETE_ERROR);
+        }
+
+        // !!!!!!!!!!!!!!!!!!!! Question API 구현 후, 사진 삭제에 따른 질문 삭제도 구현해야함 !!!!!!!!!!!!!!!!!!!!
+
+        return DeletePhotoResponse.of(true);
+    }
+
+    private void deleteS3Image(String imageUrl) {
+        String fileName = extractFileNameFromUrl(imageUrl);
+        amazonS3Client.deleteObject(bucket, fileName);
+    }
+
+    private String extractFileNameFromUrl(String imageUrl) {
+        String[] parts = imageUrl.split("/");
+        return parts[parts.length - 1];
+    }
+
+    public List<GetBasicPhotoInfoResponse> getPhotoByAccessType(Authentication authentication, String accessType) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        List<Photo> MemberPhotoList = photoRepository.findAllByMemberAndAccessTypeOrderByCreatedAtDesc(member, AccessType.fromString(accessType));
+        return getBasicPhotoInfo(MemberPhotoList);
+    }
+
+    public List<GetBasicPhotoInfoResponse> getPhotoAll(Authentication authentication) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        List<Photo> MemberPhotoList = photoRepository.findAllByMemberOrderByCreatedAtDesc(member);
+        return getBasicPhotoInfo(MemberPhotoList);
+    }
+
+    private List<GetBasicPhotoInfoResponse> getBasicPhotoInfo(List<Photo> memberPhotoList) {
+        List<GetBasicPhotoInfoResponse> getBasicPhotoInfoResponseList = new ArrayList<>();
+
+        for (Photo photo : memberPhotoList) {
+            PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+            getBasicPhotoInfoResponseList.add(GetBasicPhotoInfoResponse.from(photo, photoDetail.getLikeCnt()));
+        }
+
+        return getBasicPhotoInfoResponseList;
+    }
+
+    public List<GetGalleryPhotoInfoResponse> getGalleryPhoto(Authentication authentication) {
+        // 전체 갤러리 사진 리스트
+        List<Photo> allGalleryPhotoList = photoRepository.findAllByOrderByCreatedAtDesc();
+
+        // 결과 반환 리스트
+        List<GetGalleryPhotoInfoResponse> getGalleryPhotoInfoResponseList = new ArrayList<>();
+
+        // 토큰 O -> 로그인 O
+        if (authentication != null) {
+            Members member = commonService.findMemberByAuthentication(authentication);
+
+            // 해당 멤버가 좋아요 목록 가져옴
+            List<PhotoLike> photoLikeList = photoLikeRepository.findAllByMember(member);
+
+            // 좋아요한 사진들의 Photo ID만 추출
+            List<Long> photoIdList = new ArrayList<>();
+
+            for (PhotoLike photoLike : photoLikeList) {
+                photoIdList.add(photoLike.getPhoto().getId());
+            }
+
+            // 갤러리 사진 목록 전체에 대한 좋아요 여부 표시
+            for (Photo photo : allGalleryPhotoList) {
+                PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                getGalleryPhotoInfoResponseList.add(GetGalleryPhotoInfoResponse.from(photo, photoDetail.getLikeCnt(), photoIdList.contains(photo.getId())));
+            }
+        }
+        // 토큰 X -> 로그인 X
+        else {
+            for (Photo photo : allGalleryPhotoList) {
+                PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                getGalleryPhotoInfoResponseList.add(GetGalleryPhotoInfoResponse.from(photo, photoDetail.getLikeCnt(), false));
+            }
+        }
+
+        return getGalleryPhotoInfoResponseList;
+    }
+
+    @Transactional
+    public GetPhotoDetailInfoResponse getPhotoDetail(Authentication authentication, Long photoId) {
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        // 조회수 증가
+        photoDetail.updateViewCnt(true);
+
+        PhotoMetadata findMetadata = photoMetadataRepository.findPhotoMetadataByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_METADATA));
+
+        List<PhotoHashtag> photoHashtagList = photoHashtagRepository.findAllByPhoto(photo);
+        List<String> hashtagList = new ArrayList<>();
+
+        for (PhotoHashtag photoHashtag : photoHashtagList) {
+            hashtagList.add(photoHashtag.getHashtag().getTagText());
+        }
+
+        // 토큰 O -> 로그인 O
+        if (authentication != null) {
+            Members member = commonService.findMemberByAuthentication(authentication);
+            return GetPhotoDetailInfoResponse.of(photo, photoDetail, photoLikeRepository.findPhotoLikeByMemberAndPhoto(member, photo).isPresent(), PhotoMetadata.from(findMetadata), hashtagList);
+        }
+        // 토큰 X -> 로그인 X
+        else {
+            return GetPhotoDetailInfoResponse.of(photo, photoDetail, false, PhotoMetadata.from(findMetadata), hashtagList);
+        }
+    }
+
+    @Transactional
+    public PostChangePhotoLikeResponse changePhotoLike(Authentication authentication, PostChangePhotoLikeRequest postChangePhotoLikeRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoById(postChangePhotoLikeRequest.getPhotoId())
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        // 본인 사진 좋아요 불가
+        if (photo.getMember().equals(member)) {
+            throw new CustomException(ErrorType.SELF_LIKE_NOT_ALLOWED);
+        }
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        Optional<PhotoLike> findPhotoLike = photoLikeRepository.findPhotoLikeByMemberAndPhoto(member, photo);
+
+        // 좋아요 기록이 있다면 Delete
+        if (findPhotoLike.isPresent()) {
+            photoLikeRepository.delete(findPhotoLike.get());
+            return PostChangePhotoLikeResponse.of(false, photoDetail.updateLikeCnt(false));
+        }
+        // 좋아요 기록이 없다면 Insert
+        else {
+            photoLikeRepository.save(PhotoLike.of(member, photo));
+            return PostChangePhotoLikeResponse.of(true, photoDetail.updateLikeCnt(true));
+        }
+    }
+
+    @Transactional
+    public PostWriteCommentResponse writeComment(Authentication authentication, Long photoId, PostWriteCommentRequest postWriteCommentRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        photoCommentRepository.save(PhotoComment.of(postWriteCommentRequest.getComment(), member, photo));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
+
+        return PostWriteCommentResponse.of(photoDetail.updateCommentCnt(true), photoCommentList);
+    }
+
+    @Transactional
+    public GetPhotoCommentListResponse getPhotoCommentList(Long photoId) {
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
+
+        return GetPhotoCommentListResponse.of(photoDetail.getCommentCnt(), photoCommentList);
+    }
+
+    @Transactional
+    public DeletePhotoCommentResponse removePhotoComment(Authentication authentication, Long photoId, DeletePhotoCommentRequest deletePhotoCommentRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoById(photoId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        PhotoComment photoComment = photoCommentRepository.findPhotoCommentByIdAndPhotoAndMember(deletePhotoCommentRequest.getCommentId(), photo, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_COMMENT));
+
+        photoCommentRepository.delete(photoComment);
+
+        List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
+
+        return DeletePhotoCommentResponse.of(photoDetail.updateCommentCnt(false), photoCommentList);
     }
 }

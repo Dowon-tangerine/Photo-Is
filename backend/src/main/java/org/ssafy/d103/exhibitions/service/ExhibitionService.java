@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.repository.PhotoRepository;
+import org.ssafy.d103.communities.repository.photo.PhotoRepository;
 import org.ssafy.d103.exhibitions.dto.ExhibitionCommentDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
@@ -64,7 +64,7 @@ public class ExhibitionService {
 
         List<ExhibitionPhoto> exhibitionPhotoList = new ArrayList<>();
         int cnt = 0;
-        for(ExhibitionPhotoIdDto e: request.getPhotoList()) {
+        for (ExhibitionPhotoIdDto e : request.getPhotoList()) {
             exhibitionPhotoList.add(
                     ExhibitionPhoto.builder()
                             .exhibitionId(exhibition)
@@ -132,7 +132,7 @@ public class ExhibitionService {
                 .orElse(null);
 
         boolean flag = false;
-        if(exhibitionLike == null) {
+        if (exhibitionLike == null) {
             exhibitionLikeRepository.save(
                     ExhibitionLike
                             .builder()
@@ -141,13 +141,12 @@ public class ExhibitionService {
                             .build()
             );
 
-            exhibition.updateLikeCnt(exhibition.getLikeCnt()+1);
+            exhibition.updateLikeCnt(exhibition.getLikeCnt() + 1);
             exhibitionRepository.save(exhibition);
             flag = true;
-        }
-        else {
+        } else {
             exhibitionLikeRepository.delete(exhibitionLike);
-            exhibition.updateLikeCnt(exhibition.getLikeCnt()-1);
+            exhibition.updateLikeCnt(exhibition.getLikeCnt() - 1);
             exhibitionRepository.save(exhibition);
         }
 
@@ -174,7 +173,7 @@ public class ExhibitionService {
         return selectExhibitionCommentList(request.getExhibitionId());
     }
 
-    public GetExhibitionListResponse selectExhibitionList(Authentication authentication){
+    public GetExhibitionListResponse selectExhibitionList(Authentication authentication) {
 
         Members member = commonService.findMemberByAuthentication(authentication);
 
@@ -187,10 +186,10 @@ public class ExhibitionService {
 
         List<Exhibitions> followExhibitionList = new ArrayList<>();
 
-        for(Exhibitions e: exhibitionList) {
-            for(Follows f: followList) {
+        for (Exhibitions e : exhibitionList) {
+            for (Follows f : followList) {
                 log.warn("{} vs {}", e.getMemberId().getId(), f.getFollowingId().getId());
-                if(e.getMemberId().getId() == f.getFollowingId().getId()) {
+                if (e.getMemberId().getId() == f.getFollowingId().getId()) {
                     followExhibitionList.add(e);
                 }
             }
