@@ -15,4 +15,10 @@ import java.util.Optional;
 public interface ExhibitionRepository extends JpaRepository<Exhibitions, Long> {
 
     Optional<List<Exhibitions>> findExhibitionsByMemberId(Members member);
+
+    @Query(value =
+            "SELECT * " +
+            "FROM exhibitions " +
+            "WHERE end_date >= NOW()", nativeQuery = true)
+    Optional<List<Exhibitions>> findAllExhibitions();
 }
