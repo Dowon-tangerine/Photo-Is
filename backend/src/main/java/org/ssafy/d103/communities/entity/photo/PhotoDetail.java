@@ -76,7 +76,7 @@ public class PhotoDetail {
         return commentCnt;
     }
 
-    public Integer updateViewCnt(boolean operation) {
+    public void updateViewCnt(boolean operation) {
         // operation이 true면 증가
         if (operation) {
             this.viewCnt++;
@@ -85,8 +85,6 @@ public class PhotoDetail {
         else {
             this.viewCnt--;
         }
-
-        return viewCnt;
     }
 
 }

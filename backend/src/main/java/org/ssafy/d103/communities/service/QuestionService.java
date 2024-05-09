@@ -45,6 +45,7 @@ public class QuestionService {
 
     private final CommonService commonService;
 
+    @Transactional
     public PostUploadQuestionResponse uploadQuestion(Authentication authentication, PostUploadQuestionRequest postUploadQuestionRequest) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
@@ -122,9 +123,15 @@ public class QuestionService {
         return GetQuestionListResponse.of((int) questionPage.getTotalElements(), questions, paginationDataDto);
     }
 
+    @Transactional
     public GetQuestionDetailResponse getQuestionDetail(Long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        QuestionDetail questionDetail = questionDetailRepository.findByQuestion(question)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        questionDetail.updateViewCnt(true);
 
         return GetQuestionDetailResponse.from(question);
     }
