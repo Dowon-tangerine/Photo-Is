@@ -73,4 +73,11 @@ public class Question extends OnlyCreatedTime {
                 .build();
     }
 
+    public Question modifyQuestion(String title, String content) {
+        this.title = title;
+        this.content = content;
+
+        return this;
+    }
+
 }

@@ -8,15 +8,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.question.PaginationDataDto;
 import org.ssafy.d103.communities.dto.question.QuestionDto;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
+import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
 import org.ssafy.d103.communities.dto.question.response.GetQuestionDetailResponse;
 import org.ssafy.d103.communities.dto.question.response.GetQuestionListResponse;
 import org.ssafy.d103.communities.dto.question.response.PostUploadQuestionResponse;
+import org.ssafy.d103.communities.dto.question.response.PutModifyQuestionResponse;
 import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.question.Category;
 import org.ssafy.d103.communities.entity.question.Question;
@@ -124,6 +127,16 @@ public class QuestionService {
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
 
         return GetQuestionDetailResponse.from(question);
+    }
+
+    @Transactional
+    public PutModifyQuestionResponse putModifyQuestion(Authentication authentication, Long questionId, PutModifyQuestionRequest putModifyQuestionRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Question question = questionRepository.findQuestionByIdAndMember(questionId, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        return PutModifyQuestionResponse.from(question.modifyQuestion(putModifyQuestionRequest.getTitle(), putModifyQuestionRequest.getContent()));
     }
 
 }
