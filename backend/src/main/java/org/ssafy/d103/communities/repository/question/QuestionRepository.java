@@ -7,6 +7,4 @@ import org.ssafy.d103.communities.entity.question.Question;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-
-
 }

@@ -11,11 +11,12 @@ import org.springframework.stereotype.Service;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
-import org.ssafy.d103.communities.dto.question.response.GetQuestionListResponse;
 import org.ssafy.d103.communities.dto.question.PaginationDataDto;
-import org.ssafy.d103.communities.dto.question.response.PostUploadQuestionResponse;
 import org.ssafy.d103.communities.dto.question.QuestionDto;
+import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
+import org.ssafy.d103.communities.dto.question.response.GetQuestionDetailResponse;
+import org.ssafy.d103.communities.dto.question.response.GetQuestionListResponse;
+import org.ssafy.d103.communities.dto.question.response.PostUploadQuestionResponse;
 import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.question.Category;
 import org.ssafy.d103.communities.entity.question.Question;
@@ -116,6 +117,13 @@ public class QuestionService {
 
         // 전체 질문 수 및 질문 리스트 응답 생성
         return GetQuestionListResponse.of((int) questionPage.getTotalElements(), questions, paginationDataDto);
+    }
+
+    public GetQuestionDetailResponse getQuestionDetail(Long questionId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        return GetQuestionDetailResponse.from(question);
     }
 
 }
