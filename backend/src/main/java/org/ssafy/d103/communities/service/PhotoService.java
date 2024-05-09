@@ -253,8 +253,6 @@ public class PhotoService {
             throw new CustomException(ErrorType.DB_DELETE_ERROR);
         }
 
-        // !!!!!!!!!!!!!!!!!!!! Question API 구현 후, 사진 삭제에 따른 질문 삭제도 구현해야함 !!!!!!!!!!!!!!!!!!!!
-
         return DeletePhotoResponse.of(true);
     }
 

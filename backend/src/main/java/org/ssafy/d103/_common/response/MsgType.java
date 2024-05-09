@@ -48,6 +48,7 @@ public enum MsgType {
     QUESTION_LIST_GET_SUCCESSFULLY("질문 목록 조회에 성공하였습니다."),
     QUESTION_DETAIL_GET_SUCCESSFULLY("질문 목록 조회에 성공하였습니다."),
     QUESTION_MODIFY_SUCCESSFULLY("질문 수정에 성공하였습니다."),
+    QUESTION_DELETE_SUCCESSFULLY("질문 삭제에 성공하였습니다."),
     ;
 
     private final String msg;
