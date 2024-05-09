@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
+import org.ssafy.d103.communities.dto.question.request.DeleteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PostWriteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
 import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
@@ -51,6 +52,11 @@ public class QuestionController {
     @PostMapping("/{question-id}/comment")
     public ApiResponseDto<PostWriteQuestionCommentResponse> postWriteQuestionComment(Authentication authentication, @PathVariable("question-id") Long questionId, @RequestBody PostWriteQuestionCommentRequest postWriteQuestionCommentRequest) {
         return ResponseUtils.ok(questionService.writeQuestionComment(authentication, questionId, postWriteQuestionCommentRequest), MsgType.QUESTION_COMMENT_WRITE_SUCCESSFULLY);
+    }
+
+    @DeleteMapping("/{question-id}/comment")
+    public ApiResponseDto<DeleteQuestionCommentResponse> deleteQuestionComment(Authentication authentication, @PathVariable("question-id") Long questionId, @RequestBody DeleteQuestionCommentRequest deleteQuestionCommentRequest) {
+        return ResponseUtils.ok(questionService.removeQuestionComment(authentication, questionId, deleteQuestionCommentRequest), MsgType.QUESTION_COMMENT_DELETE_SUCCESSFULLY);
     }
 
 }

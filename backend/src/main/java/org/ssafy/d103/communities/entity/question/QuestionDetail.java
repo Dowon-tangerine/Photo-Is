@@ -57,7 +57,6 @@ public class QuestionDetail {
         return commentCnt;
     }
 
-
     public void updateViewCnt(boolean operation) {
         // operation이 true면 증가
         if (operation) {

@@ -14,8 +14,9 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.question.PaginationDataDto;
 import org.ssafy.d103.communities.dto.question.QuestionDto;
-import org.ssafy.d103.communities.dto.question.request.PostWriteQuestionCommentRequest;
+import org.ssafy.d103.communities.dto.question.request.DeleteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
+import org.ssafy.d103.communities.dto.question.request.PostWriteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
 import org.ssafy.d103.communities.dto.question.response.*;
 import org.ssafy.d103.communities.entity.photo.Photo;
@@ -180,4 +181,28 @@ public class QuestionService {
         return PostWriteQuestionCommentResponse.of(questionDetail.updateCommentCnt(true), questionCommentList);
     }
 
+    @Transactional
+    public DeleteQuestionCommentResponse removeQuestionComment(Authentication authentication, Long questionId, DeleteQuestionCommentRequest deleteQuestionCommentRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        QuestionDetail questionDetail = questionDetailRepository.findByQuestion(question)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        QuestionComment questionComment = questionCommentRepository.findByIdAndQuestionAndMember(deleteQuestionCommentRequest.getCommentId(), question, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_COMMENT));
+
+        try {
+            questionCommentRepository.delete(questionComment);
+        } catch (Exception e) {
+            e.getStackTrace();
+            throw new CustomException(ErrorType.DB_DELETE_ERROR);
+        }
+
+        List<QuestionComment> questionCommentList = questionCommentRepository.findAllByQuestion(question);
+
+        return DeleteQuestionCommentResponse.of(questionDetail.updateCommentCnt(false), questionCommentList);
+    }
 }
