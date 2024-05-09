@@ -5,6 +5,7 @@ import Home from "./components/home/Home";
 import StudioEnterPage from "./components/studio/StudioEnterPage";
 import HelloPhoto from "./components/docs/HelloPhoto";
 import Dictionary from "./components/docs/Dictionary";
+import SignIn from "./components/signin/SignIn";
 
 import LandScapePage from "./components/studio/LandScapePage";
 export default function App() {
@@ -16,6 +17,8 @@ export default function App() {
                     <Route path="/studio-enter" element={<StudioEnterPage />} />
                     <Route path="/docs/product1" element={<HelloPhoto />} />
                     <Route path="/docs/product2" element={<Dictionary />} />
+                    <Route path="/signin" element={<SignIn />} />
+
                 </Route>
                 
 
