@@ -101,7 +101,7 @@ public class QuestionService {
             throw new CustomException(ErrorType.NOT_FOUND_QUESTION_PAGE);
         }
 
-        // 각 질문을 QuestionResponse로 변환
+        // 각 질문을 QuestionDto로 변환
         List<QuestionDto> questions = questionPage.getContent().stream()
                 .map(q -> QuestionDto.of(
                         q.getId(),
@@ -124,6 +124,47 @@ public class QuestionService {
 
         // 전체 질문 수 및 질문 리스트 응답 생성
         return GetQuestionListResponse.of((int) questionPage.getTotalElements(), questions, paginationDataDto);
+    }
+
+    public GetQuestionListByCategoryResponse getQuestionListByCategory(String category, int page, int size) {
+        // 페이지를 1부터 시작하도록 0으로 설정
+        // 음수 페이지가 요청되지 않도록 설정
+        int adjustedPage = Math.max(page - 1, 0);
+
+        // 페이지네이션 요청을 (기본 10 size)최신순으로 생성
+        Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        // 카테고리별로 페이지네이션된 질문 데이터를 가져옴
+        Page<Question> questionPage = questionRepository.findAllByCategory(Category.fromString(category), pageable);
+
+        // 페이지에 데이터가 없을 경우 예외 발생
+        if (questionPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_QUESTION_PAGE);
+        }
+
+        // 각 질문을 QuestionDto로 변환
+        List<QuestionDto> questions = questionPage.getContent().stream()
+                .map(q -> QuestionDto.of(
+                        q.getId(),
+                        q.getMember().getId(),
+                        q.getMember().getNickname(),
+                        q.getCategory().getCategoryName(),
+                        q.getTitle(),
+                        q.getPhoto() != null,
+                        q.getQuestionDetail().getCommentCnt(),
+                        q.getQuestionDetail().getViewCnt(),
+                        q.getCreatedAt()))
+                .collect(Collectors.toList());
+
+        // 데이터와 페이지네이션 정보를 구성
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                questionPage.getNumber() + 1,
+                questionPage.getTotalPages(),
+                (int) questionPage.getTotalElements(),
+                questionPage.getSize());
+
+        // 전체 질문 수 및 질문 리스트 응답 생성
+        return GetQuestionListByCategoryResponse.of(category, (int) questionPage.getTotalElements(), questions, paginationDataDto);
     }
 
     @Transactional

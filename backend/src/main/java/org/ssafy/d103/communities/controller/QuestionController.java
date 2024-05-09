@@ -34,7 +34,12 @@ public class QuestionController {
         return ResponseUtils.ok(questionService.getQuestionList(page, size), MsgType.QUESTION_LIST_GET_SUCCESSFULLY);
     }
 
-    @GetMapping("/{question-id}")
+    @GetMapping("/{category}")
+    public ApiResponseDto<GetQuestionListByCategoryResponse> getQuestionListByCategory(@PathVariable("category") String category, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseUtils.ok(questionService.getQuestionListByCategory(category, page, size), MsgType.QUESTION_LIST_BY_CATEGORY_GET_SUCCESSFULLY);
+    }
+
+    @GetMapping("/detail/{question-id}")
     public ApiResponseDto<GetQuestionDetailResponse> getQuestionDetail(@PathVariable("question-id") Long questionId) {
         return ResponseUtils.ok(questionService.getQuestionDetail(questionId), MsgType.QUESTION_DETAIL_GET_SUCCESSFULLY);
     }
