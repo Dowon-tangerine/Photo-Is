@@ -358,11 +358,11 @@ public class PhotoService {
         // 토큰 O -> 로그인 O
         if (authentication != null) {
             Members member = commonService.findMemberByAuthentication(authentication);
-            return GetPhotoDetailInfoResponse.from(photo, photoDetail, photoLikeRepository.findPhotoLikeByMemberAndPhoto(member, photo).isPresent(), PhotoMetadata.from(findMetadata), hashtagList);
+            return GetPhotoDetailInfoResponse.from(photo, photoLikeRepository.findPhotoLikeByMemberAndPhoto(member, photo).isPresent(), hashtagList);
         }
         // 토큰 X -> 로그인 X
         else {
-            return GetPhotoDetailInfoResponse.from(photo, photoDetail, false, PhotoMetadata.from(findMetadata), hashtagList);
+            return GetPhotoDetailInfoResponse.from(photo, false, hashtagList);
         }
     }
 
