@@ -10,14 +10,16 @@ import java.time.LocalDateTime;
 public class PhotoCommentDto {
 
     private Long commentId;
+    private Long memberId;
     private String nickname;
     private String profileUrl;
     private String comment;
     private LocalDateTime createdAt;
 
     @Builder
-    private PhotoCommentDto(Long commentId, String nickname, String profileUrl, String comment, LocalDateTime createdAt) {
+    private PhotoCommentDto(Long commentId, Long memberId, String nickname, String profileUrl, String comment, LocalDateTime createdAt) {
         this.commentId = commentId;
+        this.memberId = memberId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
         this.comment = comment;
@@ -27,6 +29,7 @@ public class PhotoCommentDto {
     public static PhotoCommentDto from(PhotoComment photoComment) {
         return builder()
                 .commentId(photoComment.getId())
+                .memberId(photoComment.getMember().getId())
                 .nickname(photoComment.getMember().getNickname())
                 .profileUrl(photoComment.getMember().getProfileUrl())
                 .comment(photoComment.getComment())

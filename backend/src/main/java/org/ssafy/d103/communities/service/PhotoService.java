@@ -21,10 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.dto.photo.request.*;
+import org.ssafy.d103.communities.dto.photo.request.DeletePhotoCommentRequest;
+import org.ssafy.d103.communities.dto.photo.request.PostUploadPhotoRequest;
+import org.ssafy.d103.communities.dto.photo.request.PostWritePhotoCommentRequest;
+import org.ssafy.d103.communities.dto.photo.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.dto.photo.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
 import org.ssafy.d103.communities.repository.photo.*;
+import org.ssafy.d103.exhibitions.repository.ExhibitionPhotoRepository;
 import org.ssafy.d103.members.entity.Members;
 
 import java.io.File;
@@ -57,6 +61,8 @@ public class PhotoService {
     private final PhotoLikeRepository photoLikeRepository;
 
     private final PhotoCommentRepository photoCommentRepository;
+
+    private final ExhibitionPhotoRepository exhibitionPhotoRepository;
 
     private final CommonService commonService;
 
@@ -211,10 +217,10 @@ public class PhotoService {
     }
 
     @Transactional
-    public PutModifyPhotoResponse modifyPhoto(Authentication authentication, PutModifyPhotoRequest putModifyPhotoRequest) {
+    public PutModifyPhotoResponse modifyPhoto(Authentication authentication, Long photoId, PutModifyPhotoRequest putModifyPhotoRequest) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
-        Photo photo = photoRepository.findPhotoByIdAndMember(putModifyPhotoRequest.getPhotoId(), member)
+        Photo photo = photoRepository.findPhotoByIdAndMember(photoId, member)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
         photo.modifyPhoto(putModifyPhotoRequest);
@@ -240,6 +246,10 @@ public class PhotoService {
         // 삭제할 사진을 데이터베이스에서 가져옴
         Photo photo = photoRepository.findPhotoByIdAndMember(photoId, member)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        if (exhibitionPhotoRepository.findByPhotoId(photo) != null) {
+            throw new CustomException(ErrorType.CANNOT_DELETE_PHOTO_USING_EXHIBITION);
+        }
 
         // S3에서 썸네일 이미지와 원본 이미지를 삭제
         deleteS3Image(photo.getImageUrl());
@@ -365,10 +375,10 @@ public class PhotoService {
     }
 
     @Transactional
-    public PostChangePhotoLikeResponse changePhotoLike(Authentication authentication, PostChangePhotoLikeRequest postChangePhotoLikeRequest) {
+    public PostChangePhotoLikeResponse changePhotoLike(Authentication authentication, Long photoId) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
-        Photo photo = photoRepository.findPhotoById(postChangePhotoLikeRequest.getPhotoId())
+        Photo photo = photoRepository.findPhotoById(photoId)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
         PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
@@ -389,20 +399,20 @@ public class PhotoService {
     }
 
     @Transactional
-    public PostWriteCommentResponse writeComment(Authentication authentication, Long photoId, PostWriteCommentRequest postWriteCommentRequest) {
+    public PostWritePhotoCommentResponse writeComment(Authentication authentication, Long photoId, PostWritePhotoCommentRequest postWritePhotoCommentRequest) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
         Photo photo = photoRepository.findPhotoById(photoId)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
-        photoCommentRepository.save(PhotoComment.of(postWriteCommentRequest.getComment(), member, photo));
+        photoCommentRepository.save(PhotoComment.of(postWritePhotoCommentRequest.getComment(), member, photo));
 
         PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
 
         List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
 
-        return PostWriteCommentResponse.of(photoDetail.updateCommentCnt(true), photoCommentList);
+        return PostWritePhotoCommentResponse.of(photoDetail.updateCommentCnt(true), photoCommentList);
     }
 
     @Transactional

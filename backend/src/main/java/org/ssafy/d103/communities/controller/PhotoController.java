@@ -9,7 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
-import org.ssafy.d103.communities.dto.photo.request.*;
+import org.ssafy.d103.communities.dto.photo.request.DeletePhotoCommentRequest;
+import org.ssafy.d103.communities.dto.photo.request.PostUploadPhotoRequest;
+import org.ssafy.d103.communities.dto.photo.request.PostWritePhotoCommentRequest;
+import org.ssafy.d103.communities.dto.photo.request.PutModifyPhotoRequest;
 import org.ssafy.d103.communities.service.PhotoService;
 
 @Tag(name = "Communities - Photo", description = "Communities Photo API")
@@ -26,12 +29,12 @@ public class PhotoController {
         return ResponseUtils.ok(photoService.uploadPhoto(authentication, multipartFile, postUploadPhotoRequest), MsgType.PHOTO_UPLOAD_SUCCESSFULLY);
     }
 
-    @PutMapping("/modify")
-    public ApiResponseDto<?> putModifyPhoto(Authentication authentication, @RequestBody PutModifyPhotoRequest putModifyPhotoRequest) {
-        return ResponseUtils.ok(photoService.modifyPhoto(authentication, putModifyPhotoRequest), MsgType.PHOTO_MODIFY_SUCCESSFULLY);
+    @PutMapping("/{photo-id}")
+    public ApiResponseDto<?> putModifyPhoto(Authentication authentication, @PathVariable("photo-id") Long photoId, @RequestBody PutModifyPhotoRequest putModifyPhotoRequest) {
+        return ResponseUtils.ok(photoService.modifyPhoto(authentication, photoId, putModifyPhotoRequest), MsgType.PHOTO_MODIFY_SUCCESSFULLY);
     }
 
-    @DeleteMapping("/remove/{photo-id}")
+    @DeleteMapping("/{photo-id}")
     public ApiResponseDto<?> deletePhoto(Authentication authentication, @PathVariable("photo-id") Long photoId) {
         return ResponseUtils.ok(photoService.deletePhoto(authentication, photoId), MsgType.PHOTO_DELETE_SUCCESSFULLY);
     }
@@ -56,14 +59,14 @@ public class PhotoController {
         return ResponseUtils.ok(photoService.getPhotoDetail(authentication, photoId), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
 
-    @PostMapping("/change-like")
-    public ApiResponseDto<?> postChangePhotoLike(Authentication authentication, @RequestBody PostChangePhotoLikeRequest postChangePhotoLikeRequest) {
-        return ResponseUtils.ok(photoService.changePhotoLike(authentication, postChangePhotoLikeRequest), MsgType.PHOTO_LIKE_CHANGE_SUCCESSFULLY);
+    @PostMapping("/{photo-id}/change-like")
+    public ApiResponseDto<?> postChangePhotoLike(Authentication authentication, @PathVariable("photo-id") Long photoId) {
+        return ResponseUtils.ok(photoService.changePhotoLike(authentication, photoId), MsgType.PHOTO_LIKE_CHANGE_SUCCESSFULLY);
     }
 
     @PostMapping("/{photo-id}/comment")
-    public ApiResponseDto<?> postWriteComment(Authentication authentication, @PathVariable("photo-id") Long photoId, @RequestBody PostWriteCommentRequest postWriteCommentRequest) {
-        return ResponseUtils.ok(photoService.writeComment(authentication, photoId, postWriteCommentRequest), MsgType.PHOTO_COMMENT_WRITE_SUCCESSFULLY);
+    public ApiResponseDto<?> postWriteComment(Authentication authentication, @PathVariable("photo-id") Long photoId, @RequestBody PostWritePhotoCommentRequest postWritePhotoCommentRequest) {
+        return ResponseUtils.ok(photoService.writeComment(authentication, photoId, postWritePhotoCommentRequest), MsgType.PHOTO_COMMENT_WRITE_SUCCESSFULLY);
     }
 
     @GetMapping("/{photo-id}/comment")

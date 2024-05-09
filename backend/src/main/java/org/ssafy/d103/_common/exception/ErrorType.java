@@ -27,6 +27,7 @@ public enum ErrorType {
     NOT_FOUND_HASHTAG(404, "해시태그가 존재하지 않습니다."),
     NOT_FOUND_PHOTO_METADATA(404, "사진의 메타데이터가 존재하지 않습니다."),
     NOT_FOUND_PHOTO_COMMENT(404, "해당 댓글이 존재하지 않습니다."),
+    CANNOT_DELETE_PHOTO_USING_EXHIBITION(400, "전시회에 사용된 사진은 삭제할 수 없습니다."),
 
     //********************************[ Follows ]********************************
     ALREADY_FOLLOWING(400, "이미 팔로잉 중입니다."),
