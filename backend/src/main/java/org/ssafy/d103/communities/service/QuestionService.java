@@ -14,14 +14,17 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.question.PaginationDataDto;
 import org.ssafy.d103.communities.dto.question.QuestionDto;
+import org.ssafy.d103.communities.dto.question.request.PostWriteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
 import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
 import org.ssafy.d103.communities.dto.question.response.*;
 import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.question.Category;
 import org.ssafy.d103.communities.entity.question.Question;
+import org.ssafy.d103.communities.entity.question.QuestionComment;
 import org.ssafy.d103.communities.entity.question.QuestionDetail;
 import org.ssafy.d103.communities.repository.photo.PhotoRepository;
+import org.ssafy.d103.communities.repository.question.QuestionCommentRepository;
 import org.ssafy.d103.communities.repository.question.QuestionDetailRepository;
 import org.ssafy.d103.communities.repository.question.QuestionRepository;
 import org.ssafy.d103.members.entity.Members;
@@ -37,6 +40,8 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     private final QuestionDetailRepository questionDetailRepository;
+
+    private final QuestionCommentRepository questionCommentRepository;
 
     private final PhotoRepository photoRepository;
 
@@ -156,6 +161,23 @@ public class QuestionService {
         }
 
         return DeleteQuestionResponse.of(true);
+    }
+
+    @Transactional
+    public PostWriteQuestionCommentResponse writeQuestionComment(Authentication authentication, Long questionId, PostWriteQuestionCommentRequest postWriteQuestionCommentRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        questionCommentRepository.save(QuestionComment.of(postWriteQuestionCommentRequest.getComment(), member, question));
+
+        QuestionDetail questionDetail = questionDetailRepository.findByQuestion(question)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        List<QuestionComment> questionCommentList = questionCommentRepository.findAllByQuestion(question);
+
+        return PostWriteQuestionCommentResponse.of(questionDetail.updateCommentCnt(true), questionCommentList);
     }
 
 }
