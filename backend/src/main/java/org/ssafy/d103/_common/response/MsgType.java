@@ -39,9 +39,9 @@ public enum MsgType {
     PHOTO_DELETE_SUCCESSFULLY("사진 삭제에 성공하였습니다."),
     PHOTO_GET_SUCCESSFULLY("사진 조회에 성공하였습니다."),
     PHOTO_LIKE_CHANGE_SUCCESSFULLY("사진 좋아요 변경에 성공하였습니다."),
-    PHOTO_COMMENT_WRITE_SUCCESSFULLY("댓글 작성에 성공하였습니다."),
-    PHOTO_COMMENT_LIST_GET_SUCCESSFULLY("댓글 조회에 성공하였습니다."),
-    PHOTO_COMMENT_DELETE_SUCCESSFULLY("댓글 삭제에 성공하였습니다."),
+    PHOTO_COMMENT_WRITE_SUCCESSFULLY("사진 댓글 작성에 성공하였습니다."),
+    PHOTO_COMMENT_LIST_GET_SUCCESSFULLY("사진 댓글 조회에 성공하였습니다."),
+    PHOTO_COMMENT_DELETE_SUCCESSFULLY("사진 댓글 삭제에 성공하였습니다."),
 
     //********************************[ Questions ]********************************
     QUESTION_UPLOAD_SUCCESSFULLY("질문 업로드에 성공하였습니다."),
@@ -50,6 +50,7 @@ public enum MsgType {
     QUESTION_MODIFY_SUCCESSFULLY("질문 수정에 성공하였습니다."),
     QUESTION_DELETE_SUCCESSFULLY("질문 삭제에 성공하였습니다."),
     QUESTION_COMMENT_WRITE_SUCCESSFULLY("질문 댓글 작성에 성공하였습니다."),
+    QUESTION_COMMENT_LIST_GET_SUCCESSFULLY("질문 댓글 조회에 성공하였습니다."),
     QUESTION_COMMENT_DELETE_SUCCESSFULLY("질문 댓글 삭제에 성공하였습니다."),
     ;
 
