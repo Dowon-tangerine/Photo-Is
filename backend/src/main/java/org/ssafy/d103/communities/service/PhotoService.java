@@ -441,7 +441,11 @@ public class PhotoService {
         PhotoComment photoComment = photoCommentRepository.findPhotoCommentByIdAndPhotoAndMember(deletePhotoCommentRequest.getCommentId(), photo, member)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_COMMENT));
 
-        photoCommentRepository.delete(photoComment);
+        try {
+            photoCommentRepository.delete(photoComment);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.DB_DELETE_ERROR);
+        }
 
         List<PhotoComment> photoCommentList = photoCommentRepository.findAllByPhoto(photo);
 
