@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './css/HelloPhoto.module.css';
 
-function ChatBotModal({ isOpen, onClose }) {
+// Props에 대한 TypeScript 인터페이스 정의
+interface ChatBotModalProps {
+  isOpen: boolean;          // isOpen은 boolean 타입
+  onClose: () => void;      // onClose는 함수로서 반환값이 없음
+}
+
+// ChatBotModal 함수 컴포넌트에 props 타입 적용
+function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   return (
     isOpen && (
       <div className={styles.chatBotModal}>
