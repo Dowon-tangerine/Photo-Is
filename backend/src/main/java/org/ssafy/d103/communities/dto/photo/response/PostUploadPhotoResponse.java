@@ -18,4 +18,5 @@ public class PostUploadPhotoResponse {
                 .isSuccess(isSuccess)
                 .build();
     }
+
 }

@@ -43,7 +43,7 @@ public class GetPhotoDetailInfoResponse {
         this.hashtagList = hashtagList;
     }
 
-    public static GetPhotoDetailInfoResponse of(Photo photo, PhotoDetail photoDetail, boolean isLiked, PhotoMetadata metadata, List<String> hashtagList) {
+    public static GetPhotoDetailInfoResponse from(Photo photo, PhotoDetail photoDetail, boolean isLiked, PhotoMetadata metadata, List<String> hashtagList) {
         return builder()
                 .photoId(photo.getId())
                 .memberId(photo.getMember().getId())
@@ -60,4 +60,5 @@ public class GetPhotoDetailInfoResponse {
                 .hashtagList(hashtagList)
                 .build();
     }
+
 }
