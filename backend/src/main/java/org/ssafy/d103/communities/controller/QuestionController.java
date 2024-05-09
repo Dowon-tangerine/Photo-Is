@@ -9,9 +9,11 @@ import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
+import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
 import org.ssafy.d103.communities.dto.question.response.GetQuestionDetailResponse;
 import org.ssafy.d103.communities.dto.question.response.GetQuestionListResponse;
 import org.ssafy.d103.communities.dto.question.response.PostUploadQuestionResponse;
+import org.ssafy.d103.communities.dto.question.response.PutModifyQuestionResponse;
 import org.ssafy.d103.communities.service.QuestionService;
 
 @Tag(name = "Communities - Question", description = "Communities Question API")
@@ -38,4 +40,8 @@ public class QuestionController {
         return ResponseUtils.ok(questionService.getQuestionDetail(questionId), MsgType.QUESTION_DETAIL_GET_SUCCESSFULLY);
     }
 
+    @PutMapping("/{question-id}")
+    public ApiResponseDto<PutModifyQuestionResponse> putModifyQuestion(Authentication authentication, @PathVariable("question-id") Long questionId, @RequestBody PutModifyQuestionRequest putModifyQuestionRequest) {
+        return ResponseUtils.ok(questionService.putModifyQuestion(authentication, questionId, putModifyQuestionRequest), MsgType.QUESTION_MODIFY_SUCCESSFULLY);
+    }
 }
