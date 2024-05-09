@@ -16,10 +16,7 @@ import org.ssafy.d103.communities.dto.question.PaginationDataDto;
 import org.ssafy.d103.communities.dto.question.QuestionDto;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
 import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
-import org.ssafy.d103.communities.dto.question.response.GetQuestionDetailResponse;
-import org.ssafy.d103.communities.dto.question.response.GetQuestionListResponse;
-import org.ssafy.d103.communities.dto.question.response.PostUploadQuestionResponse;
-import org.ssafy.d103.communities.dto.question.response.PutModifyQuestionResponse;
+import org.ssafy.d103.communities.dto.question.response.*;
 import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.question.Category;
 import org.ssafy.d103.communities.entity.question.Question;
@@ -144,6 +141,21 @@ public class QuestionService {
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
 
         return PutModifyQuestionResponse.from(question.modifyQuestion(putModifyQuestionRequest.getTitle(), putModifyQuestionRequest.getContent()));
+    }
+
+    public DeleteQuestionResponse removeQuestion(Authentication authentication, Long questionId) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Question question = questionRepository.findQuestionByIdAndMember(questionId, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        try {
+            questionRepository.delete(question);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.DB_DELETE_ERROR);
+        }
+
+        return DeleteQuestionResponse.of(true);
     }
 
 }
