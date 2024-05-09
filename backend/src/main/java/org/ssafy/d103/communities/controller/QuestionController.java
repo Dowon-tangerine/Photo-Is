@@ -9,8 +9,8 @@ import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
 import org.ssafy.d103.communities.dto.question.request.DeleteQuestionCommentRequest;
-import org.ssafy.d103.communities.dto.question.request.PostWriteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
+import org.ssafy.d103.communities.dto.question.request.PostWriteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
 import org.ssafy.d103.communities.dto.question.response.*;
 import org.ssafy.d103.communities.service.QuestionService;
@@ -52,6 +52,11 @@ public class QuestionController {
     @PostMapping("/{question-id}/comment")
     public ApiResponseDto<PostWriteQuestionCommentResponse> postWriteQuestionComment(Authentication authentication, @PathVariable("question-id") Long questionId, @RequestBody PostWriteQuestionCommentRequest postWriteQuestionCommentRequest) {
         return ResponseUtils.ok(questionService.writeQuestionComment(authentication, questionId, postWriteQuestionCommentRequest), MsgType.QUESTION_COMMENT_WRITE_SUCCESSFULLY);
+    }
+
+    @GetMapping("/{question-id}/comment")
+    public ApiResponseDto<GetQuestionCommentListResponse> getQuestionCommentList(@PathVariable("question-id") Long questionId) {
+        return ResponseUtils.ok(questionService.getQuestionCommentList(questionId), MsgType.QUESTION_COMMENT_LIST_GET_SUCCESSFULLY);
     }
 
     @DeleteMapping("/{question-id}/comment")

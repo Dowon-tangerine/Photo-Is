@@ -182,6 +182,19 @@ public class QuestionService {
     }
 
     @Transactional
+    public GetQuestionCommentListResponse getQuestionCommentList(Long questionId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        QuestionDetail questionDetail = questionDetailRepository.findByQuestion(question)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+
+        List<QuestionComment> questionCommentList = questionCommentRepository.findAllByQuestion(question);
+
+        return GetQuestionCommentListResponse.of(questionDetail.getCommentCnt(), questionCommentList);
+    }
+
+    @Transactional
     public DeleteQuestionCommentResponse removeQuestionComment(Authentication authentication, Long questionId, DeleteQuestionCommentRequest deleteQuestionCommentRequest) {
         Members member = commonService.findMemberByAuthentication(authentication);
 
