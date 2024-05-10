@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from "./css/SearchName.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import Masonry from 'react-masonry-css';
@@ -189,12 +189,6 @@ const SearchName: React.FC = () => {
         },
 
     ]
-
-    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null); // 선택된 이미지의 인덱스
-
-    const handleImageClick = (index: number) => {
-        setSelectedImageIndex(index); // 이미지 클릭 시 선택된 이미지의 인덱스를 설정
-    };
 
 
     return (
