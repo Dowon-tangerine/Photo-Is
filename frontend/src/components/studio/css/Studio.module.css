@@ -27,3 +27,16 @@
     height: 100%; /* 전체 높이 */
     background-color: black; /* 배경색 추가 */
 }
+
+.imageOverlay {
+    position: absolute;
+    top: 110px;
+    left: 80px;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* 클릭 이벤트를 이미지가 아닌 배경 요소가 받도록 */
+    width: 70%;
+    height: 66.67%;
+}

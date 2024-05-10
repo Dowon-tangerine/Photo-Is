@@ -3,8 +3,8 @@ import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
 import Spinner from "./3Delement/spinner";
 import CameraSettings from "./element/CameraSettings"; // 경로는 실제 구조에 맞게 조정해야 합니다.
-
 import * as THREE from "three";
+import Capture from "./element/Capture";
 
 function Background() {
     const texture = useLoader(THREE.TextureLoader, "imgs/sky.jpg");
@@ -26,6 +26,8 @@ function TutorialPage() {
     const [iso, setIso] = useState(100);
     const [shutterSpeed, setShutterSpeed] = useState(1);
     const [aperture, setAperture] = useState(2.8);
+    const [takeScreenshot, setTakeScreenshot] = useState<(() => void) | null>(null);
+
     return (
         <>
             <div className={StudioStyle.container}>
@@ -37,8 +39,13 @@ function TutorialPage() {
                     >
                         <ambientLight intensity={1} />
                         <Background />
+                        <Capture setTakeScreenshot={setTakeScreenshot} />
+
                         <Spinner />
                     </Canvas>
+                    {/* <div className={StudioStyle.imageOverlay}>
+                        <img src="/imgs/viewFinder.png" alt="Overlay Image" style={{ width: "100%", height: "100%" }} />
+                    </div> */}
                     <div className="mt-6 setting-info flex justify-center items-center">
                         <div className="font-digital text-[45px] mx-10 text-green-400">{iso} </div>
                         <div className="font-digital  text-[45px] mx-10 text-green-400">1/ {shutterSpeed}</div>
@@ -57,11 +64,15 @@ function TutorialPage() {
                         aperture={aperture}
                         setAperture={setAperture}
                     />
-
-                    <button className="mt-64 rounded-[80px] flex items-center justify-center bg-white w-[170px] h-[50px]">
-                        <p className="font-bookkGothicBold mr-2 text-[18px]">SHOOT</p>
-                        <img src="./imgs/camera.png" alt="Camera Icon" className="w-[25px]" />
-                    </button>
+                    {takeScreenshot && (
+                        <button
+                            onClick={takeScreenshot}
+                            className="mt-64 rounded-[80px] flex items-center justify-center bg-white w-[170px] h-[50px]"
+                        >
+                            <p className="font-bookkGothicBold mr-2 text-[18px]">SHOOT</p>
+                            <img src="./imgs/camera.png" alt="Camera Icon" className="w-[25px]" />
+                        </button>
+                    )}
                 </div>
             </div>
         </>
