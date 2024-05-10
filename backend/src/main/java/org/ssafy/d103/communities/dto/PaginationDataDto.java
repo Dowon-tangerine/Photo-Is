@@ -1,4 +1,4 @@
-package org.ssafy.d103.communities.dto.question;
+package org.ssafy.d103.communities.dto;
 
 import lombok.Builder;
 import lombok.Getter;

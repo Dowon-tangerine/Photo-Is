@@ -24,6 +24,7 @@ public enum ErrorType {
     NOT_FOUND_PHOTO(404, "사진이 존재하지 않습니다."),
     NOT_FOUND_PHOTO_DETAIL(404, "사진의 상세정보가 존재하지 않습니다."),
     NOT_FOUND_GALLERY_PHOTO(404, "갤러리 사진이 존재하지 않습니다."),
+    NOT_FOUND_GALLERY_PHOTO_PAGE(404, "해당 갤러리 사진 페이지가 존재하지 않습니다."),
     NOT_FOUND_HASHTAG(404, "해시태그가 존재하지 않습니다."),
     NOT_FOUND_PHOTO_METADATA(404, "사진의 메타데이터가 존재하지 않습니다."),
     NOT_FOUND_PHOTO_COMMENT(404, "해당 댓글이 존재하지 않습니다."),

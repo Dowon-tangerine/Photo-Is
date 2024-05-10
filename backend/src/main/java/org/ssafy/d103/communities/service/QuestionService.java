@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
-import org.ssafy.d103.communities.dto.question.PaginationDataDto;
+import org.ssafy.d103.communities.dto.PaginationDataDto;
 import org.ssafy.d103.communities.dto.question.QuestionDto;
 import org.ssafy.d103.communities.dto.question.request.DeleteQuestionCommentRequest;
 import org.ssafy.d103.communities.dto.question.request.PostUploadQuestionRequest;
