@@ -1,7 +1,0 @@
-.wrap {
-    @apply relative top-0 w-full h-full transition duration-500;
-}
-
-.page {
-    @apply w-full h-screen bg-cover bg-center;
-}
