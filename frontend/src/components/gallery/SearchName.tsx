@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styles from "./css/Gallery.module.css";
+import styles from "./css/SearchName.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import Masonry from 'react-masonry-css';
 import axios from 'axios';
