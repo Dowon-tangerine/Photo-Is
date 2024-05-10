@@ -1,9 +1,15 @@
 package org.ssafy.d103.communities.entity.question;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionDetail {
 
     @Id
@@ -22,5 +28,44 @@ public class QuestionDetail {
     @OneToOne
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @Builder
+    private QuestionDetail(Integer commentCnt, Integer viewCnt, Question question) {
+        this.commentCnt = commentCnt;
+        this.viewCnt = viewCnt;
+        this.question = question;
+    }
+
+    public static QuestionDetail init(Question question) {
+        return builder()
+                .commentCnt(0)
+                .viewCnt(0)
+                .question(question)
+                .build();
+    }
+
+    public Integer updateCommentCnt(boolean operation) {
+        // operation이 true면 증가
+        if (operation) {
+            this.commentCnt++;
+        }
+        // operation이 false면 감소
+        else {
+            this.commentCnt--;
+        }
+
+        return commentCnt;
+    }
+
+    public void updateViewCnt(boolean operation) {
+        // operation이 true면 증가
+        if (operation) {
+            this.viewCnt++;
+        }
+        // operation이 false면 감소
+        else {
+            this.viewCnt--;
+        }
+    }
 
 }

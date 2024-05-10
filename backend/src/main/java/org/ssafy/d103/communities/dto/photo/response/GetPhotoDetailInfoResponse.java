@@ -3,7 +3,6 @@ package org.ssafy.d103.communities.dto.photo.response;
 import lombok.Builder;
 import lombok.Getter;
 import org.ssafy.d103.communities.entity.photo.Photo;
-import org.ssafy.d103.communities.entity.photo.PhotoDetail;
 import org.ssafy.d103.communities.entity.photo.PhotoMetadata;
 
 import java.time.LocalDateTime;
@@ -43,21 +42,22 @@ public class GetPhotoDetailInfoResponse {
         this.hashtagList = hashtagList;
     }
 
-    public static GetPhotoDetailInfoResponse of(Photo photo, PhotoDetail photoDetail, boolean isLiked, PhotoMetadata metadata, List<String> hashtagList) {
+    public static GetPhotoDetailInfoResponse from(Photo photo, boolean isLiked, List<String> hashtagList) {
         return builder()
                 .photoId(photo.getId())
                 .memberId(photo.getMember().getId())
                 .nickname(photo.getMember().getNickname())
                 .title(photo.getTitle())
                 .imageUrl(photo.getImageUrl())
-                .viewCnt(photoDetail.getViewCnt())
-                .commentCnt(photoDetail.getCommentCnt())
-                .likeCnt(photoDetail.getLikeCnt())
+                .viewCnt(photo.getPhotoDetail().getViewCnt())
+                .commentCnt(photo.getPhotoDetail().getCommentCnt())
+                .likeCnt(photo.getPhotoDetail().getLikeCnt())
                 .isLiked(isLiked)
                 .createdAt(photo.getCreatedAt())
                 .accessType(photo.getAccessType().toString())
-                .metadata(metadata)
+                .metadata(PhotoMetadata.from(photo.getPhotoMetadata()))
                 .hashtagList(hashtagList)
                 .build();
     }
+
 }

@@ -24,10 +24,11 @@ public enum ErrorType {
     NOT_FOUND_PHOTO(404, "사진이 존재하지 않습니다."),
     NOT_FOUND_PHOTO_DETAIL(404, "사진의 상세정보가 존재하지 않습니다."),
     NOT_FOUND_GALLERY_PHOTO(404, "갤러리 사진이 존재하지 않습니다."),
+    NOT_FOUND_GALLERY_PHOTO_PAGE(404, "해당 갤러리 사진 페이지가 존재하지 않습니다."),
     NOT_FOUND_HASHTAG(404, "해시태그가 존재하지 않습니다."),
     NOT_FOUND_PHOTO_METADATA(404, "사진의 메타데이터가 존재하지 않습니다."),
-    SELF_LIKE_NOT_ALLOWED(400, "본인의 사진에 대한 좋아요를 허용하지 않습니다."),
     NOT_FOUND_PHOTO_COMMENT(404, "해당 댓글이 존재하지 않습니다."),
+    CANNOT_DELETE_PHOTO_USING_EXHIBITION(400, "전시회에 사용된 사진은 삭제할 수 없습니다."),
 
     //********************************[ Follows ]********************************
     ALREADY_FOLLOWING(400, "이미 팔로잉 중입니다."),
@@ -37,6 +38,11 @@ public enum ErrorType {
     NOT_FOUND_EXHIBITION(404, "전시회가 존재하지 않습니다."),
     NOT_FOUND_EXHIBITION_COMMENT(404, "전시회 한줄평이 존재하지 않습니다."),
     NOT_FOUND_EXHIBITION_PHOTO(404, "전시회 사진이 존재하지 않습니다."),
+
+    //********************************[ Questions ]********************************
+    NOT_FOUND_QUESTION(404, "해당 질문이 존재하지 않습니다."),
+    NOT_FOUND_QUESTION_PAGE(404, "해당 질문 페이지가 존재하지 않습니다."),
+    NOT_FOUND_QUESTION_COMMENT(404, "해당 질문 댓글이 존재하지 않습니다."),
 
     //********************************[ ETC ]********************************
     ANOTHER_ERROR(401, "기타 에러가 발생하였습니다."),

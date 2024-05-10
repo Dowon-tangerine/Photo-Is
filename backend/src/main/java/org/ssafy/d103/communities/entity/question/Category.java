@@ -7,10 +7,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Category {
 
-    NORMAL("일반"),
-    STUDIO("가상 스튜디오")
-    ;
+    NORMAL("normal"),
+    STUDIO("studio");
 
     private final String CategoryName;
+
+    public static Category fromString(String categoryName) {
+        for (Category b : Category.values()) {
+            if (b.CategoryName.equalsIgnoreCase(categoryName)) {
+                return b;
+            }
+        }
+        throw new IllegalArgumentException("No constant with categoryName " + categoryName + " found");
+    }
 
 }
