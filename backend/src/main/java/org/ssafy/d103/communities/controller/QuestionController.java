@@ -69,4 +69,9 @@ public class QuestionController {
         return ResponseUtils.ok(questionService.removeQuestionComment(authentication, questionId, deleteQuestionCommentRequest), MsgType.QUESTION_COMMENT_DELETE_SUCCESSFULLY);
     }
 
+    @GetMapping("/search/{filter}")
+    public ApiResponseDto<GetSearchQuestionResponse> getSearchQuestionList(@PathVariable String filter, @RequestParam String keyword, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseUtils.ok(questionService.getSearchResultByFilter(filter, keyword, page, size), MsgType.SEARCH_QUESTION_LIST_GET_SUCCESSFULLY);
+    }
+
 }

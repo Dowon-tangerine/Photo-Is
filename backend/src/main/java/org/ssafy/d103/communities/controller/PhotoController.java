@@ -81,7 +81,7 @@ public class PhotoController {
 
     @GetMapping("/search/{search-type}")
     public ApiResponseDto<?> getSearchResultList(Authentication authentication, @PathVariable("search-type") String searchType, @RequestParam String keyword, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
-        return ResponseUtils.ok(photoService.determineSearchMethod(authentication, searchType, keyword, page, size), MsgType.SEARCH_RESULT_GET_SUCCESSFULLY);
+        return ResponseUtils.ok(photoService.determineSearchMethod(authentication, searchType, keyword, page, size), MsgType.SEARCH_RESULT_LIST_GET_SUCCESSFULLY);
     }
 
 }
