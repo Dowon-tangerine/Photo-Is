@@ -5,6 +5,9 @@ import Home from "./components/home/Home";
 import StudioEnterPage from "./components/studio/StudioEnterPage";
 
 import Gallery from "./components/gallery/Gallery";
+import SearchName from "./components/gallery/SearchName"
+import SearchTitle from "./components/gallery/SearchTitle"
+import SearchTag from "./components/gallery/SearchTag"
 import HelloPhoto from "./components/docs/HelloPhoto";
 import Dictionary from "./components/docs/Dictionary";
 import SignIn from "./components/signin/SignIn";
@@ -18,6 +21,9 @@ export default function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/studio-enter" element={<StudioEnterPage />} />
                     <Route path="/community/gallery" element={<Gallery />}/>
+                    <Route path="/community/gallery/searchName" element={<SearchName />}></Route>
+                    <Route path="/community/gallery/searchTitle" element={<SearchTitle />}></Route>
+                    <Route path="/community/gallery/searchTag" element={<SearchTag />}></Route>
                     <Route path="/docs/product1" element={<HelloPhoto />} />
                     <Route path="/docs/product2" element={<Dictionary />} />
                     <Route path="/signin" element={<SignIn />} />

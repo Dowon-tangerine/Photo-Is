@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from "./css/SearchName.module.css";
+import styles from "./css/SearchTitle.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import Masonry from 'react-masonry-css';
 import axios from 'axios';
@@ -15,7 +15,7 @@ interface imgInterface {
     title: string,
   }
   
-const SearchName: React.FC = () => {
+const SearchTitle: React.FC = () => {
 
     const [type, setType] = useState<String>("선택");
     const [typeList, setTypeList] = useState<boolean>(false);
@@ -29,8 +29,8 @@ const SearchName: React.FC = () => {
 
     const moveToGallery = function(){
         navigate("/community/gallery")
-    }    
-    
+    }
+
     const [word2, setWord2] = useState<String>("");
 
     const moveToSearch = function(){
@@ -43,7 +43,8 @@ const SearchName: React.FC = () => {
         else if(type === "태그"){
             navigate("/community/gallery/searchTag", { state: { searchWord :  word2} })
         }
-    } 
+    }
+
 
     const word = location.state ? location.state.searchWord : "";
 
@@ -343,7 +344,7 @@ const SearchName: React.FC = () => {
             <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
             
             <div className={styles.search_type}>
-                <p style={{fontSize : '20px'}}>작가</p>
+                <p style={{fontSize : '20px'}}>제목</p>
             </div>
 
             <Masonry 
@@ -376,4 +377,4 @@ const SearchName: React.FC = () => {
     );
 };
 
-export default SearchName;
+export default SearchTitle;
