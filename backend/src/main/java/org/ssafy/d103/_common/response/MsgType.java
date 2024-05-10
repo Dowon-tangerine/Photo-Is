@@ -42,7 +42,7 @@ public enum MsgType {
     PHOTO_COMMENT_WRITE_SUCCESSFULLY("사진 댓글 작성에 성공하였습니다."),
     PHOTO_COMMENT_LIST_GET_SUCCESSFULLY("사진 댓글 조회에 성공하였습니다."),
     PHOTO_COMMENT_DELETE_SUCCESSFULLY("사진 댓글 삭제에 성공하였습니다."),
-    SEARCH_RESULT_GET_SUCCESSFULLY("검색 결과 조회에 성공하였습니다."),
+    SEARCH_RESULT_LIST_GET_SUCCESSFULLY("통합 검색 결과 조회에 성공하였습니다."),
 
     //********************************[ Questions ]********************************
     QUESTION_UPLOAD_SUCCESSFULLY("질문 업로드에 성공하였습니다."),
@@ -54,6 +54,7 @@ public enum MsgType {
     QUESTION_COMMENT_WRITE_SUCCESSFULLY("질문 댓글 작성에 성공하였습니다."),
     QUESTION_COMMENT_LIST_GET_SUCCESSFULLY("질문 댓글 조회에 성공하였습니다."),
     QUESTION_COMMENT_DELETE_SUCCESSFULLY("질문 댓글 삭제에 성공하였습니다."),
+    SEARCH_QUESTION_LIST_GET_SUCCESSFULLY("검색 결과 조회에 성공하였습니다."),
     ;
 
     private final String msg;

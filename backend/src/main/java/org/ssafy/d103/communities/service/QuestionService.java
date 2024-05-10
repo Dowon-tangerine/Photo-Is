@@ -20,15 +20,13 @@ import org.ssafy.d103.communities.dto.question.request.PostWriteQuestionCommentR
 import org.ssafy.d103.communities.dto.question.request.PutModifyQuestionRequest;
 import org.ssafy.d103.communities.dto.question.response.*;
 import org.ssafy.d103.communities.entity.photo.Photo;
-import org.ssafy.d103.communities.entity.question.Category;
-import org.ssafy.d103.communities.entity.question.Question;
-import org.ssafy.d103.communities.entity.question.QuestionComment;
-import org.ssafy.d103.communities.entity.question.QuestionDetail;
+import org.ssafy.d103.communities.entity.question.*;
 import org.ssafy.d103.communities.repository.photo.PhotoRepository;
 import org.ssafy.d103.communities.repository.question.QuestionCommentRepository;
 import org.ssafy.d103.communities.repository.question.QuestionDetailRepository;
 import org.ssafy.d103.communities.repository.question.QuestionRepository;
 import org.ssafy.d103.members.entity.Members;
+import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +43,8 @@ public class QuestionService {
     private final QuestionCommentRepository questionCommentRepository;
 
     private final PhotoRepository photoRepository;
+
+    private final MemberRepository memberRepository;
 
     private final CommonService commonService;
 
@@ -86,12 +86,7 @@ public class QuestionService {
     }
 
     public GetQuestionListResponse getQuestionList(int page, int size) {
-        // 페이지를 1부터 시작하도록 0으로 설정
-        // 음수 페이지가 요청되지 않도록 설정
-        int adjustedPage = Math.max(page - 1, 0);
-
-        // 페이지네이션 요청을 (기본 10 size)최신순으로 생성
-        Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         // 페이지네이션된 질문 데이터를 가져옴
         Page<Question> questionPage = questionRepository.findAll(pageable);
@@ -127,12 +122,7 @@ public class QuestionService {
     }
 
     public GetQuestionListByCategoryResponse getQuestionListByCategory(String category, int page, int size) {
-        // 페이지를 1부터 시작하도록 0으로 설정
-        // 음수 페이지가 요청되지 않도록 설정
-        int adjustedPage = Math.max(page - 1, 0);
-
-        // 페이지네이션 요청을 (기본 10 size)최신순으로 생성
-        Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         // 카테고리별로 페이지네이션된 질문 데이터를 가져옴
         Page<Question> questionPage = questionRepository.findAllByCategory(Category.fromString(category), pageable);
@@ -165,6 +155,63 @@ public class QuestionService {
 
         // 전체 질문 수 및 질문 리스트 응답 생성
         return GetQuestionListByCategoryResponse.of(category, (int) questionPage.getTotalElements(), questions, paginationDataDto);
+    }
+
+    public GetSearchQuestionResponse getSearchResultByFilter(String filter, String keyword, int page, int size) {
+        Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<Question> questionPage;
+
+        // 필터별로 페이지네이션된 질문 데이터를 가져옴
+        if (SearchFilter.fromString(filter).equals(SearchFilter.TITLE)) {
+            questionPage = questionRepository.findAllByTitleContainingIgnoreCaseOrderByCreatedAtDesc(keyword, pageable);
+        } else if (SearchFilter.fromString(filter).equals(SearchFilter.AUTHOR)) {
+            // 작성자의 닉네임이 포함된 질문 검색
+            List<Members> authors = memberRepository.findByNicknameContainingIgnoreCase(keyword);
+
+            if (authors.isEmpty()) {
+                throw new CustomException(ErrorType.NOT_FOUND_AUTHOR);
+            }
+
+            // 작성자 목록의 모든 질문을 검색
+            questionPage = questionRepository.findAllByMemberInOrderByCreatedAtDesc(authors, pageable);
+        } else {
+            throw new CustomException(ErrorType.BAD_REQUEST);
+        }
+
+        // 페이지에 데이터가 없을 경우 예외 발생
+        if (questionPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_SEARCH_RESULTS_PAGE);
+        }
+
+        // 각 질문을 QuestionDto로 변환
+        List<QuestionDto> questions = questionPage.getContent().stream()
+                .map(q -> QuestionDto.of(
+                        q.getId(),
+                        q.getMember().getId(),
+                        q.getMember().getNickname(),
+                        q.getCategory().getCategoryName(),
+                        q.getTitle(),
+                        q.getPhoto() != null,
+                        q.getQuestionDetail().getCommentCnt(),
+                        q.getQuestionDetail().getViewCnt(),
+                        q.getCreatedAt()))
+                .collect(Collectors.toList());
+
+        // 데이터와 페이지네이션 정보를 구성
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                questionPage.getNumber() + 1,
+                questionPage.getTotalPages(),
+                (int) questionPage.getTotalElements(),
+                questionPage.getSize());
+
+        // 전체 질문 수 및 질문 리스트 응답 생성
+        return GetSearchQuestionResponse.of(filter, (int) questionPage.getTotalElements(), questions, paginationDataDto);
+    }
+
+    private Pageable createPageable(int page, int size, Sort sort) {
+        int adjustedPage = Math.max(page - 1, 0);
+        return PageRequest.of(adjustedPage, size, sort);
     }
 
     @Transactional

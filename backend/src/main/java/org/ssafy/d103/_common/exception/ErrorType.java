@@ -44,6 +44,7 @@ public enum ErrorType {
     NOT_FOUND_QUESTION(404, "해당 질문이 존재하지 않습니다."),
     NOT_FOUND_QUESTION_PAGE(404, "해당 질문 페이지가 존재하지 않습니다."),
     NOT_FOUND_QUESTION_COMMENT(404, "해당 질문 댓글이 존재하지 않습니다."),
+    NOT_FOUND_AUTHOR(404, "검색 키워드에 해당하는 작성자가 없습니다."),
 
     //********************************[ ETC ]********************************
     ANOTHER_ERROR(401, "기타 에러가 발생하였습니다."),
