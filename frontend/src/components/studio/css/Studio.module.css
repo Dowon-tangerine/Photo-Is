@@ -1,0 +1,32 @@
+.enterTitle {
+    @apply font-bookkMyungjoBold text-[50px] text-white;
+}
+
+.enterInfo {
+    @apply text-white font-bookkGothicBold text-[12px];
+}
+
+.container {
+    position: relative; /* 상대적 포지셔닝 기준 설정 */
+    height: 100vh; /* 전체 화면 높이 */
+    width: 100%; /* 전체 화면 너비 */
+}
+
+.canvasContainer {
+    width: 100%; /* 컨테이너 너비 70%로 고정 */
+    height: 100%; /* 높이를 너비의 3:2 비율로 설정 (100 / (3/2) = 66.67%) */
+}
+
+.cameraModeCanvas {
+    width: 100%; /* 컨테이너 너비 70%로 고정 */
+    height: 66.67%; /* 높이를 너비의 3:2 비율로 설정 (100 / (3/2) = 66.67%) */
+}
+
+.controlPanel {
+    position: absolute; /* 절대 위치 */
+    top: 0; /* 상단에서 0px */
+    right: 0; /* 오른쪽에서 0px */
+    width: 200px; /* 고정 너비 */
+    height: 100%; /* 전체 높이 */
+    background-color: black; /* 배경색 추가 */
+}
