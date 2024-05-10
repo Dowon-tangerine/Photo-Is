@@ -40,18 +40,18 @@ public class PhotoController {
     }
 
     @GetMapping("/my/{access-type}")
-    public ApiResponseDto<?> getPhotoByAccessType(Authentication authentication, @PathVariable("access-type") String accessType) {
-        return ResponseUtils.ok(photoService.getPhotoByAccessType(authentication, accessType), MsgType.PHOTO_GET_SUCCESSFULLY);
+    public ApiResponseDto<?> getPhotoByAccessType(Authentication authentication, @PathVariable("access-type") String accessType, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseUtils.ok(photoService.getPhotoByAccessType(authentication, accessType, page, size), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
 
-    @GetMapping("/all")
-    public ApiResponseDto<?> getPhotoAll(Authentication authentication) {
-        return ResponseUtils.ok(photoService.getPhotoAll(authentication), MsgType.PHOTO_GET_SUCCESSFULLY);
+    @GetMapping("/my/all")
+    public ApiResponseDto<?> getPhotoAll(Authentication authentication, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseUtils.ok(photoService.getPhotoAll(authentication, page, size), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
 
-    @GetMapping("/gallery")
-    public ApiResponseDto<?> getGalleryPhoto(Authentication authentication) {
-        return ResponseUtils.ok(photoService.getGalleryPhoto(authentication), MsgType.PHOTO_GET_SUCCESSFULLY);
+    @GetMapping("/gallery/{filter}")
+    public ApiResponseDto<?> getGalleryPhoto(Authentication authentication, @PathVariable String filter, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseUtils.ok(photoService.getGalleryPhoto(authentication, filter, page, size), MsgType.PHOTO_GET_SUCCESSFULLY);
     }
 
     @GetMapping("/{photo-id}")

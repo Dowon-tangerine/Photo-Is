@@ -2,33 +2,33 @@ package org.ssafy.d103.communities.dto.photo.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.ssafy.d103.communities.entity.photo.Photo;
+import org.ssafy.d103.communities.dto.PaginationDataDto;
+import org.ssafy.d103.communities.dto.photo.PhotoDto;
+
+import java.util.List;
 
 @Getter
 public class GetGalleryPhotoInfoResponse {
 
-    private Long photoId;
-    private String thumbnailUrl;
-    private String title;
-    private Integer likeCnt;
-    private Boolean isLiked;
+    private String filter;
+    private Integer totalCnt;
+    private List<PhotoDto> photoList;
+    private PaginationDataDto paginationDataDto;
 
     @Builder
-    private GetGalleryPhotoInfoResponse(Long photoId, String thumbnailUrl, String title, Integer likeCnt, Boolean isLiked) {
-        this.photoId = photoId;
-        this.thumbnailUrl = thumbnailUrl;
-        this.title = title;
-        this.likeCnt = likeCnt;
-        this.isLiked = isLiked;
+    private GetGalleryPhotoInfoResponse(String filter, Integer totalCnt, List<PhotoDto> photoList, PaginationDataDto paginationDataDto) {
+        this.filter = filter;
+        this.totalCnt = totalCnt;
+        this.photoList = photoList;
+        this.paginationDataDto = paginationDataDto;
     }
 
-    public static GetGalleryPhotoInfoResponse from(Photo photo, Integer likeCnt, Boolean isLiked) {
+    public static GetGalleryPhotoInfoResponse of(String filter, Integer totalCnt, List<PhotoDto> photoList, PaginationDataDto paginationDataDto) {
         return builder()
-                .photoId(photo.getId())
-                .thumbnailUrl(photo.getThumbnailUrl())
-                .title(photo.getTitle())
-                .likeCnt(likeCnt)
-                .isLiked(isLiked)
+                .filter(filter)
+                .totalCnt(totalCnt)
+                .photoList(photoList)
+                .paginationDataDto(paginationDataDto)
                 .build();
     }
 
