@@ -1,14 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from "./css/Gallery.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import Carousel from 'react-material-ui-carousel'
-import { Paper, Button } from '@mui/material'
-import { PackingGrid } from "@egjs/react-grid";
 import Masonry from 'react-masonry-css';
 import axios from 'axios';
 import MapComponent from './MapComponent';
 import Toggle from './ToggleBtn';
-import { useLocation, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 
 
 interface imgInterface {
@@ -306,9 +304,6 @@ const Gallery: React.FC = () => {
     }
   }, []);
 
-
-    const [imageData2, setImageData2] = useState<any[]>([]);
-
     useEffect(() => {
         fetchData();
     }, [page]);
@@ -476,12 +471,6 @@ const Gallery: React.FC = () => {
         setUploadPhotoDetail(!uploadPhotoDetail);
     }
 
-    const [uploadOk, setUploadOk] = useState<boolean>(false);
-
-    const openUploadOkModal = function(){
-        setUploadOk(!uploadOk)
-    }
-    
     const uploadClickHandler = () => {
         setUploadPhotoDetail(false);
         setIsUploadFinished(true);
