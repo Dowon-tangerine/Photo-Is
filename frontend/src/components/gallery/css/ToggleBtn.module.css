@@ -1,0 +1,62 @@
+
+.toggle_container{
+    position: relative;
+    width: 260px;
+    height: 40px;
+    background-color: white;
+    border-radius: 30px;
+    padding: 5px;
+    transition: all 0.5s;
+    border: 2px solid black;
+    cursor: pointer;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    display: flex;
+    align-items: center;
+}
+
+.toggle_circle{
+    width: 50px;
+    height: 30px;
+    border-radius: 50px;
+    transform: translateX(0px);
+    background-color: black;
+    transition: all 0.5s;
+}
+.toggle_title{
+    font-weight: bold;
+    position: absolute;
+    font-size: 20px;
+    opacity: 0;
+}
+
+.toggle_private{
+    left: 70px;
+}
+
+.toggle_public{
+    right: 70px;
+}
+
+.container_clicked{
+    background-color: black;
+    border: 2px solid white;
+    color: white;
+}
+
+.circle_clicked{
+    transform: translateX(198px);
+    background-color: white;
+}
+.private_clicked{
+    opacity: 1;
+    color: white;
+    transition: 2s opacity, 0.1s color;
+}
+.public_clicked{
+    opacity: 1;
+    color: black;
+    transition: 2s opacity, 0.1s color;
+}
