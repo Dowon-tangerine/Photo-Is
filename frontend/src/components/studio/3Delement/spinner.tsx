@@ -7,7 +7,6 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 function Spinner() {
     const lightRef = useRef<DirectionalLight>(null);
-    const axisRef = useRef<Object3D | null>(null);
     const bladesRefs = useRef<Object3D[]>([]);
     const [modelLoaded, setModelLoaded] = useState(false); // 모델 로드 상태 관리
 
