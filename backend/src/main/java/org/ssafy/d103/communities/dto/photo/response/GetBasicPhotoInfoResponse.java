@@ -2,30 +2,33 @@ package org.ssafy.d103.communities.dto.photo.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.ssafy.d103.communities.entity.photo.Photo;
+import org.ssafy.d103.communities.dto.PaginationDataDto;
+import org.ssafy.d103.communities.dto.photo.MyPhotoDto;
+
+import java.util.List;
 
 @Getter
 public class GetBasicPhotoInfoResponse {
 
-    private Long photoId;
-    private String thumbnailUrl;
-    private String title;
-    private Integer likeCnt;
+    private String accessType;
+    private Integer totalCnt;
+    private List<MyPhotoDto> photoList;
+    private PaginationDataDto paginationDataDto;
 
     @Builder
-    private GetBasicPhotoInfoResponse(Long photoId, String thumbnailUrl, String title, Integer likeCnt) {
-        this.photoId = photoId;
-        this.thumbnailUrl = thumbnailUrl;
-        this.title = title;
-        this.likeCnt = likeCnt;
+    private GetBasicPhotoInfoResponse(String accessType, Integer totalCnt, List<MyPhotoDto> photoList, PaginationDataDto paginationDataDto) {
+        this.accessType = accessType;
+        this.totalCnt = totalCnt;
+        this.photoList = photoList;
+        this.paginationDataDto = paginationDataDto;
     }
 
-    public static GetBasicPhotoInfoResponse from(Photo photo, Integer likeCnt) {
+    public static GetBasicPhotoInfoResponse of(String accessType, Integer totalCnt, List<MyPhotoDto> photoList, PaginationDataDto paginationDataDto) {
         return builder()
-                .photoId(photo.getId())
-                .thumbnailUrl(photo.getThumbnailUrl())
-                .title(photo.getTitle())
-                .likeCnt(likeCnt)
+                .accessType(accessType)
+                .totalCnt(totalCnt)
+                .photoList(photoList)
+                .paginationDataDto(paginationDataDto)
                 .build();
     }
 
