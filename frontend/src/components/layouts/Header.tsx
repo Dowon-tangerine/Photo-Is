@@ -82,7 +82,7 @@ const Header = () => {
                             )}
                         </div>
                     ))}
-                    <button className={headerStyle["btn-signin"]}>SIGN IN</button>
+                    <button className={headerStyle["btn-signin"]}onClick={() => navigate("/signin")}>SIGN IN</button>
                 </div>
             </header>
         </div>

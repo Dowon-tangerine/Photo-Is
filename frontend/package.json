@@ -34,6 +34,8 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.10",
     "three": "^0.164.1",
+    "three-fbx-loader": "^1.0.3",
+    "three-stdlib": "^2.29.10",
     "xtendui": "^1.4.2"
   },
   "devDependencies": {
