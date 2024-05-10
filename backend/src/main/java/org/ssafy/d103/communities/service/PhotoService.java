@@ -441,7 +441,7 @@ public class PhotoService {
     public GetSearchResultResponse searchPhotosByTitle(Authentication authentication, String title, int page, int size) {
         Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<Photo> photoPage = photoRepository.findByTitleContainingIgnoreCaseOrderByCreatedAtDesc(title, pageable);
+        Page<Photo> photoPage = photoRepository.findByAccessTypeAndTitleContainingIgnoreCaseOrderByCreatedAtDesc(AccessType.PUBLIC, title, pageable);
 
         // 페이지에 데이터가 없을 경우 예외 발생
         if (photoPage.isEmpty()) {
@@ -528,8 +528,7 @@ public class PhotoService {
         Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         List<Long> photoIds = hashtagRepository.findPhotosByHashtagText(tagText);
-
-        Page<Photo> photoPage = photoRepository.findByIdInOrderByCreatedAtDesc(photoIds, pageable);
+        Page<Photo> photoPage = photoRepository.findByAccessTypeAndIdInOrderByCreatedAtDesc(AccessType.PUBLIC, photoIds, pageable);
 
         // 페이지에 데이터가 없을 경우 예외 발생
         if (photoPage.isEmpty()) {

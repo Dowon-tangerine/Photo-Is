@@ -26,9 +26,9 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
     Page<Photo> findAllByAccessType(AccessType accessType, Pageable pageable);
 
-    Page<Photo> findByTitleContainingIgnoreCaseOrderByCreatedAtDesc(String title, Pageable pageable);
+    Page<Photo> findByAccessTypeAndTitleContainingIgnoreCaseOrderByCreatedAtDesc(AccessType accessType, String title, Pageable pageable);
 
-    Page<Photo> findByIdInOrderByCreatedAtDesc(List<Long> photoIds, Pageable pageable);
+    Page<Photo> findByAccessTypeAndIdInOrderByCreatedAtDesc(AccessType accessType, List<Long> photoIds, Pageable pageable);
 
     int countByMember(Members member);
 
