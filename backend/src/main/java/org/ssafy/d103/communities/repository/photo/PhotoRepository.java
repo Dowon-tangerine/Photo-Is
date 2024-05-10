@@ -23,4 +23,6 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
     Optional<Photo> findPhotoById(Long id);
 
+    Page<Photo> findAllByAccessType(AccessType accessType, Pageable pageable);
+
 }

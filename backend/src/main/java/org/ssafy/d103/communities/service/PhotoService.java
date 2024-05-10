@@ -94,8 +94,8 @@ public class PhotoService {
     private Photo uploadImageFile(MultipartFile imageFile, Photo photo) {
         try {
             String uuid = UUID.randomUUID().toString();
-            String originalUrl = putS3(imageFile, uuid);
-            String thumbnailUrl = putS3(convertToThumbnail(imageFile), uuid);
+            String originalUrl = putS3(imageFile, "originPhoto", uuid);
+            String thumbnailUrl = putS3(convertToThumbnail(imageFile), "thumbnailPhoto", uuid);
 
             Photo savePhoto = Photo.of(photo.getTitle(), originalUrl, thumbnailUrl, photo.getAccessType(), photo.getMember());
             return photoRepository.save(savePhoto);
@@ -104,12 +104,12 @@ public class PhotoService {
         }
     }
 
-    private String putS3(MultipartFile imageFile, String fileName) throws IOException {
-        fileName += SUFFIX;
+    private String putS3(MultipartFile imageFile, String folder, String fileName) throws IOException {
+        fileName = folder + "/" + fileName + SUFFIX;
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(imageFile.getInputStream().available());
-        objectMetadata.setContentType("image/png");
+        objectMetadata.setContentType("image/jpg");
 
         amazonS3Client.putObject(bucket, fileName, imageFile.getInputStream(), objectMetadata);
 
@@ -117,7 +117,7 @@ public class PhotoService {
     }
 
     private File convertToThumbnail(MultipartFile imageFile) throws IOException {
-        File tempFile = File.createTempFile("thumbnail-", ".png"); // 임시 파일 생성
+        File tempFile = File.createTempFile("thumbnail-", ".jpg"); // 임시 파일 생성
 
         Thumbnails.of(imageFile.getInputStream())
                 .size(MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION) // 최대 크기 설정
@@ -128,8 +128,8 @@ public class PhotoService {
         return tempFile;
     }
 
-    private String putS3(File file, String fileName) {
-        fileName += THUMBNAIL_TAIL + SUFFIX;
+    private String putS3(File file, String folder, String fileName) {
+        fileName = folder + "/" + fileName + THUMBNAIL_TAIL + SUFFIX;
 
         amazonS3Client.putObject(bucket, fileName, file);
         deleteFile(file);
@@ -255,7 +255,7 @@ public class PhotoService {
         Photo photo = photoRepository.findPhotoByIdAndMember(photoId, member)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
-        if (exhibitionPhotoRepository.findByPhotoId(photo) != null) {
+        if (!exhibitionPhotoRepository.findByPhotoId(photo).isEmpty()) {
             throw new CustomException(ErrorType.CANNOT_DELETE_PHOTO_USING_EXHIBITION);
         }
 
@@ -320,7 +320,7 @@ public class PhotoService {
         Pageable pageable = createPageable(page, size, determineGallerySort(filterName));
 
         // 페이지네이션된 사진 데이터 가져오기
-        Page<Photo> photoPage = photoRepository.findAll(pageable);
+        Page<Photo> photoPage = photoRepository.findAllByAccessType(AccessType.PUBLIC, pageable);
 
         // 페이지에 데이터가 없을 경우 예외 발생
         if (photoPage.isEmpty()) {
