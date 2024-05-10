@@ -7,6 +7,8 @@ import { PackingGrid } from "@egjs/react-grid";
 import Masonry from 'react-masonry-css';
 import axios from 'axios';
 import MapComponent from './MapComponent';
+import Toggle from './ToggleBtn';
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 interface imgInterface {
@@ -27,6 +29,13 @@ const Gallery: React.FC = () => {
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
     const [isRotated2, setIsRotated2] = useState<boolean>(false);
     const [imgDetail, setImgDetail] = useState<boolean>(false);
+    const [isUploadFinished, setIsUploadFinished] = useState<boolean>(false);
+    
+    const navigate = useNavigate();
+    
+    const moveToGallery = function(){
+        navigate("/community/gallery")
+    }
 
     const toggleRotation = () => {
         setIsRotated(!isRotated);
@@ -243,7 +252,7 @@ const Gallery: React.FC = () => {
     }
 
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [dogImgArr, setDogImgArr] = useState<imgInterface[]>([]);
 
@@ -252,12 +261,12 @@ const Gallery: React.FC = () => {
   
       // key가 없으면 응답은 10개씩
       const API_URL =
-        "https://k10d103.p.ssafy.io/api/dummy/photos/";
+        "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
       axios.get(API_URL).then((res) => {
         console.log(res);
         
         // id값과 url만 저장
-        const gotData = res.data.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
+        const gotData = res.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
           id: imgs.photoId,
           url: imgs.thumbnailUrl,
           likeCnt: imgs.likeCnt,
@@ -307,9 +316,9 @@ const Gallery: React.FC = () => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const API_URL = `https://k10d103.p.ssafy.io/api/dummy/photos/?page=${page}&limit=10`;
+            const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
             const response = await axios.get(API_URL);
-            const newData = response.data.data.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
+            const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
                 id: imgs.photoId,
                 url: imgs.thumbnailUrl,
                 likeCnt: imgs.likeCnt,
@@ -461,7 +470,48 @@ const Gallery: React.FC = () => {
         setUploadPhoto(!uploadPhoto);
     }
 
-    const tags = [
+    const [uploadPhotoDetail, setUploadPhotoDetail] = useState<boolean>(false);
+
+    const openUploadDetailModal = function(){
+        setUploadPhotoDetail(!uploadPhotoDetail);
+    }
+
+    const [uploadOk, setUploadOk] = useState<boolean>(false);
+
+    const openUploadOkModal = function(){
+        setUploadOk(!uploadOk)
+    }
+    
+    const uploadClickHandler = () => {
+        setUploadPhotoDetail(false);
+        setIsUploadFinished(true);
+    }
+
+    const closeModalHandler = () => {
+        openUploadModal();
+        setIsUploadFinished(false);
+    }
+
+    const [inputText, setInputText] = useState(''); // 입력된 텍스트 상태 변수
+    const [tags, setTags] = useState(["하이", "꽃", "버스", "꽃", "도로", "봄봄봄봄", "봄나무", "헬리콥터", "봄사랑벚꽃말고", "아이유"]); // 태그 배열 상태 변수
+
+    // 입력된 텍스트를 태그 배열에 추가하는 함수
+    const addTag = () => {
+        console.log(inputText)
+        if (inputText.trim() !== '') { // 입력된 텍스트가 공백이 아닌 경우에만 추가
+            setTags(prevTags => [...prevTags, inputText]); // 이전 태그 배열에 새로운 텍스트 추가
+            setInputText(''); // 입력된 텍스트 초기화
+        }
+    }
+
+    const removeTag = (index : number) => {
+        const newTags = [...tags]; // 새로운 배열 생성
+        newTags.splice(index, 1); // 해당 인덱스의 태그 제거
+        setTags(newTags); // 새로운 배열로 상태 업데이트
+    };
+
+
+    const tagss = [
         {
             tag : "하이",
         },        
@@ -529,6 +579,13 @@ const Gallery: React.FC = () => {
 
     ]
 
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null); // 선택된 이미지의 인덱스
+
+    const handleImageClick = (index: number) => {
+        setSelectedImageIndex(index); // 이미지 클릭 시 선택된 이미지의 인덱스를 설정
+    };
+
+
     return (
         <>
         {imgDetail && (
@@ -586,7 +643,7 @@ const Gallery: React.FC = () => {
                         </div>
                         <div className={styles.tags_container}>
                             <div className={styles.tags}>
-                                {tags.map((tag, index)=>{
+                                {tagss.map((tag, index)=>{
                                 return <a key={index + 'k'} href='#'>#{tag.tag} </a>
 
                                 })}
@@ -621,13 +678,102 @@ const Gallery: React.FC = () => {
 
         {uploadPhoto && (
             <>
+                {uploadPhotoDetail 
+                ? <>
                 <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadModal();}}></img>
-                <div  className={styles.upload_modal_container}>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
+                <div  className={styles.upload_detail_modal_container}>
+                    <div className={styles.upload_photos_container}>
+                        {imageData.map((image, index)=>{
+                            return( 
+                                <div key={index + 'o'} className={styles.upload_photo}>
+                                    {/* 추가함 */}
+                                    <div className={`${styles.upload_photo_overlay} ${selectedImageIndex === index && styles.upload_photo_overlay_clicked}`} onClick={() => {handleImageClick(index);}}>
+                                        {selectedImageIndex === index && <img src='/imgs/check_white.png'></img>}
+                                    </div>
+                                    <img src={image.url} alt='이미지' className={styles.upimg}></img>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div style={{width : '1px', height : '100%', background : 'black'}}></div>
+                    <div className={styles.upload_detail_info_container}>
+                        <p style={{fontSize : '36px', margin : '10%'}}>Detail</p>
+                        <div className={styles.upload_title_container}>
+                            <p style={{fontSize : '20px'}}>Title</p>
+                            <input className={styles.input_box3} type="text" placeholder="제목을 입력해주세요." ></input>
+                        </div>
+                        <div className={styles.upload_publish_container}>
+                            <p style={{fontSize : '20px'}}>Publish</p>
+                            <Toggle/>
+                        </div>
+                        <div className={styles.upload_tag_container}>
+                            <p style={{fontSize : '20px'}}>Tags</p>
+                            <div className={styles.tag_input_container}>
+                                <input className={styles.input_box4} value={inputText} type="text" placeholder="사진에 태그를 추가해 보세요." onChange={(e) => {setInputText(e.target.value)}}></input>
+                                <div className={styles.plus_btn} onClick={() => {addTag();}}>
+                                    <img src='/imgs/plus.png' alt='플러스' style={{width : '22px', height : '22px'}}></img>
+                                </div>
+                
+                            </div>
+                            <div className={styles.upload_tags_container}>
+                                    {tags.map((tag, index)=>{
+                                        return <div key={index + 'n'} className={`${styles.upload_tag} ${index %2 != 0 ? styles.float : ''}`}>{tag.length > 5 ? '# ' + tag.slice(0, 5) + '..' :  '# ' + tag}
+                                            <img src='/imgs/black_x.png' alt='x' style={{height : '13px', width : 'auto', position : 'absolute', right : '7px', cursor : 'pointer'}} onClick={() => {removeTag(index);}}></img>
+                                        </div>
 
+                                    })}
+                            </div>
+                            {/* 추가함 */}
+                            <div className={styles.upload_btn_container} onClick={uploadClickHandler}>
+                                <p className={styles.upload_txt3}>Upload</p>
+                                <img src='/imgs/black_upload_icon.png' alt='아이콘' style={{height : '30px', width : 'auto'}}></img>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                </> 
+                : // 이 안에 삼항 연산자가 하나 더 있어야 함
+                (
+                    isUploadFinished 
+                    ?
+                    <>
+                        <div className={styles.modal_background}> </div>
+                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={closeModalHandler}></img>
+                        <div className={styles.upload_modal_container}>
+                            <img src='/imgs/check_gif.gif' alt='체크' style={{height : '100px', width : 'auto'}}></img>
+                            <p className={styles.upload_ok_txt}>사진을 성공적으로 업로드하였습니다.</p>
+                            <p className={styles.go_detail_txt}>당신의 소중하고 특별한 순간을 다른사람들과 함께 빛내보세요. <br></br> 행복은 나눌수록 커진답니다.</p>
+                            <div  className={styles.go_all_btn_container}>
+                                <div className={styles.go_gallery_btn_container} onClick={closeModalHandler}>
+                                    <p className={styles.go_txt} onClick={() => {moveToGallery();}}>Community</p>
+                                </div>
+                                <div className={styles.go_mypage_btn_container} onClick={closeModalHandler}>
+                                    <p className={styles.go_txt}>MyPage</p>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                    :
+                    <>
+                        <div className={styles.modal_background}></div>
+                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadModal();}}></img>
+                        <div  className={styles.upload_modal_container}>
+                            <p className={styles.upload_modal_title}>당신의 사진을 업로드해 보세요.</p>
+                            <div className={styles.go_upload_btn_container} onClick={() => {openUploadDetailModal();}}>
+                                <p className={styles.upload_txt}>업로드할 사진 선택하기</p>
+                                <img src='/imgs/upload_icon.png' alt='업로드 아이콘' className={styles.upload_icon}></img>
+                            </div>
+                            <p className={styles.upload_txt2}>*최대 200mb / JPEG,PNG만 허용</p>
+                        </div>
+                    </>
+                )
+                
+            }
+                
             </>
         )}
+
         <div className={styles.main_container}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
@@ -641,6 +787,7 @@ const Gallery: React.FC = () => {
                             <div className={styles.typeList_container}>
                                 <p className={styles.type_txt1} onClick={() => {setType("작가"); openTypeList();}}>작가</p>
                                 <p className={styles.type_txt2} onClick={() => {setType("제목"); openTypeList();}}>제목</p>
+                                <p className={styles.type_txt3} onClick={() => {setType("태그"); openTypeList();}}>태그</p>
                             </div>
                         </>
                     )}

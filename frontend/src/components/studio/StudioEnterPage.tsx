@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import tutorialPicture from "/imgs/tutorialBackImg.png";
 import landscapePicture from "/imgs/landScapeBackImg.png";
-import StudioStyle from "./css/Studio.module.css";
 import portraitPicture from "/imgs/portraitBackImg.png";
+import StudioStyle from "./css/Studio.module.css";
 
 function StudioEnterPage() {
+    const navigate = useNavigate();
     const [sectionHeight, setSectionHeight] = useState("45vh"); // 초기 섹션 높이 설정
 
     useEffect(() => {
@@ -40,6 +42,7 @@ function StudioEnterPage() {
             </div>
             <div className="downSection flex items-center justify-center" style={{ height: sectionHeight }}>
                 <div
+                    onClick={() => navigate("/landscape")} // onClick에 arrow function을 사용하여 navigate 호출
                     className="landscape  w-1/2 h-full flex flex-col items-center justify-center"
                     style={{
                         backgroundImage: `url(${landscapePicture})`,
