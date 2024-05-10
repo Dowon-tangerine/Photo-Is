@@ -35,6 +35,20 @@ const Gallery: React.FC = () => {
         navigate("/community/gallery")
     }
 
+    const [word, setWord] = useState<String>("");
+
+    const moveToSearch = function(){
+        if(type === "작가"){
+            navigate("/community/gallery/searchName", { state: { searchWord :  word + "1"} })
+        }
+        else if(type === "제목"){
+            navigate("/community/gallery/searchTitle", { state: { searchWord :  word} })
+        }
+        else if(type === "태그"){
+            navigate("/community/gallery/searchTag", { state: { searchWord :  word} })
+        }
+    }
+
     const toggleRotation = () => {
         setIsRotated(!isRotated);
     };
@@ -252,7 +266,7 @@ const Gallery: React.FC = () => {
 
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [dogImgArr, setDogImgArr] = useState<imgInterface[]>([]);
+    const [imgArr, setImgArr] = useState<imgInterface[]>([]);
 
     useEffect(() => {
       console.log("로드");
@@ -271,7 +285,7 @@ const Gallery: React.FC = () => {
           liked: imgs.liked,
           title: imgs.title,
         }));
-        setDogImgArr(gotData);
+        setImgArr(gotData);
       });
     }, []);
 
@@ -320,7 +334,7 @@ const Gallery: React.FC = () => {
                 liked: imgs.liked,
                 title: imgs.title,
             }));
-            setDogImgArr((prevData) => [...prevData, ...newData]);
+            setImgArr((prevData) => [...prevData, ...newData]);
         } catch (error) {
             console.log(error);
         }
@@ -782,8 +796,8 @@ const Gallery: React.FC = () => {
                     )}
                 </div>
                 <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." ></input>
-                <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기'></img>
+                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord(e.target.value)}}></input>
+                <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
             </div>
 
             <div className={styles.page_intro}>
@@ -830,8 +844,8 @@ const Gallery: React.FC = () => {
                 columnClassName={styles.my_masonry_grid_column}>
                     
                     {/* <div className="dog-imgs-container"> */}
-                        {dogImgArr &&
-                            dogImgArr.map((Imgs: imgInterface, idx) => (
+                        {imgArr &&
+                            imgArr.map((Imgs: imgInterface, idx) => (
                                 <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails();}}>
                                     <img src={Imgs.url} />
                                     <div className={styles.photo_info2}>
