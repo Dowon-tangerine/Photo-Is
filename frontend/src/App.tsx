@@ -4,6 +4,7 @@ import StudioLayout from "./components/layouts/StudioLayout";
 import Home from "./components/home/Home";
 import StudioEnterPage from "./components/studio/StudioEnterPage";
 import LandScapePage from "./components/studio/LandScapePage";
+import TutorialPage from "./components/studio/TutorialPage";
 export default function App() {
     return (
         <BrowserRouter>
@@ -15,6 +16,7 @@ export default function App() {
 
                 <Route element={<StudioLayout />}>
                     <Route path="/landscape" element={<LandScapePage />}></Route>
+                    <Route path="/tutorial" element={<TutorialPage />}></Route>
                 </Route>
             </Routes>
         </BrowserRouter>

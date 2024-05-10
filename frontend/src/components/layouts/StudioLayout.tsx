@@ -10,8 +10,8 @@ function StudioLayout() {
     return (
         <div className="relative min-h-screen">
             <button onClick={goBack} className=" flex items-center absolute top-5 left-5 z-50">
-                <img src="./imgs/rightArrow.png" alt="" className="w-[40px] mr-2" />
-                <p className="text-[25px] font-bookkMyungjoBold">BACK</p>
+                <img src="./imgs/back.png" alt="" className="w-[30px] mr-2" />
+                <p className="text-[25px] font-bookkMyungjoBold text-white">BACK</p>
             </button>
 
             <Outlet />
