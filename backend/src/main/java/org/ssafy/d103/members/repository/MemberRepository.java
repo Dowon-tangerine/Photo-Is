@@ -43,4 +43,6 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
             nativeQuery = true)
     Optional<Page<MemberDtoMapping>> findAllByMemberIdAndNickname(@Param("memberId") Long memberId, @Param("nickname") String nickname, Pageable pageable);
 
+    Page<Members> findByNicknameContainingIgnoreCase(String nickname, Pageable pageable);
+
 }
