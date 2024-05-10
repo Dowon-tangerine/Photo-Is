@@ -26,6 +26,7 @@ import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.dto.PaginationDataDto;
+import org.ssafy.d103.communities.dto.photo.AuthorProfileDto;
 import org.ssafy.d103.communities.dto.photo.MyPhotoDto;
 import org.ssafy.d103.communities.dto.photo.PhotoDto;
 import org.ssafy.d103.communities.dto.photo.request.DeletePhotoCommentRequest;
@@ -36,7 +37,10 @@ import org.ssafy.d103.communities.dto.photo.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
 import org.ssafy.d103.communities.repository.photo.*;
 import org.ssafy.d103.exhibitions.repository.ExhibitionPhotoRepository;
+import org.ssafy.d103.follows.entity.Follows;
+import org.ssafy.d103.follows.repository.FollowRepository;
 import org.ssafy.d103.members.entity.Members;
+import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +75,10 @@ public class PhotoService {
     private final PhotoCommentRepository photoCommentRepository;
 
     private final ExhibitionPhotoRepository exhibitionPhotoRepository;
+
+    private final MemberRepository memberRepository;
+
+    private final FollowRepository followRepository;
 
     private final CommonService commonService;
 
@@ -299,6 +307,11 @@ public class PhotoService {
         // 특정 액세스 타입에 대한 페이지네이션된 사진 가져오기
         Page<Photo> photoPage = photoRepository.findAllByMemberAndAccessTypeOrderByCreatedAtDesc(member, AccessType.fromString(accessType), pageable);
 
+        // 페이지에 데이터가 없을 경우 예외 발생
+        if (photoPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_GALLERY_PHOTO_PAGE);
+        }
+
         // 결과 생성 및 반환
         return createBasicPhotoInfoResponse(photoPage, accessType);
     }
@@ -310,6 +323,11 @@ public class PhotoService {
 
         // 모든 사진을 페이지네이션하여 가져오기
         Page<Photo> photoPage = photoRepository.findAllByMemberOrderByCreatedAtDesc(member, pageable);
+
+        // 페이지에 데이터가 없을 경우 예외 발생
+        if (photoPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_GALLERY_PHOTO_PAGE);
+        }
 
         // 결과 생성 및 반환
         return createBasicPhotoInfoResponse(photoPage, "all");
@@ -324,7 +342,7 @@ public class PhotoService {
 
         // 페이지에 데이터가 없을 경우 예외 발생
         if (photoPage.isEmpty()) {
-            throw new CustomException(ErrorType.NOT_FOUND_QUESTION_PAGE);
+            throw new CustomException(ErrorType.NOT_FOUND_GALLERY_PHOTO_PAGE);
         }
 
         // 로그인한 사용자의 좋아요 목록 가져옴 (로그인한 경우에만)
@@ -399,6 +417,146 @@ public class PhotoService {
                 photoPage.getSize());
 
         return GetBasicPhotoInfoResponse.of(accessType, (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
+    }
+
+    // =======================================================================================================================
+
+    // ------------------------------------------------ [Get Search results] -------------------------------------------------
+    // *** Controller에서 받아온 SearchType을 기준으로 검색 타입 결정하는 메소드 ***
+    public GetSearchResultResponse determineSearchMethod(Authentication authentication, String searchType, String keyword, int page, int size) {
+        SearchType type = SearchType.fromString(searchType);
+
+        if (type.equals(SearchType.TITLE)) {
+            return searchPhotosByTitle(authentication, keyword, page, size);
+        } else if (type.equals(SearchType.AUTHOR)) {
+            return searchAuthorsByNickname(authentication, keyword, page, size);
+        } else if (type.equals(SearchType.HASHTAG)) {
+            return searchPhotosByHashtag(authentication, keyword, page, size);
+        }
+
+        throw new CustomException(ErrorType.BAD_REQUEST);
+    }
+
+    // *** 제목으로 사진 검색 ***
+    public GetSearchResultResponse searchPhotosByTitle(Authentication authentication, String title, int page, int size) {
+        Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<Photo> photoPage = photoRepository.findByAccessTypeAndTitleContainingIgnoreCaseOrderByCreatedAtDesc(AccessType.PUBLIC, title, pageable);
+
+        // 페이지에 데이터가 없을 경우 예외 발생
+        if (photoPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_SEARCH_RESULTS_PAGE);
+        }
+
+        // 로그인한 사용자의 좋아요한 사진 ID 가져옴
+        List<Long> likedPhotoIds = getLikedPhotoIds(authentication);
+
+        // 각 사진을 DTO로 변환하여 좋아요 여부 확인
+        List<PhotoDto> photoDtoList = photoPage.getContent().stream()
+                .map(photo -> {
+                    PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                            .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                    boolean isLiked = likedPhotoIds.contains(photo.getId());
+                    return PhotoDto.from(photo, photoDetail.getLikeCnt(), isLiked);
+                })
+                .collect(Collectors.toList());
+
+        // 페이지네이션 정보 구성
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                photoPage.getNumber() + 1,
+                photoPage.getTotalPages(),
+                (int) photoPage.getTotalElements(),
+                photoPage.getSize());
+
+        // 전체 사진 수 및 갤러리 사진 리스트 응답 생성
+        return GetSearchResultResponse.of(title, SearchType.TITLE.toString(), (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
+    }
+
+    // *** 작가명으로 작가 프로필 검색 ***
+    public GetSearchResultResponse searchAuthorsByNickname(Authentication authentication, String searchKeyword, int page, int size) {
+        Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "nickname"));
+
+        Page<Members> memberPage = memberRepository.findByNicknameContainingIgnoreCase(searchKeyword, pageable);
+
+        if (memberPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_SEARCH_RESULTS_PAGE);
+        }
+
+        // 로그인된 사용자가 팔로우한 멤버의 ID 목록을 가져옴
+        List<Long> followedMemberIds = getFollowedMemberIds(authentication);
+
+        // 멤버 리스트를 DTO로 변환하면서 각 멤버에 대해 팔로우 여부와 프로필 정보를 가져옴
+        List<AuthorProfileDto> authorProfileList = memberPage.getContent().stream()
+                .map(member -> {
+                    int uploadedPhotoCount = photoRepository.countByMember(member);
+                    int followingCount = followRepository.countByFollowerId(member);
+                    int followerCount = followRepository.countByFollowingId(member);
+
+                    boolean isFollow = authentication != null && followedMemberIds.contains(member.getId());
+
+                    return AuthorProfileDto.of(member.getNickname(), member.getProfileUrl(), member.getCity(), member.getCountry(), uploadedPhotoCount, followingCount, followerCount, isFollow);
+                })
+                .collect(Collectors.toList());
+
+        // 페이지네이션 정보 구성
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                memberPage.getNumber() + 1,
+                memberPage.getTotalPages(),
+                (int) memberPage.getTotalElements(),
+                memberPage.getSize());
+
+        return GetSearchResultResponse.of(searchKeyword, SearchType.AUTHOR.toString(), (int) memberPage.getTotalElements(), authorProfileList, paginationDataDto);
+    }
+
+    // 사용자의 팔로잉 리스트 생성
+    private List<Long> getFollowedMemberIds(Authentication authentication) {
+        if (authentication != null) {
+            Members member = commonService.findMemberByAuthentication(authentication);
+            List<Follows> followedList = followRepository.findAllByFollowerId(member)
+                    .orElse(Collections.emptyList());
+
+            return followedList.stream()
+                    .map(follow -> follow.getFollowingId().getId())
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    // *** 해시태그로 사진 검색 ***
+    public GetSearchResultResponse searchPhotosByHashtag(Authentication authentication, String tagText, int page, int size) {
+        Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        List<Long> photoIds = hashtagRepository.findPhotosByHashtagText(tagText);
+        Page<Photo> photoPage = photoRepository.findByAccessTypeAndIdInOrderByCreatedAtDesc(AccessType.PUBLIC, photoIds, pageable);
+
+        // 페이지에 데이터가 없을 경우 예외 발생
+        if (photoPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_SEARCH_RESULTS_PAGE);
+        }
+
+        // 로그인한 사용자의 좋아요한 사진 ID 가져오기
+        List<Long> likedPhotoIds = getLikedPhotoIds(authentication);
+
+        // 각 사진을 DTO로 변환하여 좋아요 여부 확인
+        List<PhotoDto> photoDtoList = photoPage.getContent().stream()
+                .map(photo -> {
+                    PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                            .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                    boolean isLiked = likedPhotoIds.contains(photo.getId());
+                    return PhotoDto.from(photo, photoDetail.getLikeCnt(), isLiked);
+                })
+                .collect(Collectors.toList());
+
+        // 페이지네이션 정보 구성
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                photoPage.getNumber() + 1,
+                photoPage.getTotalPages(),
+                (int) photoPage.getTotalElements(),
+                photoPage.getSize());
+
+        // 전체 사진 수 및 갤러리 사진 리스트 응답 생성
+        return GetSearchResultResponse.of(tagText, SearchType.HASHTAG.toString(), (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
     }
 
     // =======================================================================================================================

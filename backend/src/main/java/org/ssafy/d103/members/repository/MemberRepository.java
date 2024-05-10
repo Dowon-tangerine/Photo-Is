@@ -8,17 +8,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.ssafy.d103.members.entity.Members;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Members, Long> {
     interface MemberDtoMapping {
         Long getMemberId();
+
         String getProfileUrl();
+
         String getNickname();
+
         Integer getPhotoCnt();
+
         Integer getFollowingCnt();
+
         Integer getFollowerCnt();
+
         Integer getIsFollowing();
 
     }
@@ -35,12 +42,16 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
                     "WHEN EXISTS (SELECT 1 FROM follows f WHERE f.follower_id = :memberId AND f.following_id = m.member_id) THEN TRUE " +
                     "ELSE FALSE " +
                     "END AS isFollowing " +
-            "FROM members m " +
-            "WHERE m.nickname LIKE CONCAT('%', :nickname, '%') ",
+                    "FROM members m " +
+                    "WHERE m.nickname LIKE CONCAT('%', :nickname, '%') ",
             countQuery = "SELECT COUNT(*) " +
                     "FROM members m " +
                     "WHERE m.nickname LIKE CONCAT('%', :nickname, '%') ",
             nativeQuery = true)
     Optional<Page<MemberDtoMapping>> findAllByMemberIdAndNickname(@Param("memberId") Long memberId, @Param("nickname") String nickname, Pageable pageable);
+
+    Page<Members> findByNicknameContainingIgnoreCase(String nickname, Pageable pageable);
+
+    List<Members> findByNicknameContainingIgnoreCase(String nickname);
 
 }
