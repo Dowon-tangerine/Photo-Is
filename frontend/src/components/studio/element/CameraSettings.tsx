@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useCameraStore } from "../store/useCameraStore";
 
 const CameraSettings: React.FC = () => {
