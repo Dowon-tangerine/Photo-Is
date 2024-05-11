@@ -34,9 +34,14 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.10",
     "three": "^0.164.1",
+<<<<<<< HEAD
+    "xtendui": "^1.4.2",
+    "zustand": "^4.5.2"
+=======
     "three-fbx-loader": "^1.0.3",
     "three-stdlib": "^2.29.10",
     "xtendui": "^1.4.2"
+>>>>>>> fe
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
