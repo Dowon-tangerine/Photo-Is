@@ -14,6 +14,9 @@ const Capture: FunctionComponent<CaptureProps> = ({ setTakeScreenshot }) => {
                 gl.domElement.toBlob((blob: Blob | null) => {
                     if (blob) {
                         const url = URL.createObjectURL(blob);
+                        // 이미지 처리 로직 여기에 추가
+
+                        // 예: 밝기 조절, depth of field 시뮬레이션 등
                         const link = document.createElement("a");
                         link.style.display = "none";
                         link.href = url;
