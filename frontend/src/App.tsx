@@ -3,6 +3,12 @@ import MainLayout from "./components/layouts/MainLayout";
 import StudioLayout from "./components/layouts/StudioLayout";
 import Home from "./components/home/Home";
 import StudioEnterPage from "./components/studio/StudioEnterPage";
+
+import Gallery from "./components/gallery/Gallery";
+import HelloPhoto from "./components/docs/HelloPhoto";
+import Dictionary from "./components/docs/Dictionary";
+import SignIn from "./components/signin/SignIn";
+
 import LandScapePage from "./components/studio/LandScapePage";
 import TutorialPage from "./components/studio/TutorialPage";
 export default function App() {
@@ -12,7 +18,12 @@ export default function App() {
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/studio-enter" element={<StudioEnterPage />} />
+                    <Route path="/community/gallery" element={<Gallery />}/>
+                    <Route path="/docs/product1" element={<HelloPhoto />} />
+                    <Route path="/docs/product2" element={<Dictionary />} />
+                    <Route path="/signin" element={<SignIn />} />
                 </Route>
+                
 
                 <Route element={<StudioLayout />}>
                     <Route path="/landscape" element={<LandScapePage />}></Route>
