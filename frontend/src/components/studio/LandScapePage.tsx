@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { DirectionalLight } from "three";
 import StudioStyle from "./css/Studio.module.css";
-import AmusementPark from "./element/AmusementPark";
+import AmusementPark from "./3Delement/AmusementPark";
 
 function LandScapePage() {
     const lightRef = useRef<DirectionalLight>(null);
