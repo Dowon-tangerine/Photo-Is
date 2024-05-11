@@ -70,7 +70,6 @@ function Spinner() {
             {/* <ambientLight intensity={1} /> */}
             <directionalLight ref={lightRef} castShadow position={[0, 100, -50]} intensity={2} />
             <OrbitControls />
-            <axesHelper args={[5]} />
             <Sky distance={40000} sunPosition={[0, 0.1, 0]} inclination={0} azimuth={0.25} />
             {blade && <primitive object={blade} />}
             {axis && <primitive object={axis} />}
