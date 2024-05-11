@@ -69,10 +69,15 @@ function TutorialPage() {
                         <img src="/imgs/viewFinder.png" alt="Overlay Image" style={{ width: "100%", height: "100%" }} />
                     </div>
                     <div className="mt-6 setting-info flex justify-center items-center">
-                        <div className="font-digital  text-[45px] mx-10 text-green-400">{aperture}</div>
-                        <div className="font-digital  text-[45px] mx-10 text-green-400">1/ {shutterSpeed}</div>
+                        <div className="font-digital  text-[45px] mx-10 text-green-400">F {aperture}</div>
+                        {(shutterSpeed == 1 && (
+                            <div className="font-digital  text-[45px] mx-10 text-green-400">SS 1</div>
+                        )) || (
+                            <div className="font-digital  text-[45px] mx-10 text-green-400">SS 1/ {shutterSpeed} </div>
+                        )}
+
                         <div className="font-digital text-[45px] mx-10 text-green-400">{iso} </div>
-                        <div className="font-digital text-[45px] mx-10 text-green-400">{exposure} </div>
+                        <div className="font-digital text-[45px] mx-10 text-green-400">{exposure} EV</div>
                     </div>
                 </div>
 

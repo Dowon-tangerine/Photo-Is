@@ -3,7 +3,7 @@ import { useCameraStore } from "../store/useCameraStore";
 
 const CameraSettings: React.FC = () => {
     const apertureValues = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
-    const shutterSpeedValues = [1, 2, 4, 8, 15, 30, 60, 125, 250, 500, 1000, 2000, 4000];
+    const shutterSpeedValues = [4000, 2000, 1000, 500, 250, 125, 60, 30, 15, 8, 4, 2, 1];
     const isoValues = [100, 200, 400, 800, 1600, 3200, 6400, 12800];
     const { aperture, iso, shutterSpeed, exposure, setIso, setShutterSpeed, setAperture, setExposure } =
         useCameraStore();
@@ -58,9 +58,7 @@ const CameraSettings: React.FC = () => {
                         <label>셔터스피드 / SS</label>
                         <img src="/imgs/question.png" alt="" className="ml-3 w-[18px] h-[18px]" />
                     </div>
-                    <div>
-                        <label>1 / {shutterSpeed}</label>
-                    </div>
+                    <div>{(shutterSpeed == 1 && <label>1 </label>) || <label>1 / {shutterSpeed}</label>}</div>
                 </div>
                 <input
                     type="range"
