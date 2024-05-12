@@ -300,7 +300,7 @@ public class PhotoService {
     // createBasicPhotoInfoResponse로 GetBasicPhotoInfoResponse 생성
 
     // *** 사용자의 사진을 AccessType에 따라 최신순으로 모두 불러오는 메소드 ***
-    public GetBasicPhotoInfoResponse getPhotoByAccessType(Authentication authentication, String accessType, int page, int size) {
+    public GetMyPhotoResponse getMyPhotoByAccessType(Authentication authentication, String accessType, int page, int size) {
         Members member = commonService.findMemberByAuthentication(authentication);
         Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
@@ -316,8 +316,46 @@ public class PhotoService {
         return createBasicPhotoInfoResponse(photoPage, accessType);
     }
 
+    public GetOthersPhotoResponse getOthersPhoto(Authentication authentication, Long memberId, int page, int size) {
+        Members member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
+
+        Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        // 특정 액세스 타입에 대한 페이지네이션된 사진 가져오기
+        Page<Photo> photoPage = photoRepository.findAllByMemberAndAccessTypeOrderByCreatedAtDesc(member, AccessType.PUBLIC, pageable);
+
+        // 페이지에 데이터가 없을 경우 예외 발생
+        if (photoPage.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_GALLERY_PHOTO_PAGE);
+        }
+
+        // 로그인한 사용자의 좋아요 목록 가져옴 (로그인한 경우에만)
+        List<Long> likedPhotoIds = getLikedPhotoIds(authentication);
+
+        // 각 사진을 DTO로 변환하여 좋아요 여부 확인
+        List<PhotoDto> photoDtoList = photoPage.getContent().stream()
+                .map(photo -> {
+                    PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                            .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                    boolean isLiked = likedPhotoIds.contains(photo.getId());
+                    return PhotoDto.from(photo, photoDetail.getLikeCnt(), isLiked);
+                })
+                .toList();
+
+        // 페이지네이션 정보 구성
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                photoPage.getNumber() + 1,
+                photoPage.getTotalPages(),
+                (int) photoPage.getTotalElements(),
+                photoPage.getSize());
+
+        // 결과 생성 및 반환
+        return GetOthersPhotoResponse.of(AccessType.PUBLIC.getAccessTypeName(), (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
+    }
+
     // *** 사용자의 사진을 최신순으로 모두 불러오는 메소드 ***
-    public GetBasicPhotoInfoResponse getPhotoAll(Authentication authentication, int page, int size) {
+    public GetMyPhotoResponse getPhotoAll(Authentication authentication, int page, int size) {
         Members member = commonService.findMemberByAuthentication(authentication);
         Pageable pageable = createPageable(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
@@ -400,8 +438,8 @@ public class PhotoService {
         }
     }
 
-    // *** GetBasicPhotoInfoResponse 생성 메소드 ***
-    private GetBasicPhotoInfoResponse createBasicPhotoInfoResponse(Page<Photo> photoPage, String accessType) {
+    // *** GetMyPhotoInfoResponse 생성 메소드 ***
+    private GetMyPhotoResponse createBasicPhotoInfoResponse(Page<Photo> photoPage, String accessType) {
         List<MyPhotoDto> photoDtoList = photoPage.getContent().stream()
                 .map(photo -> {
                     PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
@@ -416,7 +454,7 @@ public class PhotoService {
                 (int) photoPage.getTotalElements(),
                 photoPage.getSize());
 
-        return GetBasicPhotoInfoResponse.of(accessType, (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
+        return GetMyPhotoResponse.of(accessType, (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
     }
 
     // =======================================================================================================================

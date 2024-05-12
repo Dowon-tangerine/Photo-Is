@@ -40,13 +40,18 @@ public class PhotoController {
     }
 
     @GetMapping("/my/{access-type}")
-    public ApiResponseDto<?> getPhotoByAccessType(Authentication authentication, @PathVariable("access-type") String accessType, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
-        return ResponseUtils.ok(photoService.getPhotoByAccessType(authentication, accessType, page, size), MsgType.PHOTO_GET_SUCCESSFULLY);
+    public ApiResponseDto<?> getMyPhotoByAccessType(Authentication authentication, @PathVariable("access-type") String accessType, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseUtils.ok(photoService.getMyPhotoByAccessType(authentication, accessType, page, size), MsgType.MY_PHOTO_GET_SUCCESSFULLY);
+    }
+
+    @GetMapping("/others/{member-id}")
+    public ApiResponseDto<?> getOthersPhoto(Authentication authentication, @PathVariable("member-id") Long memberId, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseUtils.ok(photoService.getOthersPhoto(authentication, memberId, page, size), MsgType.OTHERS_PHOTO_GET_SUCCESSFULLY);
     }
 
     @GetMapping("/my/all")
     public ApiResponseDto<?> getPhotoAll(Authentication authentication, @RequestParam int page, @RequestParam(defaultValue = "10") int size) {
-        return ResponseUtils.ok(photoService.getPhotoAll(authentication, page, size), MsgType.PHOTO_GET_SUCCESSFULLY);
+        return ResponseUtils.ok(photoService.getPhotoAll(authentication, page, size), MsgType.MY_PHOTO_GET_SUCCESSFULLY);
     }
 
     @GetMapping("/gallery/{filter}")
