@@ -1,0 +1,9 @@
+fastapi
+pydantic
+openai
+requests
+Pillow
+uvicorn
+python-dotenv
+
+# pip install -r requirements.txt
