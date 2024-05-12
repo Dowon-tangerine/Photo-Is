@@ -193,104 +193,30 @@
     font-family: "부크크고딕bold";
 }
 
-.profile_card_container{
-    width: 70vw;
+.my_masonry_grid {
+    display: -webkit-box; 
+    display: -ms-flexbox; 
+    display: flex;
+    width: 80vw;
     height: fit-content;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+}
+.my_masonry_grid_column {
+padding-left: 0.5vw; 
+padding-right: 0.5vw;
+background-clip: padding-box;
 }
 
-.card{
-    height: 400px;
+.my_masonry_grid_column > div {
+background: grey;
+margin-bottom: 1vw;
+cursor: pointer;
+}
+
+.img_card{
+    height: auto;
     width: auto;
     overflow: hidden;
-    margin: 10px;
     position: relative;
-    background: white;
-    border: 1px solid black;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: 0.5s all;
-}
-
-.card:hover{
-    transform: scale(1.05);
-    transition: 0.5s all;
-}
-
-.card_profile{
-    height: 130px;
-    width: 130px;
-    object-fit: cover;
-    border-radius: 200px;
-    cursor: pointer;
-}
-
-.profile_name{
-    font-size: 28px;
-    font-family: "부크크고딕bold";
-    margin: 2%;
-}
-
-.profile_info{
-    height: fit-content;
-    width: fit-content;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    margin-bottom: 6%;
-}
-
-.imgs_cnt{
-    width: 100%;
-    height: fit-content;
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.photo_icon{
-    height: 20px;
-    width: auto;
-}
-
-.follow_btn_container{
-    width: 140px;
-    height: 55px;
-    border-radius: 10px;
-    background: white;
-    border: 1px solid black;
-    cursor: pointer;
-    transition: 0.3s all;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.no_follow_btn_container{
-    width: 140px;
-    height: 55px;
-    border-radius: 10px;
-    background: black;
-    cursor: pointer;
-    transition: 0.3s all;
-    display: flex;
-    color: white;
-    align-items: center;
-    justify-content: center;
-}
-
-.plus_txt{
-    font-family: "부크크고딕bold";
-    font-size: 22px;
-}
-
-.plus_icon{
-    margin-left: 10px;
-    height: 20px;
-    width: auto;
 }
 
 .photo_info2{
@@ -332,3 +258,222 @@
 .like_txt2{
     font-size: 14px;
 }
+
+.modal_background{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+
+.modal_x{
+    width: 60px;
+    height: auto;
+    position: absolute;
+    z-index: 11;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+}
+
+.photo_modal_container{
+    width: 1050px;
+    height: 700px;
+    top: 50%;
+    left: 50%;
+    z-index: 11;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    overflow-y: hidden;
+    display: flex;
+    overflow-x: hidden;
+}
+
+.img_container{
+    width: 1000px;
+    height: 700px;
+}
+
+.photo{
+    width: 740px;
+    height: 630px;
+    object-fit: contain;
+    background: black;
+}
+
+.detail_photo_info{
+    width: 740px;
+    height: 70px;
+    display: flex;
+    background: white;
+    align-items: center;
+}
+
+.detail_photo_profile{
+    width: 55px;
+    height: 55px;
+    border-radius: 50px;
+    margin-left: 1%;
+}
+
+.detail_photo_info_container{
+    width: 590px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 2%;
+}
+
+.photo_title{
+    font-family: "부크크고딕bold";
+    font-size: 16px;
+}
+
+.photo_date{
+    font-family: "부크크고딕bold";
+    font-size: 12px;
+    color: gray;
+}
+
+.detail_photo_like{
+    width: 150px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.heart_txt{
+    font-family: "부크크고딕bold";
+    font-size: 18px;
+    position: absolute;
+    right: 40px;
+}
+
+.heart3{
+    height: 25px;
+    width: auto;
+    right: 5px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.other_info_container{
+    width: 300px;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.camera_info{
+    width: 300px;
+    height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 5px;
+}
+
+.camera_info_title{
+    font-family: "부크크고딕bold";
+    font-size: 24px;
+    margin: 2%;
+}
+
+.camera_info_title2{
+    font-family: "부크크고딕bold";
+    font-size: 20px;
+    margin: 4%;
+}
+
+.tags_container{
+    width: 300px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    
+    padding: 5px;
+}
+
+.tags{
+    width: 280px;
+    height: 80px;
+    overflow-y: auto;
+}
+
+.tags a{
+    display: inline;
+}
+
+.comment_container{
+    width: 300px;
+    height: 220px;
+    position: relative;
+    overflow-y: auto;
+    background: white;
+    padding: 5px;
+}
+
+.comment_profile{
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    object-fit: cover;
+}
+
+.comment_info{
+    width: 300px;
+    height: auto;
+    margin-left: 2%;
+}
+
+.send_comment_container{
+    height: 50px;
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+}
+
+.send_box{
+    height: 40px;
+    width: 280px;
+    border-radius: 50px;
+    border: 2px solid black;
+    align-items: center;
+    display: flex;
+}
+
+
+.input_box2{
+    height: 30px;
+    width: 230px;
+    padding: 10px;
+    position: relative;
+    margin-left: 10px;
+    font-family: "부크크고딕bold";
+}
+
+.input_box2:focus {
+    outline: none;
+}
+
+.send_icon{
+    right: 13px;
+    margin-top: -3px;
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+    position: absolute;
+}
+

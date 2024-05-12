@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./css/SearchName.module.css";
 import { FaAngleDown } from 'react-icons/fa';
-import Masonry from 'react-masonry-css';
 import axios from 'axios';
-import MapComponent from './MapComponent';
-
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface imgInterface {
     id: number;
@@ -22,6 +20,30 @@ const SearchName: React.FC = () => {
     const [imgDetail, setImgDetail] = useState<boolean>(false);
 
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
+
+    const moveToGallery = function(){
+        navigate("/community/gallery")
+    }    
+    
+    const [word2, setWord2] = useState<String>("");
+
+    const moveToSearch = function(){
+        if(type === "작가"){
+            navigate("/community/gallery/searchName", { state: { searchWord :  word2 + "1"} })
+        }
+        else if(type === "제목"){
+            navigate("/community/gallery/searchTitle", { state: { searchWord :  word2} })
+        }
+        else if(type === "태그"){
+            navigate("/community/gallery/searchTag", { state: { searchWord :  word2} })
+        }
+    } 
+
+    const word = location.state ? location.state.searchWord : "";
+
     const toggleRotation = () => {
         setIsRotated(!isRotated);
     };
@@ -35,7 +57,7 @@ const SearchName: React.FC = () => {
 
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [dogImgArr, setDogImgArr] = useState<imgInterface[]>([]);
+    const [imgArr, setImgArr] = useState<imgInterface[]>([]);
 
     useEffect(() => {
       console.log("로드");
@@ -54,7 +76,7 @@ const SearchName: React.FC = () => {
           liked: imgs.liked,
           title: imgs.title,
         }));
-        setDogImgArr(gotData);
+        setImgArr(gotData);
       });
     }, []);
 
@@ -103,7 +125,7 @@ const SearchName: React.FC = () => {
                 liked: imgs.liked,
                 title: imgs.title,
             }));
-            setDogImgArr((prevData) => [...prevData, ...newData]);
+            setImgArr((prevData) => [...prevData, ...newData]);
         } catch (error) {
             console.log(error);
         }
@@ -116,172 +138,17 @@ const SearchName: React.FC = () => {
         setImgDetail(!imgDetail);
     }
 
-    const [photoLiked, setPhotoLiked] = useState<boolean>(false);
+    const following = function(idx : number, follow : boolean){
 
-    const clickHeart = function(){
-        setPhotoLiked(!photoLiked);
+        let newArr = [...imgArr];
+
+        newArr[idx].liked = !follow;
+
+        setImgArr(newArr);
     }
-
-    const tagss = [
-        {
-            tag : "하이",
-        },        
-        {
-            tag : "벚꽃",
-        },
-        {
-            tag : "버스",
-        },
-        {
-            tag : "도로",
-        },
-        {
-            tag : "봄",
-        },
-        {
-            tag : "나무",
-        },
-        {
-            tag : "봄향기",
-        },
-        {
-            tag : "분홍분홍",
-        },
-
-    ]
-
-    const comments = [
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다 뻥이지롱 하하하하하 좋아요 많아서 좋겠다 사실 안부럽지롱 메롱메롱',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-
-    ]
-
 
     return (
         <>
-        {imgDetail && (
-            <>
-                <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails();}}></img>
-                <div className={styles.photo_modal_container}>
-                    <div className={styles.img_container}>
-                        <img src='/imgs/photo1.jpg' alt='사진' className={styles.photo}></img>
-                        <div className={styles.detail_photo_info}>
-                            <img src='/imgs/profile1.jpg' alt='프로필' className={styles.detail_photo_profile}></img>
-                            <div className={styles.detail_photo_info_container}>
-                                <p className={styles.photo_title}>버스버스 스타벅스</p>
-                                <p className={styles.photo_date}>October 31, 2017 by 바다탐험대</p>
-                            </div>
-                            <div className={styles.detail_photo_like}>
-                                <p className={styles.heart_txt}>123</p>
-                                <img src={`/imgs/${photoLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.other_info_container}>
-                        <div style={{width : '300px', height : 'fit-content', display : 'flex', justifyContent : 'center', alignItems: 'center', background : 'white'}}>
-                            <p className={styles.camera_info_title}>Information</p>
-                        </div>
-                        <div className={styles.camera_info}>
-                            <div style={{width : '100%'}}>
-                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>카메라 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
-                            </div>
-                            <div style={{width : '100%'}}>
-                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>렌즈 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
-                            </div>
-                            <div style={{width : '100%'}}>
-                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>조리개 / F : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
-                            </div>
-                            <div style={{width : '100%'}}>
-                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>초점 거리 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
-                            </div>
-                            <div style={{width : '100%'}}>
-                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>셔터 스피드 / SS : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
-                            </div>
-                            <div style={{width : '100%'}}>
-                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>심도 / ISO : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
-                            </div>
-                            <div><MapComponent/></div>
-                        </div>
-                        <div style={{width : '300px', height : 'fit-content', display : 'flex', justifyContent : 'center', alignItems: 'center', marginTop : '10px', background : 'white'}}>
-                            <p className={styles.camera_info_title}>Tags</p>
-                        </div>
-                        <div className={styles.tags_container}>
-                            <div className={styles.tags}>
-                                {tagss.map((tag, index)=>{
-                                return <a key={index + 'k'} href='#'>#{tag.tag} </a>
-
-                                })}
-                            </div>
-                        </div>
-                        <div style={{width : '300px', height : 'fit-content', display : 'flex', alignItems: 'center', marginTop : '10px', background : 'white'}}>
-                                <p className={styles.camera_info_title2}>{comments.length} Comments</p>
-                        </div>
-                        <div className={styles.comment_container}>
-                            {comments.map((comment, index)=>{
-                                return <div key={index + 'm'} style={{padding : '5px', display : 'flex'}}>
-                                    <img src={comment.profile} alt='프로필' className={styles.comment_profile}></img>
-                                    <div className={styles.comment_info}>
-                                        <p style={{fontFamily : '부크크고딕bold', fontSize : '14px'}}>{comment.name}</p>
-                                        <p style={{fontFamily : '부크크고딕', fontSize : '12px', marginTop : '-10px', color : 'black'}}>{comment.content}</p>
-                                        <p style={{fontFamily : '부크크고딕', fontSize : '10px', marginTop : '-10px', color : 'gray'}}>{comment.time}</p>
-                                    </div>
-                                </div>
-
-                            })}
-                        </div>
-                        <div className={styles.send_comment_container}>
-                            <div className={styles.send_box}>
-                                <input className={styles.input_box2} type="text" placeholder="댓글" ></input>
-                                <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기'></img>
-                            </div>
-                        </div>  
-                    </div>
-                </div>
-            </>
-        )}
-
-
         <div className={styles.main_container}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
@@ -301,38 +168,48 @@ const SearchName: React.FC = () => {
                     )}
                 </div>
                 <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." ></input>
-                <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기'></img>
+                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}}></input>
+                <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
             </div>
 
             <div className={styles.page_intro}>
-                <p className={styles.intro_txt1}>Community</p>
+                <p className={styles.intro_txt1} onClick={moveToGallery}>Community</p>
                 <p className={styles.intro_txt2}>-Gallery-</p>
             </div>
-
             
+            <div className={styles.search_word}>
+                <p style={{fontSize : '20px'}}>"{word}" 검색결과</p>
+            </div>
+
             <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
             
-            <Masonry 
-                breakpointCols={3}
-                className={styles.my_masonry_grid}
-                columnClassName={styles.my_masonry_grid_column}>
+            <div className={styles.search_type}>
+                <p style={{fontSize : '20px'}}>작가</p>
+            </div>
+
+
                     
-                    {/* <div className="dog-imgs-container"> */}
-                        {dogImgArr &&
-                            dogImgArr.map((Imgs: imgInterface, idx) => (
-                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails();}}>
-                                    <img src={Imgs.url} />
-                                    <div className={styles.photo_info2}>
-                                        <p className={styles.info_txt2}>{Imgs.title}</p>
-                                        <div className={styles.like_container2}>
-                                            <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
-                                            <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
-                                        </div>
-                                    </div>
+            <div className={styles.profile_card_container}>
+                {imgArr &&
+                    imgArr.map((Imgs: imgInterface, idx) => (
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openPhotoDetails();}}>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_profile}/>
+                            <p className={styles.profile_name}>김짱구잠옷</p>
+                            <div className={styles.profile_info}>
+                                <p>Cameara use 1 years</p>
+                                <div className={styles.imgs_cnt}>
+                                    <img src='/imgs/photo_icon.png' alt='사진 아이콘' className={styles.photo_icon}></img>
+                                    <p style={{marginLeft : '10px'}}>180</p>
                                 </div>
-                                ))}
-            </Masonry>
+                                <p>following 170 / follower 230</p>
+                            </div>
+                            <div className={Imgs.liked ? styles.follow_btn_container : styles.no_follow_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
+                                <p className={styles.plus_txt}>{Imgs.liked ? `Follower` : `Follow`}</p>
+                                <img src={Imgs.liked ? `` : `/imgs/white_plus.png`} className={Imgs.liked ? `` : styles.plus_icon}></img>
+                            </div>
+                        </div>
+                ))}
+            </div>
             {isLoading && <p>Loading...</p>}
             
             <div className="dog-imgs-container"> 
