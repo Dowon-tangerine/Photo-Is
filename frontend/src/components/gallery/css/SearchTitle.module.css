@@ -197,7 +197,7 @@
     display: -webkit-box; 
     display: -ms-flexbox; 
     display: flex;
-    width: 70vw;
+    width: 80vw;
     height: fit-content;
 }
 .my_masonry_grid_column {
