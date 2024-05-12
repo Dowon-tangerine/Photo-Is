@@ -26,6 +26,10 @@ const SearchName: React.FC = () => {
 
     const moveToGallery = function(){
         navigate("/community/gallery")
+    }  
+    
+    const moveToMyPage = function(){
+        navigate("/myPage")
     }    
     
     const [word2, setWord2] = useState<String>("");
@@ -193,7 +197,7 @@ const SearchName: React.FC = () => {
                 {imgArr &&
                     imgArr.map((Imgs: imgInterface, idx) => (
                         <div key={idx + 'g'} className={styles.card} onClick={() => {openPhotoDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_profile}/>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_profile} onClick={moveToMyPage}/>
                             <p className={styles.profile_name}>김짱구잠옷</p>
                             <div className={styles.profile_info}>
                                 <p>Cameara use 1 years</p>

@@ -8,304 +8,104 @@
     overflow-y: scroll;
 }
 
-.search_container{
-    width: 700px;
-    height: 50px;
-    margin-top: 3%;
-    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.5);
-    border: 2px solid black;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
+.mypage_info_container{
+    width: 100%;
+    object-fit: cover;
 }
 
-.combo_box{
-    width: 110px;
-    height: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-.dropdown_container{
-    display: flex;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-}
-
-.dropdown_txt{
-    font-family: "부크크고딕bold";
-    font-size: 18px;
-    margin-left: 10px;
-}
-
-.dropdown_icon {
-    color: black;
-    font-size: 30px;
-    margin-left: 15px;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out; /* 애니메이션 효과를 위한 transition 속성 */
-    display: inline-block; /* transform 속성을 적용하기 위해 필요 */
-}
-
-.rotated {
-    transform: rotate(180deg); /* 회전 클래스 */
-}
-
-.line{
-    height: 36px;
-    width: 2px;
-    background-color: #F0F0F0;
-}
-
-.typeList_container{
-    height:120px;
-    width: 110px;
-    background: white;
+.info_container{
+    width: 1285px;
+    height: fit-content;
+    top: 80%;
+    left: 5%;
     position: absolute;
-    top: 63%;
+    display: flex;
+}
+
+.profile{
+    height: 150px;
+    width: 150px;
+    border-radius: 200px;
+}
+
+.info{
+    width: 100%;
+    height: 150px;
+    margin-top: 70px;    
+    font-family: "부크크고딕bold";
+    font-size: 30px;
+    margin-left: 20px;
+    position: relative;
+}
+
+.edit_btn{
+    height: 35px;
+    width: 120px;
+    background: black;
+    font-family:  "부크크명조bold" ;
+    color: white;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 0;
     border-radius: 10px;
-}
-
-.type_txt1{
-    color: black;
-    height: 40px;
-    width: 110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 18px;
     cursor: pointer;
-    border-top: 2px solid black;
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
     transition: 0.5s all;
 }
 
-.type_txt2{
-    color: black;
-    height: 40px;
-    width: 110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
+.edit_btn:hover{
+    background: rgb(87, 87, 87);
     transition: 0.5s all;
 }
 
-.type_txt3{
-    color: black;
-    height: 40px;
-    width: 110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-bottom: 2px solid black;
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;    
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    transition: 0.5s all;
-}
-
-
-.type_txt1:hover {
-    background: black;
-    color: white;
-}
-
-.type_txt2:hover {
-    background: black;
-    color: white;
-}
-
-.type_txt3:hover {
-    background: black;
-    color: white;
-}
-
-.input_box{
-    height: 40px;
-    width: 540px;
-    padding: 10px;
-    font-family: "부크크고딕bold";
-}
-
-.input_box:focus {
-    outline: none;
-}
-
-.find_icon{
-    height: 40px;
-    width: auto;
-    cursor: pointer;
-}
-
-.page_intro{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.intro_txt1{
-    margin-top: 40px;
-    font-family: "부크크명조bold";
-    font-size: 40px;
-}
-
-.intro_txt2{
-    font-family: "부크크명조bold";
-    font-size: 24px;
-}
-
-.rank_container{
+.photo_mode_container{
     height: 300px;
     width: 90vw;
-    margin-top: 40px;
+    margin-top: 250px;
+    position: relative;
 }
 
 .mode_tabs{
     display: flex; 
-    width: 90vw;
+    width: 80vw;
     height: 40px;
     align-items: center;
-    justify-content: center;
+    margin: 10px
 }
 
 .mode_style{
-    width: 23.5vw;
+    width: 120px;
     height: 40px;
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
 .tab_style{
-    width: 80px;
+    width: 110px;
     height: 40px;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
+    font-family: "부크크명조";
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: 0.5s;
-    border-bottom: 4px solid white;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    border-bottom: 2px solid white;
     cursor: pointer;
 }
 
 .select_tab_style{
-    width: 80px;
+    width: 110px;
     height: 40px;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.5s;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-bottom: 4px solid black;
-    cursor: pointer;
-}
-
-.rank_photos{
-    height: 260px;
-    width: 90vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.rank_photo_frame{
-    width: 310px;
-    height: 200px;
-    margin-right: 1vw;
-    margin-left: 1vw;
-    overflow: hidden;
-    cursor: pointer;
-    box-shadow: 0.3rem 0.3rem 0.5rem 0 rgba(0, 0, 0, 0.5);
-}
-
-.rank_number{
-    width: 40px;
-    height: 40px; 
-    background: rgba(0, 0, 0, 0.5);
-    position: absolute;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: "부크크명조bold";
     font-size: 20px;
-}
-
-.rank_photo{
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-.photo_info{
-    height: 45px;
-    width: 100%;
-    color: white;
-    font-size: 12px;
-    background: rgba(0, 0, 0, 0.7);
-    transform: translateY(0px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: 0.5s;
-    display: flex;
-    position: relative;
-    align-items: center;
-}
-
-.rank_photo_frame:hover .photo_info{
-    transform: translateY(-45px);
-}
-
-.rank_profile{
-    width: 33px;
-    height: 33px;
-    border-radius: 50px;
-    object-fit: cover;
-    margin-left: 3%;
-}
-
-.info_txt{
-    margin-left: 2%;
-}
-
-.like_container{
-    height: 35px;
-    width: fit-content;
-    position: absolute;
-    display: flex;
-    right: 3%;
-    align-items: center;
-}
-
-.heart{
-    height: 15px;
-    width: auto;
-    margin-left: 5px;
-    margin-top: 2px;
-}
-
-.like_txt{
-    font-size: 14px;
+    border-bottom: 2px solid black;
+    cursor: pointer;
 }
 
 .btn_container{
@@ -315,12 +115,42 @@
     align-items: center;
 }
 
+.btn_photo_container{
+    position: absolute;
+    width: 300pxt;
+    height: 40px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .photo_btn{
+    width: 150px;
+    height: 40px;
+    background: black;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "부크크고딕bold";
+    font-size: 16px;
+    margin-right: 10px;
+    transition: 0.5s all;
+}
+
+.photo_btn:hover{
+    background: rgb(87, 87, 87);
+    transition: 0.5s all;
+}
+
+.exhibition_btn{
     width: 150px;
     height: 40px;
     background: white;
     border: 1px solid black;
-    margin-left: 65%;
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -333,112 +163,23 @@
     transition: 0.5s all;
 }
 
-.photo_btn:hover{
+.exhibition_btn:hover{
     filter: brightness(80%);
     transition: 0.5s all;
 }
 
-.sort_btn{
-    width: 150px;
-    height: 40px;
-    background: black;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    color: white;
-    position: relative;
-}
-
-.dropdown_container{
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.dropdown_txt2{
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    margin-left: 10px;
-}
-
-.dropdown_icon2 {
-    color: white;
-    font-size: 25px;
-    margin-left: 55px;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out; /* 애니메이션 효과를 위한 transition 속성 */
-    display: inline-block; /* transform 속성을 적용하기 위해 필요 */
-}
-
-.typeList_container2{
-    height:80px;
-    width: 140px;
-    background: white;
-    position: absolute;
-    z-index: 2;
-    top: 110%;
-    border-radius: 10px;
-}
-
-.type_txt1_2{
-    color: black;
-    height: 40px;
-    width: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-top: 2px solid black;
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    transition: 0.5s all;
-}
-
-.type_txt2_2{
-    color: black;
-    height: 40px;
-    width: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-bottom: 2px solid black;
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;    
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    transition: 0.5s all;
-}
-
-.type_txt1_2:hover {
-    background: black;
-    color: white;
-}
-
-.type_txt2_2:hover {
-    background: black;
-    color: white;
-}
 .my_masonry_grid {
     display: -webkit-box; 
     display: -ms-flexbox; 
     display: flex;
-    width: 70vw;
+    width: 90vw;
     height: fit-content;
 }
+
 .my_masonry_grid_column {
 padding-left: 0.5vw; 
 padding-right: 0.5vw;
+margin-top: 20px;
 background-clip: padding-box;
 }
 
@@ -448,12 +189,214 @@ margin-bottom: 1vw;
 cursor: pointer;
 }
 
+
+.profile_card_container{
+    width: 90vw;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.card{
+    height: 400px;
+    width: auto;
+    overflow: hidden;
+    margin: 10px;
+    position: relative;
+    background: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s all;
+}
+
+.card:hover{
+    transform: scale(1.05);
+    transition: 0.5s all;
+}
+
+.card_profile{
+    height: 130px;
+    width: 130px;
+    object-fit: cover;
+    border-radius: 200px;
+    cursor: pointer;
+}
+
+.profile_name{
+    font-size: 28px;
+    font-family: "부크크고딕bold";
+    margin: 2%;
+}
+
+.profile_info{
+    height: fit-content;
+    width: fit-content;
+    font-family: "부크크고딕bold";
+    font-size: 16px;
+    margin-bottom: 6%;
+}
+
+.imgs_cnt{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.photo_icon{
+    height: 20px;
+    width: auto;
+}
+
+.follow_btn_container{
+    width: 140px;
+    height: 55px;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: 0.3s all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no_follow_btn_container{
+    width: 140px;
+    height: 55px;
+    border-radius: 10px;
+    background: black;
+    cursor: pointer;
+    transition: 0.3s all;
+    display: flex;
+    color: white;
+    align-items: center;
+    justify-content: center;
+}
+
+.plus_txt{
+    font-family: "부크크고딕bold";
+    font-size: 22px;
+}
+
+.plus_icon{
+    margin-left: 10px;
+    height: 20px;
+    width: auto;
+}
+
+
 .img_card{
     height: auto;
-    width: auto;
+    width: 100%;
     overflow: hidden;
     position: relative;
 }
+
+.img2{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.edit_photo_container{
+    height: 50px;
+    width: 100%;
+    color: white;
+    font-size: 12px;
+    transition: 0.5s;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    opacity: 0;
+}
+
+.img_card:hover .edit_photo_container{
+    opacity: 1;
+}
+
+.sam_container{
+    width: 40px;
+    height: 40px;
+    background: white;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit{
+    width: 100%;
+    height: fit-content;
+    position: absolute;
+    top: 105%;
+}
+
+.edit_container{
+    width: 100px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    margin-top: 9px;
+    color: black;
+    font-family: "부크크명조bold";
+    font-size: 14px;
+    background: white;
+    filter: brightness(100%);
+    transition: 0.5s all;
+}
+
+.edit_container:hover{
+    filter: brightness(80%);
+    transition: 0.5s all;
+}
+
+.pencil{
+    height: 15px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.trash{
+    height: 15px;
+    width: auto;
+    margin-right: 10px;
+}
+
+
+.delete_container{
+    width: 100px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    margin-top:39px;
+    color: black;
+    font-family: "부크크명조bold";
+    font-size: 14px;
+    background: white;
+    filter: brightness(100%);
+    transition: 0.5s all;
+}
+
+.delete_container:hover{
+    filter: brightness(80%);
+    transition: 0.5s all;
+}
+
 
 .photo_info2{
     height: 45px;
@@ -472,7 +415,7 @@ cursor: pointer;
 }
 
 .info_txt2{
-    margin-left: 4%;
+    margin-left: 3%;
 }
 
 .like_container2{
@@ -480,14 +423,14 @@ cursor: pointer;
     width: fit-content;
     position: absolute;
     display: flex;
-    right: 6%;
+    right: 3%;
     align-items: center;
 }
 
 .heart2{
     height: 15px;
     width: auto;
-    margin-left: 5px;
+    margin-left: 10px;
     margin-top: 2px;
 }
 
@@ -516,6 +459,187 @@ cursor: pointer;
     left: 10px;
     cursor: pointer;
 }
+
+
+.edit_detail_modal_container{
+    width: 1050px;
+    height: 700px;
+    top: 50%;
+    left: 50%;
+    z-index: 11;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    overflow-y: hidden;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+.edit_photos_container{
+    width: 750px;
+    height: 700px;
+    background: black;
+    display: flex;
+    justify-content: center;
+}
+
+.edit_photo{
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.edit_detail_info_container{
+    width: 300px;
+    height: 700px;
+    font-family: "부크크명조bold";
+    display: flex;
+    background: white;
+    color: black;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.edit_title_container{
+    width: 260px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10%;
+}
+
+.edit_input_box3{
+    height: 50px;
+    width: 260px;
+    padding: 10px;
+    position: relative;
+    color: black;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-family: "부크크고딕bold";
+}
+
+.edit_input_box3:focus {
+    outline: none;
+}
+
+.edit_publish_container{
+    width: 260px;
+    height: fit-content;
+    margin-bottom: 10%;
+}
+
+.toggle{
+    width: 260px;
+    height: 40px;
+    border-radius: 10px;
+    background: white;
+}
+
+.edit_tag_container{
+    width: 260px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit_input_box4{
+    height: 40px;
+    width: 210px;
+    padding: 10px;
+    position: relative;
+    border: 1px solid black;
+    color: black;
+    border-radius: 10px;
+    font-family: "부크크고딕bold";
+}
+
+.edit_input_box4:focus {
+    outline: none;
+}
+
+.edit_input_box4::placeholder {
+    font-size: 14px;
+    color: #999; 
+    font-family: "부크크고딕bold";
+}
+
+.edit_tag_input_container{
+    width: 260px;
+    height: fit-content;
+    display: flex;
+    margin-bottom: 5%;
+}
+
+.edit_plus_btn{
+    height: 40px;
+    width: 40px;
+    border-radius: 50px;
+    background: black;
+    margin-left: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.edit_tags_container{
+    width: 260px;
+    height: 140px;
+    overflow-y: auto;
+    font-family: "부크크고딕";
+    font-size: 14px;
+    color: black;
+    margin-bottom: 10%;
+}
+
+.edit_tag{
+    height: 30px;
+    width: 48%;
+    background: rgb(130, 130, 130);
+    color: white;
+    border-radius: 10px;
+    margin: 2px;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    float: left;
+}
+
+.edit_btn_container{
+    width: 260px;
+    height: 60px;
+    background: black;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.5s all;
+}
+
+.edit_upload_txt3{
+    font-size: 28px;
+    color: white;
+}
+
+.edit_btn_container:hover{
+    background: rgb(56, 56, 56);
+}
+
+.float{
+    float: right;
+}
+
+/* .upload_ok_txt{
+    font-family: "부크크고딕bold";
+    font-size: 48px;
+    margin-bottom: 1%;
+} */
 
 .photo_modal_container{
     width: 1050px;
@@ -843,24 +967,7 @@ cursor: pointer;
     object-fit: cover;
     transition: 0.5s all;
 }
-.upload_photo_no {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    z-index: 11;
-    border: 2px solid red;
-    background: rgba(255, 255, 255, 0); /* 투명 배경 */
-    transition: background-color 0.5s; /* 배경색 변화에 대한 transition 설정 */
-}
 
-.upload_photo_selected {
-    position: absolute;
-    height: 170px;
-    width: 100%;
-    border: 2px solid rgb(0, 200, 255);
-    background: rgba(0, 0, 0, 0.4); /* 불투명한 배경 */
-    transition: background-color 0.5s; /* 배경색 변화에 대한 transition 설정 */
-}
 
 .upload_detail_info_container{
     width: 300px;
@@ -994,7 +1101,6 @@ cursor: pointer;
 .upload_txt3{
     font-size: 28px;
     color: black;
-    margin-right: 10%;
 }
 
 .upload_btn_container:hover{
@@ -1063,7 +1169,6 @@ cursor: pointer;
     cursor: pointer;
     transition: 0.5s all;
 }
-
 
 .go_txt{
     font-family: "부크크고딕bold";
