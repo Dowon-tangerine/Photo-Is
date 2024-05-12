@@ -1,7 +1,6 @@
 body, html {
     margin: 0;
     padding: 0;
-    overflow: hidden; /* 화면 전체 스크롤 방지 */
     height: 100vh;
     width: 100vw;
   }
