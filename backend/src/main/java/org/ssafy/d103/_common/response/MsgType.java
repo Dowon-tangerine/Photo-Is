@@ -38,6 +38,8 @@ public enum MsgType {
     PHOTO_MODIFY_SUCCESSFULLY("사진 정보 변경에 성공하였습니다."),
     PHOTO_DELETE_SUCCESSFULLY("사진 삭제에 성공하였습니다."),
     PHOTO_GET_SUCCESSFULLY("사진 조회에 성공하였습니다."),
+    MY_PHOTO_GET_SUCCESSFULLY("내 사진 조회에 성공하였습니다."),
+    OTHERS_PHOTO_GET_SUCCESSFULLY("타인 사진 조회에 성공하였습니다."),
     PHOTO_LIKE_CHANGE_SUCCESSFULLY("사진 좋아요 변경에 성공하였습니다."),
     PHOTO_COMMENT_WRITE_SUCCESSFULLY("사진 댓글 작성에 성공하였습니다."),
     PHOTO_COMMENT_LIST_GET_SUCCESSFULLY("사진 댓글 조회에 성공하였습니다."),
