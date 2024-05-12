@@ -61,7 +61,7 @@ const SearchTitle: React.FC = () => {
 
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [dogImgArr, setDogImgArr] = useState<imgInterface[]>([]);
+    const [imgArr, setImgArr] = useState<imgInterface[]>([]);
 
     useEffect(() => {
       console.log("로드");
@@ -80,7 +80,7 @@ const SearchTitle: React.FC = () => {
           liked: imgs.liked,
           title: imgs.title,
         }));
-        setDogImgArr(gotData);
+        setImgArr(gotData);
       });
     }, []);
 
@@ -129,7 +129,7 @@ const SearchTitle: React.FC = () => {
                 liked: imgs.liked,
                 title: imgs.title,
             }));
-            setDogImgArr((prevData) => [...prevData, ...newData]);
+            setImgArr((prevData) => [...prevData, ...newData]);
         } catch (error) {
             console.log(error);
         }
@@ -353,8 +353,8 @@ const SearchTitle: React.FC = () => {
                 columnClassName={styles.my_masonry_grid_column}>
                     
                     {/* <div className="dog-imgs-container"> */}
-                        {dogImgArr &&
-                            dogImgArr.map((Imgs: imgInterface, idx) => (
+                        {imgArr &&
+                            imgArr.map((Imgs: imgInterface, idx) => (
                                 <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails();}}>
                                     <img src={Imgs.url} />
                                     <div className={styles.photo_info2}>
