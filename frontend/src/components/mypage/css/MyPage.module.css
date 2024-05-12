@@ -1174,3 +1174,227 @@ cursor: pointer;
     font-family: "부크크고딕bold";
     font-size: 24px;
 }
+
+.open_exhibition_modal_container{
+    width: 1050px;
+    height: 700px;
+    top: 50%;
+    left: 50%;
+    z-index: 11;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    overflow-y: hidden;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+.open_exhibition_title{
+    font-family: "부크크명조bold";
+    font-size: 56px;
+}
+
+.exhibition_info{
+    width: 100%;
+    height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.exhibition_photo_intro_container{
+    width: 400px;
+    height: 400px;
+    border-radius: 10px;
+    border: 1px solid black;
+    background: white;
+    margin-right: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: brightness(100%);
+    transition: 0.5s all;
+    cursor: pointer;
+}
+
+.circle_plus{
+    height: 60px;
+    width: auto;
+}
+
+.is_img{
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    background: black;
+}
+
+.exhibition_photo_intro_container:hover{
+    filter: brightness(90%);
+    transition: 0.5s all;
+}
+
+.exhibition_photo_info_container{
+    width: 500px;
+    height: 430px;
+    border-radius: 10px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.exhibition_open_btn{
+    width: 400px;
+    height: 80px;
+    margin-top: 2%;
+    background: black;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.open_btn_txt{
+    font-family: "부크크명조bold";
+    font-size: 48px;
+}
+
+.open_title_container{
+    font-family: "부크크명조bold";
+    margin-bottom: 10px;
+}
+
+.open_input_box{
+    height: 50px;
+    width: 100%;
+    padding: 10px;
+    position: relative;
+    color: black;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-family: "부크크고딕bold";
+}
+
+.open_input_box:focus {
+    outline: none;
+}
+
+.open_description_input_box{
+    height: 150px;
+    width: 500px;
+    padding: 10px;
+    position: relative;
+    color: black;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-family: "부크크고딕bold";
+    text-align: left;
+    overflow-x: hidden;
+    overflow-y: auto;
+    resize: none;
+}
+
+.open_description_input_box:focus {
+    outline: none;
+}
+
+.open_description_input_box::placeholder {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 0; 
+}
+
+.open_photo_list_container{
+    width: 800px;
+    height: 600px;
+    top: 50%;
+    left: 50%;
+    z-index: 11;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    overflow-y: hidden;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+
+.upload_photos_list_container{
+    width: 750px;
+    height: 500px;
+    display: grid;
+    padding: 20px;
+    grid-template-columns: 1fr 1fr 1fr;
+    overflow-y: auto;
+}
+
+.upload_photos_list{
+    height: 170px;
+    border: 1px solid black;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.upload_photos_list_overlay{
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s all;
+    cursor: pointer;
+}
+
+.upload_photos_list_overlay:hover{
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.upload_photos_list_overlay_clicked{
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.upload_photos_list_overlay img{
+    width: 50px;
+    height: 50px;
+}
+
+.photos_list_upimg{
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    object-fit: cover;
+    transition: 0.5s all;
+}
+
+.selected_img_ok{
+    height: 70px;
+    width: 300px;
+    border-radius: 10px;
+    margin-top: 10px;
+    background: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "부크크명조bold";
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.5s all;
+}
+
+.selected_img_ok:hover{
+    background: rgb(87, 87, 87);
+    transition: 0.5s all;
+}
