@@ -52,6 +52,8 @@ function Spinner() {
     }, [blade]);
 
     useFrame((state, delta) => {
+        state
+
         if (modelLoaded) {
             bladesRefs.current.forEach((blade) => {
                 if (blade) {
