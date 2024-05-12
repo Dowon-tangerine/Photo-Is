@@ -5,6 +5,7 @@ import axios from 'axios';
 import MapComponent from '../gallery/MapComponent';
 import Toggle from '../gallery/ToggleBtn';
 import Toggle2 from '../gallery/ToggleBtn2';
+import Calendar from './Calendar';
 import {useNavigate } from "react-router-dom";
 
 
@@ -303,8 +304,8 @@ const MyPage: React.FC = () => {
                                                 <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
 
                                                 <div className={styles.edit_container} onClick={openEditmodal}>
-                                                    <img src='/imgs/pencil.png' alt='연필' className={styles.pencil}></img>
-                                                    <p>Edit</p>
+                                                    <img src='/imgs/share.png' alt='공유' className={styles.pencil}></img>
+                                                    <p>Share</p>
                                                 </div>
                                                 
                                                 <div className={styles.delete_container}>
@@ -501,6 +502,37 @@ const MyPage: React.FC = () => {
 
     ]
 
+    const [isExhibition, setIsExhibition] = useState<boolean>(false);
+
+    const openExhibitionModal = function(){
+        setIsExhibition(!isExhibition);
+    }
+
+    const [plusImg, setPlusImg] = useState<boolean>(false);
+
+    const openImgList = function(){
+        setPlusImg(!plusImg)
+    }
+
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null); // 선택된 이미지의 인덱스
+
+    const handleImageClick = (index: number) => {
+        setSelectedImageIndex(index); // 이미지 클릭 시 선택된 이미지의 인덱스를 설정
+    };
+
+    const [selectedImg, setSelectedImg] = useState<string>('');
+
+    const handleSelectedImg = function(url : string){
+        setSelectedImg(url);
+    }
+
+    const [isImg, setIsImg] = useState<string>('');
+
+    const handleIsImg = function(url : string){
+        setIsImg(url);
+    }
+
+
     return (
         <>
         {editModal && ( <>
@@ -565,6 +597,62 @@ const MyPage: React.FC = () => {
                 </div>
             </>
             }
+            </>
+        )}
+
+        {isExhibition && (
+            <>
+            <div className={styles.modal_background}> </div>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionModal();}}></img>
+            <div className={styles.open_exhibition_modal_container}>
+                <p className={styles.open_exhibition_title}>Exhibition Info</p>
+                <div className={styles.exhibition_info}>
+                    <div className={styles.exhibition_photo_intro_container} onClick={openImgList}>
+                        <img src={selectedImg == '' ? '/imgs/circle_plus.png' : selectedImg} alt='플러스' className={selectedImg == '' ? styles.circle_plus : styles.is_img}></img>
+                    </div>
+
+                    {plusImg && (
+                        <>
+                        <div className={styles.modal_background}> </div>
+                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openImgList();}}></img>
+                        <div className={styles.open_photo_list_container}>
+                            <div className={styles.upload_photos_list_container}>
+                                {imgArr.map((image, index)=>{
+                                    return( 
+                                        <div key={index + 'o'} className={styles.upload_photos_list} onClick={() => {handleIsImg(image.url);}}>
+                                            <div className={`${styles.upload_photos_list_overlay} ${selectedImageIndex === index && styles.upload_photos_list_overlay_clicked}`} onClick={() => {handleImageClick(index);}}>
+                                                {selectedImageIndex === index && <img src='/imgs/check_white.png'></img>}
+                                            </div>
+                                            <img src={image.url} alt='이미지' className={styles.photos_list_upimg}></img>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            <div className={styles.selected_img_ok} onClick={() => {openImgList(); handleSelectedImg(isImg);}}>
+                                <p>Select</p>
+                            </div>
+                        </div>
+                        </>
+                    )}
+                    <div className={styles.exhibition_photo_info_container}>
+                        <div className={styles.open_title_container}>
+                            <p style={{fontSize : '24px'}}>Title</p>
+                            <input className={styles.open_input_box} type="text" placeholder="제목을 입력해주세요." ></input>
+                        </div>
+                        <div className={styles.open_title_container}>
+                            <p style={{fontSize : '24px'}}>Date</p>
+                            <Calendar />
+                        </div>
+                        <div className={styles.open_title_container}>
+                            <p style={{fontSize : '24px'}}>Description</p>
+                            <textarea className={styles.open_description_input_box} placeholder="전시회를 간단히 소개해주세요." ></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.exhibition_open_btn}>
+                    <p className={styles.open_btn_txt}>Open</p>
+                </div>
+            </div>
             </>
         )}
 
@@ -765,7 +853,7 @@ const MyPage: React.FC = () => {
                             return <div key={index}>{mode.tabTitle}</div>
                         })}
                         <div className={styles.btn_photo_container}>
-                            <div className={styles.exhibition_btn} onClick={() => {openUploadModal();}}>
+                            <div className={styles.exhibition_btn} onClick={() => {openExhibitionModal();}}>
                                 <p>전시회 개최</p>
                             </div>   
                             <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
