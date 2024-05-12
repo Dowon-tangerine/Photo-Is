@@ -20,7 +20,6 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 class ChatRequest(BaseModel):
     question: str
 
-
 # 간단한 챗봇 대화 구현
 @app.post("/camera_chat")
 async def camera_chat(request: ChatRequest):
@@ -113,49 +112,3 @@ async def describe_image(request: ImageDescriptionRequest):
 # 프로그램의 시작점이면 run
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
-
-
-
-
-
-# import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# openai_api_key = os.environ.get("OPENAI_API_KEY")
-# neo4j_url = os.environ.get("NEO4J_URL")
-# neo4j_username = os.environ.get("NEO4J_USERNAME")
-# neo4j_password = os.environ.get("NEO4J_PASSWORD")
-
-
-
-
-
-
-
-
-# class Order(BaseModel):
-#     product: str
-#     units: int
-
-# class Product(BaseModel):
-#     name: str
-#     notes: str
-
-# @app.get("/ok")
-# async def ok_endpoint():
-#     return  {"message": "ok"}
-
-# @app.get("/hello")
-# async def hello_endpoint(name: str = 'World'):
-#     return {"message": f"Hello, {name}!"}
-
-# @app.post("/orders")
-# async def place_order(product: str, units: int):
-#     return {"message": f"Order for {units} units of {product} placed successfully."}
-
-# @app.post("/orders_pydantic")
-# async def place_order_pydantic(order:Order):
-#     return {"message": f"Order for {order.units} units of {order.product} placed successfully."}
-
