@@ -25,6 +25,9 @@ spring:
     multipart:
       maxFileSize: 30MB # 파일 하나의 최대 크기
       maxRequestSize: 30MB  # 한 번에 최대 업로드 가능 용량
+  mvc:
+    async:
+      request-timeout: 120000 # 비동기 시간제한 120s로 늘림(이미지 분석 시간 확보)
 
 cloud:
   aws:
@@ -67,3 +70,4 @@ springdoc:
 dummy:
   photos:
     photo-url: ${PHOTO_URL_1}, ${PHOTO_URL_2}, ${PHOTO_URL_3}, ${PHOTO_URL_4}, ${PHOTO_URL_5},
+
