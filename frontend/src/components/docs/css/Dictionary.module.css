@@ -90,9 +90,6 @@ body, html {
     height: 24px;
   }
 
- 
-  
-
   .content {
     flex-grow: 1;
     overflow: hidden; /* 내부 스크롤 방지 */
