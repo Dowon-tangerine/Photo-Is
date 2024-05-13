@@ -25,7 +25,7 @@ class ChatRequest(BaseModel):
 async def camera_chat(request: ChatRequest):
     client = openai.OpenAI()
     try:
-        # GPT-4 모델을 사용하여 챗봇 응답 생성
+        # GPT-4o 모델을 사용하여 챗봇 응답 생성
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -58,7 +58,7 @@ async def camera_chat(request: ChatRequest):
 class ImageDescriptionRequest(BaseModel):
     image_url: str
 
-# 이미지 설명
+# 이미지 비평
 @app.post("/describe-image")
 async def describe_image(request: ImageDescriptionRequest):
     client = openai.OpenAI()
@@ -89,6 +89,7 @@ async def describe_image(request: ImageDescriptionRequest):
                                 Check and suggest if the background fits the topic or is not too complicated.
 
                                 All advice is not aggressive, but you have to be firm about what you need.
+                                For advice, assuming that the questioner takes a picture with a digital camera, please mention adjusting the function of a professional camera, such as shutter speed and aperture sensitivity.
                                 Please change your answer to Korean.         
                                 """
                         },
