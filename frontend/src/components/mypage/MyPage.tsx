@@ -29,6 +29,10 @@ const MyPage: React.FC = () => {
         navigate("/community/gallery")
     }
 
+    const moveToMypage = function(){
+        navigate("/mypage")
+    }
+
 
     const tabClickHandler = function(index : number){
         settabIndex(index);
@@ -146,6 +150,37 @@ const MyPage: React.FC = () => {
     const openEditOk = function(){
         setEditOk(!editOk);
     }
+
+    const [shareModal, setShareModal] = useState<boolean>(false);
+
+    const openSharemodal = function(){
+        setShareModal(!shareModal);
+    }
+
+    const [shareOk, setShareOk] = useState<boolean>(false);
+
+    const openShareOk = function(){
+        setShareOk(!shareOk);
+    }
+    
+    const [photoLiked2, setPhotoLiked2] = useState<boolean>(false);
+
+    const clickHeart2 = function(){
+        setPhotoLiked2(!photoLiked2);
+    }
+
+    const [exhibitionDetail, setExhibitionDetail] = useState<boolean>(false);
+
+    const openExhibitionDetails = function(){
+        setExhibitionDetail(!exhibitionDetail);
+    }
+
+    const [finExhibitionDetail, setFinExhibitionDetail] = useState<boolean>(false);
+
+    const openFinExhibitionDetails = function(){
+        setFinExhibitionDetail(!finExhibitionDetail);
+    }
+
 
 
     const tabArr=[{
@@ -303,7 +338,7 @@ const MyPage: React.FC = () => {
                                             <div className={styles.edit}>
                                                 <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
 
-                                                <div className={styles.edit_container} onClick={openEditmodal}>
+                                                <div className={styles.edit_container} onClick={openSharemodal}>
                                                     <img src='/imgs/share.png' alt='공유' className={styles.pencil}></img>
                                                     <p>Share</p>
                                                 </div>
@@ -348,23 +383,60 @@ const MyPage: React.FC = () => {
         ),
         tabCont:(
             <>
+            
+            <div className={styles.search_word}>
+                <p style={{fontSize : '20px', marginLeft : '20px'}}>전시중인 전시회</p>
+            </div>
+
+            <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
+        
             <div className={styles.profile_card_container}>
                 {imgArr &&
                     imgArr.map((Imgs: imgInterface, idx) => (
-                        <div key={idx + 'g'} className={styles.card} onClick={() => {openPhotoDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_profile}/>
-                            <p className={styles.profile_name}>김짱구잠옷</p>
-                            <div className={styles.profile_info}>
-                                <p>Cameara use 1 years</p>
-                                <div className={styles.imgs_cnt}>
-                                    <img src='/imgs/photo_icon.png' alt='사진 아이콘' className={styles.photo_icon}></img>
-                                    <p style={{marginLeft : '10px'}}>180</p>
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails();}}>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
+                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
+                            
+                            <div className={styles.card_whole_info}>
+                                <p className={styles.card_title}>{Imgs.title}</p>
+                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
+                                <div className={styles.photo_card_info}>
+                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
+                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
+                                    <div className={styles.card_like_container}>
+                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
+                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
+                                    </div>
                                 </div>
-                                <p>following 170 / follower 230</p>
                             </div>
-                            <div className={Imgs.liked ? styles.follow_btn_container : styles.no_follow_btn_container}>
-                                <p className={styles.plus_txt}>{Imgs.liked ? `Follower` : `Follow`}</p>
-                                <img src={Imgs.liked ? `` : `/imgs/white_plus.png`} className={Imgs.liked ? `` : styles.plus_icon}></img>
+                        </div>
+                ))}
+            </div>
+
+            <div className={styles.search_word}>
+                <p style={{fontSize : '20px', marginLeft : '20px'}}>종료된 전시회</p>
+            </div>
+
+            <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
+        
+            <div className={styles.profile_card_container}>
+                {imgArr &&
+                    imgArr.map((Imgs: imgInterface, idx) => (
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openFinExhibitionDetails();}}>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
+                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
+                            
+                            <div className={styles.card_whole_info}>
+                                <p className={styles.card_title}>{Imgs.title}</p>
+                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
+                                <div className={styles.photo_card_info}>
+                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
+                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
+                                    <div className={styles.card_like_container}>
+                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
+                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                 ))}
@@ -532,6 +604,13 @@ const MyPage: React.FC = () => {
         setIsImg(url);
     }
 
+    const exhibition = {
+        thumbNail : 'imgs/photo4.jpg',
+        title : '먹을 수 없는 감은 장난감ㅋ',
+        date : '2024/04/17 ~ 2024/05/17',
+        description : '제 전시회로 말할거 같으면 ~~~~~~~ 짱구 보고 오세요 보고 오면 이해됨 이상무 전현무 깔깔'
+    }
+
 
     return (
         <>
@@ -545,10 +624,10 @@ const MyPage: React.FC = () => {
                 <p className={styles.upload_ok_txt}>정보를 성공적으로 수정하였습니다.</p>
                 <p className={styles.go_detail_txt}>당신의 소중하고 특별한 순간을 다른사람들과 함께 빛내보세요. <br></br> 행복은 나눌수록 커진답니다.</p>
                 <div  className={styles.go_all_btn_container}>
-                    <div className={styles.go_gallery_btn_container} onClick={closeModalHandler}>
-                        <p className={styles.go_txt} onClick={() => {moveToGallery();}}>Community</p>
+                    <div className={styles.go_gallery_btn_container} onClick={() => {moveToGallery(); closeModalHandler()}}>
+                        <p className={styles.go_txt}>Community</p>
                     </div>
-                    <div className={styles.go_mypage_btn_container} onClick={closeModalHandler}>
+                    <div className={styles.go_mypage_btn_container} onClick={() => {openEditOk(); openEditmodal(); moveToMypage();}}>
                         <p className={styles.go_txt}>MyPage</p>
                     </div>
                 </div>
@@ -592,6 +671,53 @@ const MyPage: React.FC = () => {
                             <div className={styles.edit_btn_container} onClick={() => {openEditOk();}}>
                                 <p className={styles.edit_upload_txt3}>Save</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+            }
+            </>
+        )}
+
+        {shareModal && ( <>
+            {shareOk
+            ? <>
+            <div className={styles.modal_background}> </div>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openShareOk(); openSharemodal();}}></img>
+            <div className={styles.upload_modal_container}>
+                <img src='/imgs/check_gif.gif' alt='체크' style={{height : '100px', width : 'auto'}}></img>
+                <p className={styles.upload_ok_txt}>게시물을 성공적으로 업로드하였습니다.</p>
+                <p className={styles.go_detail_txt}>질문은 배움의 첫 걸음입니다.<br></br>다양한 질문을 통해 사진에 한 걸음 더 가까워져보세요.</p>
+                <div  className={styles.go_all_btn_container}>
+                    <div className={styles.go_gallery_btn_container} onClick={() => {moveToGallery(); closeModalHandler();}}>
+                        <p className={styles.go_txt}>Q&A</p>
+                    </div>
+                    <div className={styles.go_mypage_btn_container} onClick={() => {openSharemodal(); openShareOk(); moveToMypage();}}>
+                        <p className={styles.go_txt}>MyPage</p>
+                    </div>
+                </div>
+            </div>
+            </>
+            :<>
+                <div className={styles.modal_background}></div>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openSharemodal();}}></img>
+                <div  className={styles.edit_detail_modal_container}>
+                    <div className={styles.edit_photos_container}>
+                        <img src={photoDetailInfo.url} alt='사진' className={styles.edit_photo}></img>
+                    </div>
+                    <div className={styles.edit_detail_info_container}>
+                        <p style={{fontSize : '36px', margin : '10%'}}>Share</p>
+                        <div className={styles.share_title_container}>
+                            <p style={{fontSize : '20px'}}>Title</p>
+                            <input className={styles.edit_input_box3} type="text" placeholder="제목을 입력해주세요." ></input>
+                        </div>
+                        <div className={styles.share_description_container}>
+                            <p style={{fontSize : '20px'}}>Describe</p>
+                            <textarea className={styles.share_description_input_box} placeholder="질문 내용을 입력해주세요." ></textarea>
+                        </div>
+
+                        <div className={styles.edit_btn_container} onClick={() => {openShareOk();}}>
+                            <p className={styles.edit_upload_txt3}>Save</p>
                         </div>
                     </div>
                 </div>
@@ -831,6 +957,71 @@ const MyPage: React.FC = () => {
                 
             </>
         )}
+
+        {exhibitionDetail && (
+            <>
+            <div className={styles.modal_background}> </div>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionDetails();}}></img>
+            <div className={styles.open_exhibition_modal_container}>
+                <p className={styles.open_exhibition_title}>Exhibition Info</p>
+                <div className={styles.exhibition_info}>
+                    <div className={styles.exhibition_photo_intro_container2}>
+                        <img src={exhibition.thumbNail} alt='썸네일' className={styles.is_img}></img>
+                    </div>
+
+                    <div className={styles.exhibition_photo_info_container2}>
+                        <div className={styles.open_title_container2}>
+                            <p style={{fontSize : '28px'}}>Title</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.title}</p>
+                        </div>
+                        <div className={styles.open_title_container2}>
+                            <p style={{fontSize : '28px'}}>Date</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.date}</p>
+                        </div>
+                        <div className={styles.open_title_container2}>
+                            <p style={{fontSize : '28px'}}>Description</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.description}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.exhibition_open_btn}>
+                    <p className={styles.open_btn_txt}>Enter</p>
+                </div>
+            </div>
+            </>
+        )}
+
+        {finExhibitionDetail && (
+            <>
+            <div className={styles.modal_background}> </div>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openFinExhibitionDetails();}}></img>
+            <div className={styles.open_exhibition_modal_container}>
+                <p className={styles.open_exhibition_title} style={{marginBottom : '20px'}}>Exhibition Info</p>
+                <div className={styles.exhibition_info}>
+                    <div className={styles.exhibition_photo_intro_container2}>
+                        <img src={exhibition.thumbNail} alt='썸네일' className={styles.is_img}></img>
+                    </div>
+
+                    <div className={styles.exhibition_photo_info_container2}>
+                        <div className={styles.open_title_container2}>
+                            <p style={{fontSize : '28px'}}>Title</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.title}</p>
+                        </div>
+                        <div className={styles.open_title_container2}>
+                            <p style={{fontSize : '28px'}}>Date</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.date}</p>
+                        </div>
+                        <div className={styles.open_title_container2}>
+                            <p style={{fontSize : '28px'}}>Description</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.description}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </>
+        )}
+
+
         <div className={styles.main_container}>
             <div  className={styles.mypage_info_container} style={{background : `url(${my[0].back})`, backgroundSize : 'cover', height : '350px', position : 'relative', backgroundPosition : 'center'}}>
                 <div className={styles.info_container}>
