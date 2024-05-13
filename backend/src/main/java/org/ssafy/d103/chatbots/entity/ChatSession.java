@@ -16,6 +16,8 @@ public class ChatSession {
 
     private String sessionId;
     private String userMessage;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String botResponse;
 
     @Column(updatable = false, insertable = false)
