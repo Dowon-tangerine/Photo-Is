@@ -11,6 +11,25 @@ interface UserData {
   confirmPassword: string;
 }
 
+interface InputFieldProps {
+  name: string;
+  placeholder: string;
+  type: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // 이벤트 핸들러 타입 정의
+}
+
+const InputField: React.FC<InputFieldProps> = ({ name, placeholder, type, value, onChange }) => (
+  <input
+    name={name}
+    placeholder={placeholder}
+    type={type}
+    value={value}
+    onChange={onChange}
+    required
+  />
+);
+
 const SignUp = () => {
   const [step, setStep] = useState<number>(1); 
   const [userData, setUserData] = useState<UserData>({
@@ -74,20 +93,14 @@ const SignUp = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    let formattedValue = value;
+    if (name === 'birthYear' || name === 'useYear') {
+      formattedValue = value.replace(/[^\d]/g, '') + '년';  // Extract numbers and append '년'
+    }
+    setUserData(prev => ({ ...prev, [name]: formattedValue }));
   };
 
-  const formatYearInput = (name: keyof UserData, value: string) => {
-    const numericValue = value.replace(/[^\d]/g, '');
-    setUserData(prev => ({
-      ...prev,
-      [name]: numericValue ? `${numericValue}년` : ''
-    }));
-  };
-
+  
   return (
     <div className={styles.signupContainer}>
       <div className={styles.leftPanel}>
@@ -107,59 +120,16 @@ const SignUp = () => {
 
           {step === 1 && (
             <>
-              <input
-                name="email"
-                placeholder='이메일을 입력해주세요'
-                type="text"
-                value={userData.email}
-                onChange={handleChange}
-                required
-              />
-              <input
-                name="password"
-                placeholder='비밀번호를 입력해주세요'
-                type="password"
-                value={userData.password}
-                onChange={handleChange}
-                required
-              />
-              <input
-                name="confirmPassword"
-                placeholder='비밀번호를 다시 한번 입력해주세요'
-                type="password"
-                value={userData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
+              <InputField name="email" placeholder='이메일을 입력해주세요' type="text" value={userData.email} onChange={handleChange} />
+              <InputField name="password" placeholder='비밀번호를 입력해주세요' type="password" value={userData.password} onChange={handleChange} />
+              <InputField name="confirmPassword" placeholder='비밀번호를 다시 한번 입력해주세요' type="password" value={userData.confirmPassword} onChange={handleChange} />
             </>
           )}
-
           {step === 2 && (
             <>
-              <input
-                name="nickname"
-                placeholder='닉네임을 입력해주세요'
-                type="text"
-                value={userData.nickname}
-                onChange={handleChange}
-                required
-              />
-              <input
-                name="birthYear"
-                placeholder='출생년도를 입력해주세요.'
-                type="text"
-                value={userData.birthYear}
-                onChange={(e) => formatYearInput('birthYear', e.target.value)}
-                required
-              />
-              <input
-                name="useYear"
-                placeholder='카메라 사용 경력을 입력해주세요.'
-                type="text"
-                value={userData.useYear}
-                onChange={(e) => formatYearInput('useYear', e.target.value)}
-                required
-              />
+              <InputField name="nickname" placeholder='닉네임을 입력해주세요' type="text" value={userData.nickname} onChange={handleChange} />
+              <InputField name="birthYear" placeholder='출생년도를 입력해주세요.' type="text" value={userData.birthYear} onChange={handleChange} />
+              <InputField name="useYear" placeholder='카메라 사용 경력을 입력해주세요.' type="text" value={userData.useYear} onChange={handleChange} />
             </>
           )}
 
