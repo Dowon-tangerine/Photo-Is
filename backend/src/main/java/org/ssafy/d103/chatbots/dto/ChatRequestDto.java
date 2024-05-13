@@ -5,8 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ChatRequestDto {
     private String question;
+    private String sessionId;
+
+    public ChatRequestDto(String question, String sessionId) {
+        this.question = question;
+        this.sessionId = sessionId;
+    }
+
+    // Getters and setters
 }

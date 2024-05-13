@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ImageRequestDto {
-    private String image_url;
+    private String imageUrl;
 
     public ImageRequestDto(String image_url) {
-        this.image_url = image_url;
+        this.imageUrl = image_url;
     }
 }
