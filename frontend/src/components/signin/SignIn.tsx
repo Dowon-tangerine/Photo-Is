@@ -18,13 +18,16 @@ const SignIn: React.FC = () => {
 
   return (
     <div className={styles.signinContainer}>
-      <div className={styles.imageSide}></div>
+      <div className={styles.imageSide}>
+        <img src={`./imgs/flower_signin.png`} alt="Flower Background" className={styles.backgroundImage} />
+        <div className={styles.overlayText}>Sign in</div>
+      </div>
       <div className={styles.formSide}>
         <form onSubmit={handleLogin} className={styles.signinForm}>
           <h1>Sign in</h1>
           <input
             type="text"
-            placeholder="아이디"
+            placeholder="이메일"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
