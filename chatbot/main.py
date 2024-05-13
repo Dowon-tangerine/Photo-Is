@@ -27,18 +27,25 @@ async def camera_chat(request: ChatRequest):
     try:
         # GPT-4 모델을 사용하여 챗봇 응답 생성
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o",
             messages=[
                 {
                     "role": "user",
-                    "content": "You are a friendly camera expert. You enjoy teaching beginners about photography and cameras. You explain technical concepts in simple terms and provide detailed, practical advice. You are patient and never assume prior knowledge."
+                    # 사용자 역할을 좀 더 명확하게 설정하여 효율적인 질문 응답을 도모
+                    "content": 
+                    """
+                        You are a kind camera expert.
+                        The questioner is a beginner who is new to photography and cameras.
+                        Explain complex camera concepts in simple terms. Give examples if necessary.
+                        Please answer all the answers in Korean.
+                    """
                 },
                 {
-                   "role": "user",
-                    "content": request.question
+                    "role": "user",
+                    "content": request.question  # 사용자의 질문
                 }
             ],
-            max_tokens=500  # 답변의 길이를 제한 (필요에 따라 조절 가능)
+            max_tokens=1000,  # 응답의 최대 토큰 수
         )
 
         # API 응답으로 챗봇의 답변을 반환
@@ -56,9 +63,9 @@ class ImageDescriptionRequest(BaseModel):
 async def describe_image(request: ImageDescriptionRequest):
     client = openai.OpenAI()
     try:
-        # GPT-4 Vision 모델에 설명 요청
+        # GPT-4o 모델에 설명 요청
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o",
             messages=[
                 {
                     "role": "user",
@@ -67,35 +74,35 @@ async def describe_image(request: ImageDescriptionRequest):
                             "type": "text",
                             "text": """
                                 You are a professional photo critic.
-                                Please analyze the given photo to evaluate the expression, composition, composition, exposure, and focus, and evaluate each item out of 10.
-                                Please start with a compliment and point out the shortcomings.
-                                Looking at the picture, please write a note about your initial thoughts and suggestions, make a key list, and list them in the order they will be presented.
-                                Please speak in a clear and concise language.
+                                Take a deep breath given and analyze the picture step by step.
+                                The questioner is probably a beginner who is new to photography.
+                                but don't say directly they are beginner.
+                                Please start with compliments and point out the shortcomings.
                                 The technical factors are assessed as follows
                                 1. Exposed
-                                If the exposure does not look good, suggest varying the aperture or shutter speed
                                 2. Focus
-                                Please determine whether the type of photo is a landscape or a figure and evaluate whether the focus fits the factor well.
                                 3. composition
-                                Observe the visual weight of the photograph to see where the gaze goes first, compare this with the most interesting part of the photograph, and if the two areas do not go well, suggest a way for the photographer to show interesting visual weight
+                                Observe the visual weight of the picture to see where the gaze goes first, and suggest a way for the photographer to show interesting visual weight if the two areas do not match well compared to the most interesting parts of the picture
                                 4. Color
-                                Please check if the color temperature is right for the overall color harmony and atmosphere and if you need any advice.
+                                Please check if the color temperature is suitable for the overall color tone and atmosphere and if you need any advice.
                                 5. Background
                                 Check and suggest if the background fits the topic or is not too complicated.
 
-                                All advice is in a soft tone that is not aggressive, but make sure you are adamant about what you need.                   """
+                                All advice is not aggressive, but you have to be firm about what you need.
+                                Please change your answer to Korean.         
+                                """
                         },
                         {
                             "type": "image_url",
                             "image_url": {
-                                "url": request.image_url,
+                                "url": request.image_url,  # 요청받은 이미지 URL
                                 "detail": "low"
                             }
                         }
                     ]
                 }
             ],
-            max_tokens=1000
+            max_tokens=1000,  # 응답의 최대 토큰 수
         )
 
         # 이미지 다운로드 및 PIL로 처리
