@@ -28,6 +28,7 @@ function StudioEnterPage() {
     return (
         <>
             <div
+                onClick={() => navigate("/tutorial")}
                 className="tutorial flex flex-col items-center justify-center"
                 style={{
                     backgroundImage: `url(${tutorialPicture})`,
