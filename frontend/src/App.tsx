@@ -11,6 +11,7 @@ import SearchTag from "./components/gallery/SearchTag"
 import HelloPhoto from "./components/docs/HelloPhoto";
 import Dictionary from "./components/docs/Dictionary";
 import SignIn from "./components/signin/SignIn";
+import SignUp from "./components/signin/SignUp";
 
 import LandScapePage from "./components/studio/LandScapePage";
 import TutorialPage from "./components/studio/TutorialPage";
@@ -28,6 +29,8 @@ export default function App() {
                     <Route path="/docs/product1" element={<HelloPhoto />} />
                     <Route path="/docs/product2" element={<Dictionary />} />
                     <Route path="/signin" element={<SignIn />} />
+                    <Route path="/signup" element={<SignUp />} />
+
                 </Route>
                 
 
