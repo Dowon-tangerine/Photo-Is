@@ -55,6 +55,10 @@ body, html {
     width: 100%;
     margin-bottom: 20px;
   }
+
+  .searchContainer :focus {
+    outline: none;
+  }
   
   .inputGroup {
     position: relative;

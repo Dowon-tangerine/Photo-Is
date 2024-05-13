@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import * as THREE from 'three';
 import styles from './css/Dictionary.module.css';
 
-const modelUrl = '../src/assets/models/FujiFilm_X_T4.obj.glb';
+const modelUrl = '/imgs/FujiFilm_X_T4.obj.glb';
 
 function Model() {
   const gltf = useLoader(GLTFLoader, modelUrl);

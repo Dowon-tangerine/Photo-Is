@@ -100,6 +100,10 @@ const SignUp = () => {
     setUserData(prev => ({ ...prev, [name]: formattedValue }));
   };
 
+  const handleStepClick = (newStep: number) => {
+    setStep(newStep);
+  };
+
   
   return (
     <div className={styles.signupContainer}>
@@ -112,7 +116,7 @@ const SignUp = () => {
           <ul className={styles.stepIndicator}>
             {Array.from({ length: 3 }, (_, i) => (
               <div className={styles.stepContainer} key={i}>
-                <li className={styles[i + 1 === step ? 'active' : '']} data-step={i + 1}></li>
+                <li className={styles[i + 1 === step ? 'active' : '']} data-step={i + 1} onClick={() => handleStepClick(i + 1)}></li>
                 <div className={styles.stepText}>{['가입정보', '회원정보', '완료'][i]}</div>
               </div>
             ))}
