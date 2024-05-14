@@ -8,6 +8,53 @@
     overflow-y: scroll;
 }
 
+.input_container{
+    height: 50px;
+    width: 100%;
+    display: flex;
+    position: relative;
+    align-items: center;
+}
+
+.input_name{
+    font-family: '부크크고딕bold';
+    font-size: 16px;
+    margin-left: 1%;
+}
+
+.input_file_btn{
+    width: 150px;
+    height: 40px;
+    padding: 6px 25px;
+    margin-left: 1%;
+    right: 0;
+    background: black;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    cursor: pointer;
+    transition: 0.5s all;
+}
+
+.input_t{
+    font-family: "부크크고딕bold";
+    font-size: 24px;
+    text-align: center;
+}
+
+.input_file_btn:hover{
+    background: rgb(87, 87, 87);
+    transition: 0.5s all;
+}
+
+.input_txt{
+    font-family: '부크크고딕bold';
+    font-size: 16px;
+}
+
 .mypage_info_container{
     width: 100%;
     object-fit: cover;
@@ -1254,9 +1301,8 @@ cursor: pointer;
 .upload_photos_container{
     width: 750px;
     height: 700px;
-    display: grid;
-    padding: 20px;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
 }
 
