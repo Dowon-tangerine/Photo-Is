@@ -37,9 +37,19 @@ const SignIn: React.FC = () => {
       if (response.status === 200 && response.data.msg === "로그인에 성공하였습니다.") {
         // 로그인 성공 처리
         console.log('로그인 성공:', response.data);
-        const token = response.data.token; // 토큰 저장
-        localStorage.setItem('authToken', token); // 로컬 스토리지에 토큰 저장
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Axios 인스턴스에 기본 Authorization 헤더 설정
+        const token = response.headers['authorization']; // 응답 헤더에서 토큰 추출
+        const memberId = response.data.data.memberId; // 응답 바디에서 memberId 추출
+        const nickname = response.data.data.nickname;
+        const profileUrl = response.data.data.profileUrl;
+
+        if (token) {
+          localStorage.setItem('authToken', token); // 로컬 스토리지에 토큰 저장
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Axios 인스턴스에 기본 Authorization 헤더 설정
+        }
+
+        localStorage.setItem('memberId', memberId); // 로컬 스토리지에 memberId 저장
+        localStorage.setItem('nickname', nickname);
+        localStorage.setItem('profileUrl', profileUrl);
         navigate('/');  // 로그인 성공 시 리디렉트할 경로
       } else {
         // 오류 처리
