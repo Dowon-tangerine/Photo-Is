@@ -45,6 +45,7 @@ public enum MsgType {
     PHOTO_COMMENT_LIST_GET_SUCCESSFULLY("사진 댓글 조회에 성공하였습니다."),
     PHOTO_COMMENT_DELETE_SUCCESSFULLY("사진 댓글 삭제에 성공하였습니다."),
     SEARCH_RESULT_LIST_GET_SUCCESSFULLY("통합 검색 결과 조회에 성공하였습니다."),
+    PHOTO_RANKING_GET_SUCCESSFULLY("사진 랭킹 조회에 성공하였습니다."),
 
     //********************************[ Questions ]********************************
     QUESTION_UPLOAD_SUCCESSFULLY("질문 업로드에 성공하였습니다."),
