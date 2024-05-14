@@ -16,6 +16,17 @@ load_dotenv()
 # 환경변수 읽기
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
+# CORS 설정 추가
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class ChatRequest(BaseModel):
     question: str
 
