@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ updateProfile, profileUpdated }) => {
         <button className={headerStyle.logo} onClick={() => navigate("/")}>
           PhotoIs
         </button>
-        <div className="rightSection flex">
+        <div className="rightSection flex items-center">
           {Object.keys(menuItems).map((item) => (
             <div
               className="relative"
@@ -109,16 +109,12 @@ const Header: React.FC<HeaderProps> = ({ updateProfile, profileUpdated }) => {
             </div>
           ))}
           {isLoggedIn && profileUrl ? (
-            <button
-              className={`${headerStyle["btn-signin"]} rounded-full`}
-              onClick={() => navigate("/profile")}
-            >
-              <img
-                src={profileUrl}
-                alt="Profile"
-                className="rounded-full w-10 h-10"
-              />
-            </button>
+            <img
+              src={profileUrl}
+              alt="Profile"
+              className={headerStyle["btn-profile"]}
+              onClick={() => navigate("/mypage")}
+            />
           ) : (
             <button
               className={headerStyle["btn-signin"]}

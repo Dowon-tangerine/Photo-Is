@@ -1,10 +1,11 @@
+// SignIn.tsx
 import React, { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from './css/signin.module.css';
 
 const emailCheck = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
@@ -50,7 +51,10 @@ const SignIn: React.FC<{ updateProfile: () => void }> = ({ updateProfile }) => {
         localStorage.setItem('memberId', memberId); // 로컬 스토리지에 memberId 저장
         localStorage.setItem('nickname', nickname);
         localStorage.setItem('profileUrl', profileUrl);
-        updateProfile(); // 프로필 업데이트 함수 호출
+
+        // 프로필 업데이트 함수 호출
+        updateProfile();
+
         navigate('/');  // 로그인 성공 시 리디렉트할 경로
       } else {
         // 오류 처리
