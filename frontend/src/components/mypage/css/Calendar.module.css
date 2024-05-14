@@ -1,0 +1,25 @@
+.datepicker{
+    text-align: center;
+    width: 500px;
+    padding : 10px;
+    border-width: 1px;
+    border-radius: 10px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 1px solid black;
+    font-family: "부크크고딕bold";
+}
+
+.datepicker_input{
+    width: 450px;
+}
+
+.datepicker_input:focus {
+    outline: none;
+}
+
+.datepicker:focus {
+    outline: none;
+}
