@@ -6,6 +6,7 @@ import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.photo.PhotoLike;
 import org.ssafy.d103.members.entity.Members;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,5 +16,7 @@ public interface PhotoLikeRepository extends JpaRepository<PhotoLike, Long> {
     List<PhotoLike> findAllByMember(Members member);
 
     Optional<PhotoLike> findPhotoLikeByMemberAndPhoto(Members member, Photo photo);
+
+    int countByPhotoAndCreatedAtBetween(Photo photo, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 }

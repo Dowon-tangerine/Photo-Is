@@ -29,6 +29,7 @@ import org.ssafy.d103.communities.dto.PaginationDataDto;
 import org.ssafy.d103.communities.dto.photo.AuthorProfileDto;
 import org.ssafy.d103.communities.dto.photo.MyPhotoDto;
 import org.ssafy.d103.communities.dto.photo.PhotoDto;
+import org.ssafy.d103.communities.dto.photo.PhotoRankingDto;
 import org.ssafy.d103.communities.dto.photo.request.DeletePhotoCommentRequest;
 import org.ssafy.d103.communities.dto.photo.request.PostUploadPhotoRequest;
 import org.ssafy.d103.communities.dto.photo.request.PostWritePhotoCommentRequest;
@@ -73,6 +74,12 @@ public class PhotoService {
     private final PhotoLikeRepository photoLikeRepository;
 
     private final PhotoCommentRepository photoCommentRepository;
+
+    private final DailyPhotoRankingRepository dailyPhotoRankingRepository;
+
+    private final WeeklyPhotoRankingRepository weeklyPhotoRankingRepository;
+
+    private final MonthlyPhotoRankingRepository monthlyPhotoRankingRepository;
 
     private final ExhibitionPhotoRepository exhibitionPhotoRepository;
 
@@ -634,7 +641,6 @@ public class PhotoService {
     @Transactional
     public PostChangePhotoLikeResponse changePhotoLike(Authentication authentication, Long photoId) {
         Members member = commonService.findMemberByAuthentication(authentication);
-
         Photo photo = photoRepository.findPhotoById(photoId)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
@@ -642,17 +648,17 @@ public class PhotoService {
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
 
         Optional<PhotoLike> findPhotoLike = photoLikeRepository.findPhotoLikeByMemberAndPhoto(member, photo);
+        boolean isAlreadyLiked = findPhotoLike.isPresent();
 
-        // 좋아요 기록이 있다면 Delete
-        if (findPhotoLike.isPresent()) {
+        if (isAlreadyLiked) {
             photoLikeRepository.delete(findPhotoLike.get());
-            return PostChangePhotoLikeResponse.of(false, photoDetail.updateLikeCnt(false));
-        }
-        // 좋아요 기록이 없다면 Insert
-        else {
+            photoDetail.updateLikeCnt(false);
+        } else {
             photoLikeRepository.save(PhotoLike.of(member, photo));
-            return PostChangePhotoLikeResponse.of(true, photoDetail.updateLikeCnt(true));
+            photoDetail.updateLikeCnt(true);
         }
+
+        return PostChangePhotoLikeResponse.of(!isAlreadyLiked, photoDetail.getLikeCnt());
     }
 
     @Transactional
@@ -708,4 +714,53 @@ public class PhotoService {
 
         return DeletePhotoCommentResponse.of(photoDetail.updateCommentCnt(false), photoCommentList);
     }
+
+    @Transactional
+    public GetPhotoRankingResponse getPhotoRanking(Authentication authentication, String type) {
+        RankingType rankingType = RankingType.fromString(type);
+
+        List<?> rankings = switch (rankingType) {
+            case DAILY -> dailyPhotoRankingRepository.findAll(Sort.by(Sort.Direction.ASC, "dailyRanking"));
+            case WEEKLY -> weeklyPhotoRankingRepository.findAll(Sort.by(Sort.Direction.ASC, "weeklyRanking"));
+            case MONTHLY -> monthlyPhotoRankingRepository.findAll(Sort.by(Sort.Direction.ASC, "monthlyRanking"));
+            default -> throw new CustomException(ErrorType.BAD_REQUEST);
+        };
+
+        List<Long> likedPhotoIds;
+        if (authentication != null) {
+            Members member = commonService.findMemberByAuthentication(authentication);
+            likedPhotoIds = photoLikeRepository.findAllByMember(member)
+                    .stream()
+                    .map(photoLike -> photoLike.getPhoto().getId())
+                    .toList();
+        } else {
+            likedPhotoIds = new ArrayList<>();
+        }
+
+        List<PhotoRankingDto> rankingList = rankings.stream().map(ranking -> {
+            Photo photo;
+            Integer rank;
+            if (ranking instanceof DailyPhotoRanking dailyRanking) {
+                photo = dailyRanking.getPhoto();
+                rank = dailyRanking.getDailyRanking();
+            } else if (ranking instanceof WeeklyPhotoRanking weeklyRanking) {
+                photo = weeklyRanking.getPhoto();
+                rank = weeklyRanking.getWeeklyRanking();
+            } else if (ranking instanceof MonthlyPhotoRanking monthlyRanking) {
+                photo = monthlyRanking.getPhoto();
+                rank = monthlyRanking.getMonthlyRanking();
+            } else {
+                throw new CustomException(ErrorType.BAD_REQUEST);
+            }
+
+            PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+            boolean isLiked = authentication != null && likedPhotoIds.contains(photo.getId());
+
+            return PhotoRankingDto.of(photo.getId(), rank, photo.getThumbnailUrl(), photo.getTitle(), photoDetail.getLikeCnt(), isLiked);
+        }).collect(Collectors.toList());
+
+        return GetPhotoRankingResponse.of(rankingType.getRankingTypeName(), rankingList);
+    }
+
 }

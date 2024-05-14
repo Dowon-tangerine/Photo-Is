@@ -62,6 +62,9 @@ dependencies {
 
     // metadata-extractor 라이브러리 사용 😋
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
+
+    // Spring Batch 사용 😋
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {

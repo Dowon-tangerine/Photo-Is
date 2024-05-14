@@ -11,7 +11,7 @@ spring:
       max-lifetime: 177000
   jpa:
     hibernate:
-      ddl-auto: update 
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -25,6 +25,11 @@ spring:
     multipart:
       maxFileSize: 30MB # 파일 하나의 최대 크기
       maxRequestSize: 30MB  # 한 번에 최대 업로드 가능 용량
+  batch:
+    jdbc:
+      initialize-schema: always
+#    job:
+#      enabled: false
 
 cloud:
   aws:
