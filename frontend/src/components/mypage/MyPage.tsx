@@ -3,7 +3,6 @@ import styles from "./css/MyPage.module.css";
 import Masonry from 'react-masonry-css';
 import axios from 'axios';
 import MapComponent from '../gallery/MapComponent';
-import Toggle from '../gallery/ToggleBtn';
 import Toggle2 from '../gallery/ToggleBtn2';
 import Calendar from './Calendar';
 import {useNavigate } from "react-router-dom";
@@ -597,6 +596,7 @@ const MyPage: React.FC = () => {
     }
 
     const uploadClickHandler = () => {
+        console.log('눌리긴하냐')
         setUploadPhotoDetail(false);
         setIsUploadFinished(true);
     }
@@ -744,6 +744,24 @@ const MyPage: React.FC = () => {
         setIsFollowList(!isFollowList);
     }
 
+    
+    const [mainImg, setMainImg] = useState<string>("");
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const setPreviewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files && event.target.files[0];
+
+        if (file) {
+            setSelectedFile(file);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (e.target && e.target.result) {
+                    setMainImg(e.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     return (
         <>
@@ -1032,40 +1050,57 @@ const MyPage: React.FC = () => {
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
                 <div  className={styles.upload_detail_modal_container}>
                     <div className={styles.upload_photos_container}>
-                        
+                        {mainImg == ''
+                        ? <>
+                            <div style={{width : '100%', height : '650px', objectFit : 'contain', background : 'black', color : 'white', display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
+                                <p className={styles.input_t}>등록된 사진이 없습니다. <br></br> 당신의 사진을 업로드 해보세요. </p>
+                            </div>
+                        </>
+                        :<>
+                            <img src={mainImg} style={{width : '100%', height : '650px', objectFit : 'contain', background : 'black', color : 'white'}} />
+                        </>}
+                        <div className={styles.input_container}>
+                            {selectedFile && (
+                                <p className={styles.input_name}>사진 이름 : {selectedFile.name}</p>
+                            )}
+                            <label className={styles.input_file_btn} htmlFor="image">
+                                <p className={styles.input_txt}>사진 선택</p>
+                                <img src='/imgs/white_plus.png' style={{height : '18px', width : 'auto', marginLeft : '10px'}}></img>
+                            </label>
+                            <input type="file" id="image" accept="image/*" style = {{display : 'none'}} onChange={setPreviewImg} />
+                        </div>
                     </div>
-                    <div style={{width : '1px', height : '100%', background : 'black'}}></div>
-                    <div className={styles.upload_detail_info_container}>
+                    <div className={styles.edit_detail_info_container}>
                         <p style={{fontSize : '36px', margin : '10%'}}>Detail</p>
-                        <div className={styles.upload_title_container}>
+                        <div className={styles.edit_title_container}>
                             <p style={{fontSize : '20px'}}>Title</p>
-                            <input className={styles.input_box3} type="text" placeholder="제목을 입력해주세요." ></input>
+                            <input className={styles.edit_input_box3} type="text" placeholder="제목을 입력해주세요." ></input>
                         </div>
-                        <div className={styles.upload_publish_container}>
+                        <div className={styles.edit_publish_container}>
                             <p style={{fontSize : '20px'}}>Publish</p>
-                            <Toggle/>
+                            <Toggle2/>
                         </div>
-                        <div className={styles.upload_tag_container}>
+                        <div className={styles.edit_tag_container}>
                             <p style={{fontSize : '20px'}}>Tags</p>
-                            <div className={styles.tag_input_container}>
-                                <input className={styles.input_box4} value={inputText} type="text" placeholder="사진에 태그를 추가해 보세요." onChange={(e) => {setInputText(e.target.value)}}></input>
-                                <div className={styles.plus_btn} onClick={() => {addTag();}}>
-                                    <img src='/imgs/plus.png' alt='플러스' style={{width : '22px', height : '22px'}}></img>
+                            <div className={styles.edit_tag_input_container}>
+                                <input className={styles.edit_input_box4} value={inputText} type="text" placeholder="사진에 태그를 추가해 보세요." onChange={(e) => {setInputText(e.target.value)}}></input>
+                                <div className={styles.edit_plus_btn} onClick={() => {addTag();}}>
+                                    <img src='/imgs/white_plus.png' alt='플러스' style={{width : '22px', height : '22px'}}></img>
                                 </div>
                 
                             </div>
-                            <div className={styles.upload_tags_container}>
+                            <div className={styles.edit_tags_container}>
                                     {tags.map((tag, index)=>{
-                                        return <div key={index + 'n'} className={`${styles.upload_tag} ${index %2 != 0 ? styles.float : ''}`}>{tag.length > 5 ? '# ' + tag.slice(0, 5) + '..' :  '# ' + tag}
+                                        return <div key={index + 'n'} className={`${styles.edit_tag} ${index %2 != 0 ? styles.float : ''}`}>{tag.length > 5 ? '# ' + tag.slice(0, 5) + '..' :  '# ' + tag}
                                             <img src='/imgs/black_x.png' alt='x' style={{height : '13px', width : 'auto', position : 'absolute', right : '7px', cursor : 'pointer'}} onClick={() => {removeTag(index);}}></img>
                                         </div>
 
                                     })}
                             </div>
-                            {/* 추가함 */}
-                            <div className={styles.upload_btn_container} onClick={uploadClickHandler}>
-                                <p className={styles.upload_txt3}>Upload</p>
-                                <img src='/imgs/black_upload_icon.png' alt='아이콘' style={{height : '30px', width : 'auto'}}></img>
+                            {/* 문제 */}
+                            <div className={styles.edit_btn_container} onClick={() => {uploadClickHandler();}}>
+                                <p className={styles.upload_txt3} style={{color : 'white'}}>Upload</p>
+                                <img src='/imgs/upload_icon.png' alt='아이콘' style={{height : '45px', width : 'auto', marginLeft : '10%'}}></img>
                             </div>
                         </div>
                     </div>
