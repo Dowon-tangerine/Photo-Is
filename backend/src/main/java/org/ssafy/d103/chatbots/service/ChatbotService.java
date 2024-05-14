@@ -29,7 +29,7 @@ public class ChatbotService {
 
     public Mono<String> getChatbotResponse(String sessionId, String question) {
         return this.webClient.post()
-                .uri("/camera_chat")
+                .uri("/api/py/camera-chat")
                 .bodyValue(new ChatRequestDto(question, sessionId))
                 .retrieve()
                 .bodyToMono(ChatResponseDto.class)
@@ -41,7 +41,7 @@ public class ChatbotService {
 
     public Mono<String> describeImage(String imageUrl) {
         return this.webClient.post()
-                .uri("/describe-image")
+                .uri("/api/py/describe-image")
                 .bodyValue(new ImageRequestDto(imageUrl))
                 .retrieve()
                 .bodyToMono(String.class);
