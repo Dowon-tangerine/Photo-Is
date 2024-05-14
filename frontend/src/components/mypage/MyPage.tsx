@@ -20,6 +20,8 @@ interface imgInterface {
 const MyPage: React.FC = () => {
 
     const [tabIndex, settabIndex] = useState<number>(0);
+    const [tabIndex2, settabIndex2] = useState<number>(0);
+    const [tabIndex3, settabIndex3] = useState<number>(0);
     const [imgDetail, setImgDetail] = useState<boolean>(false);
     const [isUploadFinished, setIsUploadFinished] = useState<boolean>(false);
     
@@ -38,6 +40,13 @@ const MyPage: React.FC = () => {
         settabIndex(index);
     }
 
+    const tabClickHandler2 = function(index : number){
+        settabIndex2(index);
+    }
+
+    const tabClickHandler3 = function(index : number){
+        settabIndex3(index);
+    }
 
     const my = [
         {
@@ -181,7 +190,94 @@ const MyPage: React.FC = () => {
         setFinExhibitionDetail(!finExhibitionDetail);
     }
 
+    const tabArr2=[{
+        tabTitle:(
+            <>
+                <div className={styles.mode_style2}>
+                    <div className={tabIndex2===0 ? styles.select_tab_style2 : styles.tab_style2}>
+                        <p onClick={() => tabClickHandler2(0)}>전시중인 전시회</p>
+                    </div>
+                </div>
 
+            </>
+        ),
+        tabCont:(
+            <> 
+            <div className={styles.profile_card_container}>
+                {imgArr &&
+                    imgArr.map((Imgs: imgInterface, idx) => (
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails();}}>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
+                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
+                            
+                            <div className={styles.card_whole_info}>
+                                <p className={styles.card_title}>{Imgs.title}</p>
+                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
+                                <div className={styles.photo_card_info}>
+                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
+                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
+                                    <div className={styles.card_like_container}>
+                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
+                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                ))}
+            </div>
+
+            {isLoading && <p style={{width : '100%', textAlign : 'center'}}>Loading...</p>}
+            
+            <div className="dog-imgs-container"> 
+            <div id="observer" style={{ height: "10px" }}></div>
+            </div>
+            </>
+        )
+    },
+    {
+        tabTitle:(
+            <>
+                <div className={styles.mode_style2}>
+                    <div className={tabIndex2===1 ? styles.select_tab_style2 : styles.tab_style2}>
+                        <p onClick={() => tabClickHandler2(1)}>종료된 전시회</p>
+                    </div>
+                </div>
+
+            </>
+        ),
+        tabCont:(
+            <> 
+            <div className={styles.profile_card_container}>
+                {imgArr &&
+                    imgArr.map((Imgs: imgInterface, idx) => (
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openFinExhibitionDetails();}}>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
+                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
+                            
+                            <div className={styles.card_whole_info}>
+                                <p className={styles.card_title}>{Imgs.title}</p>
+                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
+                                <div className={styles.photo_card_info}>
+                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
+                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
+                                    <div className={styles.card_like_container}>
+                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
+                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                ))}
+            </div>
+
+            {isLoading && <p style={{width : '100%', textAlign : 'center'}}>Loading...</p>}
+            
+            <div className="dog-imgs-container"> 
+            <div id="observer" style={{ height: "10px" }}></div>
+            </div>
+            </>
+        )
+    },]
 
     const tabArr=[{
         tabTitle:(
@@ -383,69 +479,100 @@ const MyPage: React.FC = () => {
         ),
         tabCont:(
             <>
-            
-            <div className={styles.search_word}>
-                <p style={{fontSize : '20px', marginLeft : '20px'}}>전시중인 전시회</p>
-            </div>
+            <div className={styles.photo_mode_container2}>
+                <div className={styles.mode_tabs}>
+                        {tabArr2.map((mode, index)=>{
+                            return <div key={index}>{mode.tabTitle}</div>
+                        })}
+   
+                </div>
 
-            <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
-        
-            <div className={styles.profile_card_container}>
-                {imgArr &&
-                    imgArr.map((Imgs: imgInterface, idx) => (
-                        <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
-                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
-                            
-                            <div className={styles.card_whole_info}>
-                                <p className={styles.card_title}>{Imgs.title}</p>
-                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
-                                <div className={styles.photo_card_info}>
-                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
-                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
-                                    <div className={styles.card_like_container}>
-                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
-                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                ))}
-            </div>
-
-            <div className={styles.search_word}>
-                <p style={{fontSize : '20px', marginLeft : '20px'}}>종료된 전시회</p>
-            </div>
-
-            <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
-        
-            <div className={styles.profile_card_container}>
-                {imgArr &&
-                    imgArr.map((Imgs: imgInterface, idx) => (
-                        <div key={idx + 'g'} className={styles.card} onClick={() => {openFinExhibitionDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
-                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
-                            
-                            <div className={styles.card_whole_info}>
-                                <p className={styles.card_title}>{Imgs.title}</p>
-                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
-                                <div className={styles.photo_card_info}>
-                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
-                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
-                                    <div className={styles.card_like_container}>
-                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
-                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                ))}
+                <div>
+                    {tabArr2[tabIndex2].tabCont}
+                </div>
             </div>
             
             </>
         )
     }    
     ]
+
+    
+    const following = function(idx : number, follow : boolean){
+
+        let newArr = [...imgArr];
+
+        newArr[idx].liked = !follow;
+
+        setImgArr(newArr);
+    }
+
+    const tabArr3=[{
+        tabTitle:(
+            <>
+                <div className={styles.mode_style2}>
+                    <div className={tabIndex3===0 ? styles.select_tab_style3 : styles.tab_style3}>
+                        <p onClick={() => tabClickHandler3(0)}>Follower</p>
+                    </div>
+                </div>
+
+            </>
+        ),
+        tabCont:(
+            <> 
+             <div className={styles.profile_card_container2}>
+                {imgArr &&
+                    imgArr.map((Imgs: imgInterface, idx) => (
+                        <div key={idx + 'g'} className={styles.follow_profile}>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_profile}/>
+                            <p className={styles.profile_name2}>김짱구잠옷</p>
+                            <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
+                                <p className={styles.f_b_t}>{Imgs.liked ? `Following` : `Follow`}</p>
+                            </div>
+                        </div>
+                ))}
+            </div>
+            {isLoading && <p style={{width : '100%', textAlign : 'center'}}>Loading...</p>}
+            
+            <div className="dog-imgs-container"> 
+            <div id="observer" style={{ height: "10px" }}></div>
+            </div>
+            </>
+        )
+    },
+    {
+        tabTitle:(
+            <>
+                <div className={styles.mode_style2}>
+                    <div className={tabIndex3===1 ? styles.select_tab_style3 : styles.tab_style3}>
+                        <p onClick={() => tabClickHandler3(1)} className={styles.tab_txt}>Following</p>
+                    </div>
+                </div>
+
+            </>
+        ),
+        tabCont:(
+            <> 
+             <div className={styles.profile_card_container2}>
+                {imgArr &&
+                    imgArr.map((Imgs: imgInterface, idx) => (
+                        <div key={idx + 'g'} className={styles.follow_profile}>
+                            <img src={Imgs.url} alt='프로필' className={styles.card_profile}/>
+                            <p className={styles.profile_name2}>김짱구잠옷</p>
+                            <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
+                                <p className={styles.f_b_t}>{Imgs.liked ? `Delete` : `Follow`}</p>
+                            </div>
+                        </div>
+                ))}
+            </div>
+            {isLoading && <p style={{width : '100%', textAlign : 'center'}}>Loading...</p>}
+            
+            <div className="dog-imgs-container"> 
+            <div id="observer" style={{ height: "10px" }}></div>
+            </div>
+            </>
+        )
+    },]
 
     const openPhotoDetails = function(){
         setImgDetail(!imgDetail);
@@ -611,9 +738,36 @@ const MyPage: React.FC = () => {
         description : '제 전시회로 말할거 같으면 ~~~~~~~ 짱구 보고 오세요 보고 오면 이해됨 이상무 전현무 깔깔'
     }
 
+    const [isFollowList, setIsFollowList] = useState<boolean>(false);
+
+    const openFollowList = function(){
+        setIsFollowList(!isFollowList);
+    }
+
 
     return (
         <>
+        {isFollowList && (
+            <>
+            <div className={styles.modal_background}> </div>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openFollowList();}}></img>
+            <div className={styles.follow_modal_container}>
+
+                    <div className={styles.mode_tabs2}>
+                        {tabArr3.map((mode, index)=>{
+                            return <div key={index}>{mode.tabTitle}</div>
+                        })}
+                    </div>
+
+                <div className={styles.line2}></div>
+                <div className={styles.photo_mode_container3}>
+                    {tabArr3[tabIndex3].tabCont}
+                </div>
+                
+            </div>
+            </>
+        )}
+
         {editModal && ( <>
             {editOk
             ? <>
@@ -1032,10 +1186,12 @@ const MyPage: React.FC = () => {
                         </div>
                         <p>{my[0].name}</p>
                         <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" }}>Camera using by {my[0].year} years</p>
-                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" , cursor : 'pointer' }}>{my[0].follow} Follow / {my[0].following} Following</p>
+                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" , cursor : 'pointer' }} onClick={() => {openFollowList();}}>{my[0].follow} Follower / {my[0].following} Following</p>
                         <p style={{fontSize : '16px'}}>{my[0].intro}</p>
                     </div>
                 </div>
+
+                <div className={styles.line}></div>
             </div>
 
             <div className={styles.photo_mode_container}>
