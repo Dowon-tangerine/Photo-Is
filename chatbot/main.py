@@ -4,7 +4,6 @@ import openai
 import requests
 from PIL import Image
 from io import BytesIO
-import matplotlib.pyplot as plt
 import uvicorn
 from dotenv import load_dotenv
 import os
