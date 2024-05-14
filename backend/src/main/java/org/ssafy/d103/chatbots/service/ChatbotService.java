@@ -23,7 +23,7 @@ public class ChatbotService {
     private final WebClient webClient;
 
     public ChatbotService(WebClient.Builder webClientBuilder, ChatSessionRepository chatSessionRepository) {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:9001").build();
+        this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io").build();
         this.chatSessionRepository = chatSessionRepository;
     }
 
