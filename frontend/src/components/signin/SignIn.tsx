@@ -1,19 +1,66 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 import styles from './css/signin.module.css';
 
+const emailCheck = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 const SignIn: React.FC = () => {
-  const [username, setUsername] = useState<string>('');  // 상태에 타입 지정
-  const [password, setPassword] = useState<string>('');  // 상태에 타입 지정
+  const [email, setEmail] = useState<string>('');  
+  const [password, setPassword] = useState<string>('');  
   const navigate = useNavigate();
 
-  const handleLogin = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();  // 폼의 기본 제출 동작 방지
-    console.log('로그인 시도:', username, password);
-    // 실제 로그인 로직 (예: API 호출)
+  const handleLogin = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault(); 
+    console.log('로그인 시도:', email, password);
 
-    // 임시로 홈 페이지로 이동
-    navigate('/');  // 로그인 성공 시 리디렉트할 경로
+    // 입력 값 정합성 체크
+    if (email === "" || password === "") {
+      window.alert("아이디와 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    if (!emailCheck(email)) {
+      window.alert("이메일 형식이 맞지 않습니다.");
+      return;
+    }
+
+    try {
+      const response = await axios.post('https://k10d103.p.ssafy.io/api/members/login', {
+        email: email,
+        password: password
+      });
+
+      if (response.status === 200 && response.data.msg === "로그인에 성공하였습니다.") {
+        // 로그인 성공 처리
+        console.log('로그인 성공:', response.data);
+        const token = response.data.token; // 토큰 저장
+        localStorage.setItem('authToken', token); // 로컬 스토리지에 토큰 저장
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Axios 인스턴스에 기본 Authorization 헤더 설정
+        navigate('/');  // 로그인 성공 시 리디렉트할 경로
+      } else {
+        // 오류 처리
+        const errorMessage = response.data.errorResponse ? response.data.errorResponse.msg : '로그인 실패';
+        console.log('로그인 실패:', errorMessage);
+        alert(`로그인 실패: ${errorMessage}`);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.data && error.response.data.errorResponse) {
+          console.error('로그인 실패:', error.response.data.errorResponse.msg);
+          alert(`로그인 실패: ${error.response.data.errorResponse.msg}`);
+        } else {
+          console.error('로그인 요청 중 오류 발생:', error);
+          alert('로그인 요청 중 오류가 발생했습니다.');
+        }
+      } else {
+        console.error('예상치 못한 오류 발생:', error);
+        alert('예상치 못한 오류가 발생했습니다.');
+      }
+    }
   };
 
   return (
@@ -28,8 +75,8 @@ const SignIn: React.FC = () => {
           <input
             type="text"
             placeholder="이메일"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
