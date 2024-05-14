@@ -89,7 +89,6 @@ async def describe_image(request: ImageDescriptionRequest):
                                 Check and suggest if the background fits the topic or is not too complicated.
 
                                 All advice is not aggressive, but you have to be firm about what you need.
-                                For advice, assuming that the questioner takes a picture with a digital camera, please mention adjusting the function of a professional camera, such as shutter speed and aperture sensitivity.
                                 Please change your answer to Korean.         
                                 """
                         },
@@ -119,4 +118,4 @@ async def describe_image(request: ImageDescriptionRequest):
 
 # 프로그램의 시작점이면 run
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host='0.0.0.0', port=9001)
