@@ -14,7 +14,7 @@ public class WebClientConfig {
 
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
-        return builder.baseUrl("http://localhost:8000").build(); // FastAPI 서버 URL
+        return builder.baseUrl("http://localhost:9001").build(); // FastAPI 서버 URL
     }
 }
 
