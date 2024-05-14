@@ -89,4 +89,9 @@ public class PhotoController {
         return ResponseUtils.ok(photoService.determineSearchMethod(authentication, searchType, keyword, page, size), MsgType.SEARCH_RESULT_LIST_GET_SUCCESSFULLY);
     }
 
+    @GetMapping("/ranking/{type}")
+    public ApiResponseDto<?> getRankings(Authentication authentication, @PathVariable String type) {
+        return ResponseUtils.ok(photoService.getPhotoRanking(authentication, type), MsgType.PHOTO_RANKING_GET_SUCCESSFULLY);
+    }
+
 }
