@@ -20,7 +20,7 @@ class ChatRequest(BaseModel):
     question: str
 
 # 간단한 챗봇 대화 구현
-@app.post("/camera_chat")
+@app.post("/api/py/camera-chat")
 async def camera_chat(request: ChatRequest):
     client = openai.OpenAI()
     try:
@@ -58,7 +58,7 @@ class ImageDescriptionRequest(BaseModel):
     image_url: str
 
 # 이미지 비평
-@app.post("/describe-image")
+@app.post("/api/py/describe-image")
 async def describe_image(request: ImageDescriptionRequest):
     client = openai.OpenAI()
     try:
