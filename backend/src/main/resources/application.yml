@@ -30,6 +30,9 @@ spring:
       initialize-schema: always
 #    job:
 #      enabled: false
+  mvc:
+    async:
+      request-timeout: 120000 # 비동기 시간제한 120s로 늘림(이미지 분석 시간 확보)
 
 cloud:
   aws:
@@ -72,3 +75,4 @@ springdoc:
 dummy:
   photos:
     photo-url: ${PHOTO_URL_1}, ${PHOTO_URL_2}, ${PHOTO_URL_3}, ${PHOTO_URL_4}, ${PHOTO_URL_5},
+

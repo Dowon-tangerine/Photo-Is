@@ -65,6 +65,10 @@ dependencies {
 
     // Spring Batch 사용 😋
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+    // webflux - webClient 사용
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 }
 
 tasks.named('test') {

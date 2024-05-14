@@ -2,6 +2,7 @@ package org.ssafy.d103._common.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +11,10 @@ import org.springframework.context.annotation.Configuration;
                 title = "PhotoIs API Docs",
                 description = "PhotoIs의 API 문서입니다.",
                 version = "v1"
-        )
+        ),
+        servers = {
+          @Server(url = "https://k10d103.p.ssafy.io", description = "Deployed Server")
+        }
 )
 @Configuration
 @RequiredArgsConstructor

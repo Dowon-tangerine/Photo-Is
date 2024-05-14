@@ -55,6 +55,7 @@ public class SecurityConfig {
                     configuration.setAllowedOriginPatterns(List.of("*"));
                     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
                     configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(List.of("*"));
                     configuration.setExposedHeaders(Collections.singletonList("Authorization"));
 
                     return configuration;
