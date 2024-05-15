@@ -1,0 +1,78 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    hikari:
+      max-lifetime: 177000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  servlet:
+    multipart:
+      maxFileSize: 30MB # 파일 하나의 최대 크기
+      maxRequestSize: 30MB  # 한 번에 최대 업로드 가능 용량
+  batch:
+    jdbc:
+      initialize-schema: always
+#    job:
+#      enabled: false
+  mvc:
+    async:
+      request-timeout: 120000 # 비동기 시간제한 120s로 늘림(이미지 분석 시간 확보)
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+
+jwt:
+  secret: ${JWT_SECRET}
+  token:
+    refresh-expiration-time: 259200000
+    access-expiration-time: 259200000
+
+springdoc:
+  swagger-ui:
+    groups-order: desc
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    default-models-expand-depth: 2
+    default-model-expand-depth: 2
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  paths-to-match:
+    - /api/**
+
+dummy:
+  photos:
+    photo-url: ${PHOTO_URL_1}, ${PHOTO_URL_2}, ${PHOTO_URL_3}, ${PHOTO_URL_4}, ${PHOTO_URL_5},
+
