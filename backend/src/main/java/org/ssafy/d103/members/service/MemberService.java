@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -39,6 +40,11 @@ public class MemberService {
     private final CommonService commonService;
     private final S3Uploader s3Uploader;
 
+    @Value("${dummy.photos.profile-url}")
+    private String profileUrl;
+    @Value("${dummy.photos.background-url}")
+    private String backgroundUrl;
+
     @Transactional
     public String saveMember(PostAddMemberRequest request) {
 
@@ -54,13 +60,14 @@ public class MemberService {
                 request.getEmail(),
                 request.getPassword(),
                 request.getNickname(),
+                profileUrl,
+                backgroundUrl,
                 request.getBirthYear(),
                 request.getUseYear()
         );
 
         // 비밀번호 암호화
         newMember.hasPassword(passwordEncoder);
-
         // 처음 가입한 사용자
         memberRepository.save(newMember);
 
