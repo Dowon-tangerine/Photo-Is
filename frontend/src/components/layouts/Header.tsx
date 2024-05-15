@@ -12,7 +12,6 @@ interface MenuItems {
 }
 
 const menuItems: MenuItems = {
-<<<<<<< HEAD
     Docs: [
         { name: "Hello Photo!", path: "/docs/product1" },
         { name: "Dictionary", path: "/docs/product2" },
@@ -23,18 +22,6 @@ const menuItems: MenuItems = {
         { name: "Exhibition", path: "/exhibition" },
         { name: "QnA", path: "/community/topic3" },
     ],
-=======
-  Docs: [
-    { name: "Hello Photo!", path: "/docs/product1" },
-    { name: "Dictionary", path: "/docs/product2" },
-  ],
-  Studio: [], // Studio에는 메뉴 아이템이 없으므로 never[] 타입을 유지
-  Community: [
-    { name: "Gallery", path: "/community/gallery" },
-    { name: "Exhibition", path: "/community/topic2" },
-    { name: "QnA", path: "/community/topic3" },
-  ],
->>>>>>> a012d0e803e1fffc3c6ecf5ad3c8dd8eaf9d5a2f
 };
 
 interface HeaderProps {
@@ -42,7 +29,7 @@ interface HeaderProps {
   profileUpdated: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ updateProfile, profileUpdated }) => {
+const Header: React.FC<HeaderProps> = ({ updateProfile }) => {
   const [openMenu, setOpenMenu] = useState<string>("");
   const [profileUrl, setProfileUrl] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -75,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({ updateProfile, profileUpdated }) => {
       setIsLoggedIn(false);
     }
     updateProfile(); // 프로필이 업데이트될 때마다 호출
-  }, [profileUpdated, updateProfile]);
+  },[]);
 
   const handleMenuClick = (item: string) => {
     if (item === "Studio") {
