@@ -464,6 +464,7 @@ const Gallery: React.FC = () => {
     ]
 
     const openPhotoDetails = function(){
+        document.body.style.overflow = 'hidden';
         setImgDetail(!imgDetail);
     }
 
