@@ -116,7 +116,7 @@ public class Members extends CreatedAndDeletedTime {
         this.followingCnt = followingCnt;
     }
 
-    public static Members of(String email, String password, String nickname, int birthYear, int useYear) {
+    public static Members of(String email, String password, String nickname, String profileUrl, String backgroundUrl, int birthYear, int useYear) {
         return builder()
                 .email(email)
                 .password(password)
@@ -124,8 +124,8 @@ public class Members extends CreatedAndDeletedTime {
                 .birthYear(birthYear)
                 .camera(Camera.FUJI)
                 .useYear(useYear)
-                .profileUrl("testUrl")
-                .backgroundUrl("testUrl")
+                .profileUrl(profileUrl)
+                .backgroundUrl(backgroundUrl)
                 .introduction("자기소개가 없습니다.")
                 .followerCnt(0)
                 .followingCnt(0)
