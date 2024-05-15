@@ -757,7 +757,7 @@ public class PhotoService {
                     .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
             boolean isLiked = authentication != null && likedPhotoIds.contains(photo.getId());
 
-            return PhotoRankingDto.of(photo.getId(), rank, photo.getThumbnailUrl(), photo.getTitle(), photoDetail.getLikeCnt(), isLiked);
+            return PhotoRankingDto.of(photo.getId(), rank, photo.getThumbnailUrl(), photo.getMember().getProfileUrl(), photo.getMember().getNickname(), photoDetail.getLikeCnt(), isLiked);
         }).collect(Collectors.toList());
 
         return GetPhotoRankingResponse.of(rankingType.getRankingTypeName(), rankingList);
