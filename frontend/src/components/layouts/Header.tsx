@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import headerStyle from "./css/Header.module.css";
+import useLoginStatus from "../stores/member";
 
 interface MenuItem {
   name: string;
@@ -20,19 +21,15 @@ const menuItems: MenuItems = {
     Community: [
         { name: "Gallery", path: "/community/gallery" },
         { name: "Exhibition", path: "/exhibition" },
-        { name: "QnA", path: "/community/qna" },
+        { name: "QnA", path: "/community/topic3" },
     ],
 };
 
-interface HeaderProps {
-  updateProfile: () => void;
-  profileUpdated: boolean;
-}
-
-const Header: React.FC<HeaderProps> = ({ updateProfile }) => {
+const Header: React.FC = () => {
   const [openMenu, setOpenMenu] = useState<string>("");
   const [profileUrl, setProfileUrl] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const { isLogin } = useLoginStatus();
 
   const navigate = useNavigate();
   const headerRef = useRef<HTMLDivElement>(null);
@@ -53,16 +50,11 @@ const Header: React.FC<HeaderProps> = ({ updateProfile }) => {
     };
   }, [headerRef]);
 
-  useEffect(() => {
-    const savedProfileUrl = localStorage.getItem("profileUrl");
-    if (savedProfileUrl) {
-      setProfileUrl(savedProfileUrl);
+  useEffect(()=>{
+      const savedProfileUrl = localStorage.getItem("profileUrl");
       setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-    updateProfile(); // 프로필이 업데이트될 때마다 호출
-  },[]);
+      setProfileUrl(savedProfileUrl);
+  }, [isLogin])
 
   const handleMenuClick = (item: string) => {
     if (item === "Studio") {
