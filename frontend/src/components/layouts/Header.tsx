@@ -20,7 +20,7 @@ const menuItems: MenuItems = {
     Community: [
         { name: "Gallery", path: "/community/gallery" },
         { name: "Exhibition", path: "/exhibition" },
-        { name: "QnA", path: "/community/topic3" },
+        { name: "QnA", path: "/community/qna" },
     ],
 };
 
