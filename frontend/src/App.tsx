@@ -19,16 +19,11 @@ import LandScapePage from "./components/studio/LandScapePage";
 import TutorialPage from "./components/studio/TutorialPage";
 
 export default function App() {
-  const [profileUpdated, setProfileUpdated] = useState(false);
-
-  const updateProfile = () => {
-    setProfileUpdated((prev) => !prev); // 상태를 변경하여 리렌더링을 유도
-  };
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<MainLayout updateProfile={updateProfile} profileUpdated={profileUpdated} />}>
+        <Route element={<MainLayout/>}>
           <Route path="/" element={<Home />} />
           <Route path="/studio-enter" element={<StudioEnterPage />} />
           <Route path="/community/gallery" element={<Gallery />} />
@@ -40,7 +35,7 @@ export default function App() {
           <Route path="/community/qna" element={<Qna />}></Route>
           <Route path="/docs/product1" element={<HelloPhoto />} />
           <Route path="/docs/product2" element={<Dictionary />} />
-          <Route path="/signin" element={<SignIn updateProfile={updateProfile} />} />
+          <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
         </Route>
         <Route element={<StudioLayout />}>
