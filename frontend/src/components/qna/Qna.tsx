@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import styles from "./css/Qna.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 // import axios from 'axios';
@@ -14,11 +14,7 @@ import { FaAngleDown } from 'react-icons/fa';
   
 const Qna: React.FC = () => {
 
-    // const [type, setType] = useState<String>("선택");
-    // const [typeList, setTypeList] = useState<boolean>(false);
-    // const [isRotated, setIsRotated] = useState<boolean>(false);    
-    // const [tabIndex, settabIndex] = useState<number>(0);
-    const [sortType, setSortType] = useState<String>("최신");
+    const [sortType, setSortType] = useState<String>("전체");
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
     const [isRotated2, setIsRotated2] = useState<boolean>(false);
 
@@ -26,20 +22,6 @@ const Qna: React.FC = () => {
     
     // const moveToGallery = function(){
     //     navigate("/community/gallery")
-    // }
-
-    // const [word, setWord] = useState<String>("");
-
-    // const moveToSearch = function(){
-    //     if(type === "작가"){
-    //         navigate("/community/gallery/searchName", { state: { searchWord :  word + "1"} })
-    //     }
-    //     else if(type === "제목"){
-    //         navigate("/community/gallery/searchTitle", { state: { searchWord :  word} })
-    //     }
-    //     else if(type === "태그"){
-    //         navigate("/community/gallery/searchTag", { state: { searchWord :  word} })
-    //     }
     // }
 
     const openSortTypeList = function(){
@@ -131,59 +113,50 @@ const Qna: React.FC = () => {
         setUploadPhoto(!uploadPhoto);
     }
 
+    const [listNum, setListNum] = useState<number>(1231);
+
+    useEffect(() => {
+        setListNum(listNum);
+    })
+
     return (
         <>
         
 
         <div className={styles.main_container}>
-            {/* <div className={styles.search_container}>
-                <div className={styles.combo_box}>
-                    <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
-                        <p className={styles.dropdown_txt}>{type}</p>
-                        <FaAngleDown  className={`${styles.dropdown_icon} ${isRotated ? styles.rotated : ''}`} />
-                    </div>
-
-                    {typeList && (
-                        <>
-                            <div className={styles.typeList_container}>
-                                <p className={styles.type_txt1} onClick={() => {setType("작가"); openTypeList();}}>작가</p>
-                                <p className={styles.type_txt2} onClick={() => {setType("제목"); openTypeList();}}>제목</p>
-                                <p className={styles.type_txt3} onClick={() => {setType("태그"); openTypeList();}}>태그</p>
-                            </div>
-                        </>
-                    )}
-                </div>
-                <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord(e.target.value)}}></input>
-                <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
-            </div> */}
-
             <div className={styles.page_intro}>
                 <p className={styles.intro_txt1}>Community</p>
-                <p className={styles.intro_txt2}>-Gallery-</p>
+                <p className={styles.intro_txt2}>-QnA-</p>
+            </div>
+
+            <div className={styles.article_title_container}>
+                <p style={{fontSize : '32px'}}>{sortType}글</p>
+                <p style={{marginTop : '-15px', marginBottom : '10px'}}>{listNum}개의 글</p>
+
+                <div className={styles.btn_container}>
+                    <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
+                        <p>글쓰기</p>
+                    </div>
+                    <div className={styles.sort_btn}>
+                        <div className={styles.dropdown_container} onClick={() => {openSortTypeList();}}>
+                            <p className={styles.dropdown_txt2}>{sortType}</p>
+                            <FaAngleDown  className={`${styles.dropdown_icon2} ${isRotated2 ? styles.rotated : ''}`}/>
+                        </div>
+
+                        {sortTypeList && (
+                            <>
+                                <div className={styles.typeList_container2}>
+                                    <p className={styles.type_txt2_1} onClick={() => {setSortType("전체"); openSortTypeList();}}>전체</p>
+                                    <p className={styles.type_txt2_2} onClick={() => {setSortType("일반"); openSortTypeList();}}>일반</p>
+                                    <p className={styles.type_txt2_3} onClick={() => {setSortType("스튜디오"); openSortTypeList();}}>스튜디오</p>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
-            <div className={styles.btn_container}>
-                <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
-                    <p>사진 업로드</p>
-                </div>
-                <div className={styles.sort_btn}>
-                    <div className={styles.dropdown_container} onClick={() => {openSortTypeList();}}>
-                        <p className={styles.dropdown_txt2}>{sortType}순</p>
-                        <FaAngleDown  className={`${styles.dropdown_icon2} ${isRotated2 ? styles.rotated : ''}`}/>
-                    </div>
-
-                    {sortTypeList && (
-                        <>
-                            <div className={styles.typeList_container2}>
-                                <p className={styles.type_txt1_2} onClick={() => {setSortType("인기"); openSortTypeList();}}>인기</p>
-                                <p className={styles.type_txt2_2} onClick={() => {setSortType("최신"); openSortTypeList();}}>최신</p>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
         </div>
         </>
     );
