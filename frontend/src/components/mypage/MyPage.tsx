@@ -177,6 +177,12 @@ const MyPage: React.FC = () => {
         setPhotoLiked2(!photoLiked2);
     }
 
+    const [photoLiked3, setPhotoLiked3] = useState<boolean>(false);
+
+    const clickHeart3 = function(){
+        setPhotoLiked3(!photoLiked3);
+    }
+
     const [exhibitionDetail, setExhibitionDetail] = useState<boolean>(false);
 
     const openExhibitionDetails = function(){
@@ -1152,6 +1158,7 @@ const MyPage: React.FC = () => {
             <div className={styles.modal_background}> </div>
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionDetails();}}></img>
             <div className={styles.open_exhibition_modal_container}>
+            <img src={`/imgs/${photoLiked3 ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3();}}></img>
                 <p className={styles.open_exhibition_title}>Exhibition Info</p>
                 <div className={styles.exhibition_info}>
                     <div className={styles.exhibition_photo_intro_container2}>
@@ -1185,6 +1192,7 @@ const MyPage: React.FC = () => {
             <div className={styles.modal_background}> </div>
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openFinExhibitionDetails();}}></img>
             <div className={styles.open_exhibition_modal_container}>
+            <img src={`/imgs/${photoLiked3 ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3();}}></img>
                 <p className={styles.open_exhibition_title} style={{marginBottom : '20px'}}>Exhibition Info</p>
                 <div className={styles.exhibition_info}>
                     <div className={styles.exhibition_photo_intro_container2}>
