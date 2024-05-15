@@ -9,6 +9,7 @@ import SearchName from "./components/gallery/SearchName"
 import SearchTitle from "./components/gallery/SearchTitle"
 import SearchTag from "./components/gallery/SearchTag"
 import MyPage from "./components/mypage/MyPage";
+import Exhibition from "./components/exhibition/Exhibition";
 import HelloPhoto from "./components/docs/HelloPhoto";
 import Dictionary from "./components/docs/Dictionary";
 import SignIn from "./components/signin/SignIn";
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/community/gallery/searchTitle" element={<SearchTitle />} />
           <Route path="/community/gallery/searchTag" element={<SearchTag />} />
           <Route path="/myPage" element={<MyPage />}></Route>
+          <Route path="/Exhibition" element={<Exhibition />}></Route>
           <Route path="/docs/product1" element={<HelloPhoto />} />
           <Route path="/docs/product2" element={<Dictionary />} />
           <Route path="/signin" element={<SignIn updateProfile={updateProfile} />} />
