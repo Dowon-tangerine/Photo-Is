@@ -3,8 +3,6 @@ import styles from "./css/Exhibition.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import axios from 'axios';
 import Calendar from '../mypage/Calendar';
-import {useNavigate } from "react-router-dom";
-
 
 interface imgInterface {
     id: number;
@@ -16,23 +14,10 @@ interface imgInterface {
   
 const Exhibition: React.FC = () => {
 
-    const [type, setType] = useState<String>("선택");
-    const [typeList, setTypeList] = useState<boolean>(false);
-    const [isRotated, setIsRotated] = useState<boolean>(false);    
-    const [tabIndex, settabIndex] = useState<number>(0);
     const [sortType, setSortType] = useState<String>("최신");
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
     const [isRotated2, setIsRotated2] = useState<boolean>(false);
-    const [imgDetail, setImgDetail] = useState<boolean>(false);
-    const [isUploadFinished, setIsUploadFinished] = useState<boolean>(false);
     
-    const navigate = useNavigate();
-    
-    const moveToGallery = function(){
-        navigate("/community/gallery")
-    }
-
-
     const exhibition = {
         thumbNail : 'imgs/photo4.jpg',
         title : '먹을 수 없는 감은 장난감ㅋ',
@@ -87,10 +72,6 @@ const Exhibition: React.FC = () => {
 
     const clickHeart3 = function(){
         setPhotoLiked3(!photoLiked3);
-    }
-
-    const tabClickHandler = function(index : number){
-        settabIndex(index);
     }
 
     const openSortTypeList = function(){
@@ -175,15 +156,6 @@ const Exhibition: React.FC = () => {
         setIsLoading(false);
     };
 
-    const slides = [
-        { color: "red", target: "#" },
-        { color: "orange", target: "#" },
-        { color: "yellow", target: "#" },
-        { color: "green", target: "#" },
-        { color: "blue", target: "#" },
-        { color: "navy", target: "#" },
-        { color: "purple", target: "#" },
-    ];
 
     const [animate, setAnimate] = useState(true);
     const onStop = () => setAnimate(false);
