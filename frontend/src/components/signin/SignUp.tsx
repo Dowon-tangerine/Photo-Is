@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import styles from './css/signup.module.css';
+import { checkEmail, checkNickname, register } from '../../apis/memberApi';
 
 interface UserData {
   email: string;
@@ -17,18 +17,49 @@ interface InputFieldProps {
   placeholder: string;
   type: string;
   value: string | number;
+  valid: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; 
 }
 
-const InputField: React.FC<InputFieldProps> = ({ name, placeholder, type, value, onChange }) => (
-  <input
-    name={name}
-    placeholder={placeholder}
-    type={type}
-    value={value}
-    onChange={onChange}
-    required
-  />
+const InputField: React.FC<InputFieldProps> = ({ name, placeholder, type, value, valid, onChange }) => (
+  <>
+  {
+    name === 'email' 
+    ?
+    <>
+      {
+        value === '' 
+        ?
+        <></>
+        :
+        valid 
+        ?
+        <p style={{margin: '-15px 0 -10px 5px', color:'green', fontSize: '10px'}}>올바른 이메일 형식입니다</p>
+        :
+        <p style={{margin: '-15px 0 -10px 5px', color:'red', fontSize: '10px'}}>올바르지 않은 이메일 형식입니다</p>
+      }
+      <input
+        name={name}
+        placeholder={placeholder}
+        type={type}
+        value={value}
+        onChange={onChange}
+        required
+        style={{border: `${value === '' ? '' : valid ? '2px solid green' : '2px solid red'}`}}
+      />
+    </>
+    :
+    <input
+      name={name}
+      placeholder={placeholder}
+      type={type}
+      value={value}
+      onChange={onChange}
+      required
+    />
+  }
+    
+  </>
 );
 
 const SignUp = () => {
@@ -37,31 +68,17 @@ const SignUp = () => {
     email: '',
     password: '',
     nickname: '',
-    birthYear: 0,
-    useYear: 0,
+    birthYear: -1,
+    useYear: -1,
     confirmPassword: ''
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [valid, setValid] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const checkEmailAvailability = async (email: string) => {
-    try {
-      const response = await axios.get(`https://k10d103.p.ssafy.io/api/members/check-email/${email}`);
-      return response.data.data.isValid;
-    } catch (error) {
-      console.error("Email check error:", error);
-      return false;
-    }
-  };
-
-  const checkNicknameAvailability = async (nickname: string) => {
-    try {
-      const response = await axios.get(`https://k10d103.p.ssafy.io/api/members/check-nickname/${nickname}`);
-      return response.data.data.isValid;
-    } catch (error) {
-      console.error("Nickname check error:", error);
-      return false;
-    }
+  const emailCheck = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const checkPasswordMatch = (password: string, confirmPassword: string) => {
@@ -79,46 +96,38 @@ const SignUp = () => {
         setLoading(false);
         return;
       }
-
-      const emailAvailable = await checkEmailAvailability(userData.email);
+      const emailAvailable = await checkEmail(userData.email);
       if (!emailAvailable) {
-        alert("이 이메일은 사용할 수 없습니다.");
+        alert("사용중인 이메일 입니다.");
         setLoading(false);
         return;
       }
-    } else if (step === 2) {
-      const nicknameAvailable = await checkNicknameAvailability(userData.nickname);
+    } else if (step === 3) {
+      const nicknameAvailable = checkNickname(userData.nickname);
       if (!nicknameAvailable) {
         alert("이 닉네임은 사용할 수 없습니다.");
         setLoading(false);
         return;
       }
-    } else if (step === 3) {
-      try {
-        const response = await axios.post('https://k10d103.p.ssafy.io/api/members/', {
-          email: userData.email,
-          password: userData.password,
-          nickname: userData.nickname,
-          birthYear: userData.birthYear,
-          useYear: userData.useYear,
-        });
 
-        if (response.data.errorResponse) {
-          alert(response.data.errorResponse.msg || '회원가입 중 오류가 발생했습니다.');
+      register({
+        email: userData.email,
+        password: userData.password,
+        nickname: userData.nickname,
+        birthYear: userData.birthYear,
+        useYear: userData.useYear,
+      })
+      .then(res =>{
+        if(!res){
+          alert('회원가입 중 오류가 발생했습니다.');
           setLoading(false);
           return;
         }
-
-        alert('회원가입이 성공적으로 완료되었습니다.');
+      })
+    } else if (step === 5) {
         navigate('/signin'); // 회원가입 성공 후 로그인 페이지로 이동
-      } catch (error) {
-        alert('회원가입 중 오류가 발생했습니다.');
-        setLoading(false);
-        return;
-      }
     }
-
-    setStep(step + 1);
+    setStep(step + 2);
     setLoading(false);
   };
 
@@ -130,9 +139,17 @@ const SignUp = () => {
     }));
   };
 
-  const handleStepClick = (newStep: number) => {
-    setStep(newStep);
-  };
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(emailCheck(e.target.value)){
+      setValid(true);
+    } else{
+      setValid(false);
+    }
+    setUserData({
+      ...userData,
+      email: e.target.value
+    })
+  }
 
   return (
     <div className={styles.signupContainer}>
@@ -143,30 +160,34 @@ const SignUp = () => {
       <div className={styles.rightPanel}>
         <form onSubmit={handleNext} className={styles.signupForm}>
           <ul className={styles.stepIndicator}>
-            {Array.from({ length: 3 }, (_, i) => (
+            {Array.from({ length: 5 }, (_, i) => (
+              i%2 == 0 
+              ?
               <div className={styles.stepContainer} key={i}>
-                <li className={styles[i + 1 === step ? 'active' : '']} data-step={i + 1} onClick={() => handleStepClick(i + 1)}></li>
-                <div className={styles.stepText}>{['가입정보', '회원정보', '완료'][i]}</div>
+                <li className={styles[i + 1 === step ? 'active' : '']} style={{color: `${i+1 === step ? 'white' : 'black'}`}}>{i/2+1}</li>
+                <div className={styles.stepText}>{['가입정보', '', '회원정보', '', '완료'][i]}</div>
               </div>
+              :
+              <div key={i+'k'} style={{border: '1px solid black', height: '1px', width: '50px', margin: '45px -20px 0 -20px'}}></div>
             ))}
           </ul>
 
           {step === 1 && (
             <>
-              <InputField name="email" placeholder='이메일을 입력해주세요' type="text" value={userData.email} onChange={handleChange} />
-              <InputField name="password" placeholder='비밀번호를 입력해주세요' type="password" value={userData.password} onChange={handleChange} />
-              <InputField name="confirmPassword" placeholder='비밀번호를 다시 한번 입력해주세요' type="password" value={userData.confirmPassword} onChange={handleChange} />
+              <InputField name="email" placeholder='이메일을 입력해주세요' type="text" value={userData.email} valid={valid} onChange={handleEmailChange} />
+              <InputField name="password" placeholder='비밀번호를 입력해주세요' type="password" value={userData.password} valid={true} onChange={handleChange} />
+              <InputField name="confirmPassword" placeholder='비밀번호를 다시 한번 입력해주세요' type="password" value={userData.confirmPassword} valid={true} onChange={handleChange} />
             </>
           )}
-          {step === 2 && (
+          {step === 3 && (
             <>
-              <InputField name="nickname" placeholder='닉네임을 입력해주세요' type="text" value={userData.nickname} onChange={handleChange} />
-              <InputField name="birthYear" placeholder='출생년도를 입력해주세요 (ex. 2000)' type="text" value={userData.birthYear === 0 ? '' : userData.birthYear} onChange={handleChange} />
-              <InputField name="useYear" placeholder='카메라 사용 경력을 입력해주세요 (ex. 1)' type="text" value={userData.useYear === 0 ? '' : userData.useYear} onChange={handleChange} />
+              <InputField name="nickname" placeholder='닉네임을 입력해주세요' type="text" value={userData.nickname} valid={true} onChange={handleChange} />
+              <InputField name="birthYear" placeholder='출생년도를 입력해주세요 (ex. 2000)' type="number" value={userData.birthYear === -1 ? '' : userData.birthYear} valid={true} onChange={handleChange} />
+              <InputField name="useYear" placeholder='카메라 사용 경력을 입력해주세요 (ex. 1)' type="number" value={userData.useYear === -1 ? '' : userData.useYear} valid={true} onChange={handleChange} />
             </>
           )}
 
-          {step === 3 && (
+          {step === 5 && (
             <div className={styles.finalStepContainer}>
               <div className={styles.finalCheckmark}>
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -179,8 +200,8 @@ const SignUp = () => {
             </div>
           )}
 
-          <button type="submit" className={styles.submitButton} disabled={loading}>
-            {loading ? 'Loading...' : (step === 3 ? '로그인 하러 가기' : 'Next')}
+          <button type="submit" className={`${styles.submitButton} ${step === 5 && styles.gotoLogin}`} disabled={loading}>
+            {loading ? 'Loading...' : (step === 5 ? '로그인 하러 가기' : step === 3 ? 'Register' : 'Next')}
           </button>
         </form>
       </div>
