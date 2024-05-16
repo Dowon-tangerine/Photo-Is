@@ -329,6 +329,13 @@
     font-family: "부크크고딕bold";
     font-size: 16px;
     margin-right: 10px;
+    filter: brightness(100%);
+    transition: 0.5s all;
+}
+
+.photo_btn:hover{
+    filter: brightness(80%);
+    transition: 0.5s all;
 }
 
 .sort_btn{
@@ -345,7 +352,6 @@
     color: white;
     position: relative;
 }
-
 
 .dropdown_container{
     display: flex;
@@ -740,6 +746,17 @@ cursor: pointer;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: 0.5s all;
+}
+
+.go_upload_btn_container:hover{
+    background: rgb(87, 87, 87);
+    transition: 0.5s all;
+}
+
+.go_mypage_btn_container:hover{
+    background: rgb(87, 87, 87);
+    transition: 0.5s all;
 }
 
 .upload_txt{
@@ -788,7 +805,6 @@ cursor: pointer;
 
 .upload_photo{
     height: 170px;
-    border: 1px solid black;
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 10px;
@@ -1043,13 +1059,10 @@ cursor: pointer;
     color: white;
     margin-left: 2%;
     margin-right: 2%;
-    cursor: pointer; transition: filter 0.3s; /* 호버 효과를 부드럽게 하기 위한 transition */
-    filter: brightness(100%); /* 기본값은 원래 밝기로 설정 */
+    cursor: pointer;
+    transition: 0.5s all;
 }
 
-.go_mypage_btn_container:hover{
-    filter: brightness(80%);
-}
 
 .go_txt{
     font-family: "부크크고딕bold";

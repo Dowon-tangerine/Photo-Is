@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useThree, useFrame, extend } from "@react-three/fiber";
+import { useEffect } from "react";
+import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useCameraStore } from "../store/useCameraStore";
 
 function CameraController() {
     const { setFocusDistance } = useCameraStore(); // Zustand 스토어에서 exposure 값을 가져옴
-    const { gl, camera, scene } = useThree();
+    const { gl, camera } = useThree();
     const spinnerPosition = new THREE.Vector3(0, 6.5, 0.5); // Spinner의 위치
     useEffect(() => {
         // 카메라에서 Spinner까지의 거리 계산
