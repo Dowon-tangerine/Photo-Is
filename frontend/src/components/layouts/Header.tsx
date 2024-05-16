@@ -51,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({ updateProfile, profileUpdated }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [headerRef]);
+  }, []);
 
   useEffect(() => {
     const savedProfileUrl = localStorage.getItem("profileUrl");
@@ -61,7 +61,12 @@ const Header: React.FC<HeaderProps> = ({ updateProfile, profileUpdated }) => {
     } else {
       setIsLoggedIn(false);
     }
-    updateProfile(); // 프로필이 업데이트될 때마다 호출
+  }, []);
+
+  useEffect(() => {
+    if (profileUpdated) {
+      updateProfile(); // 프로필이 업데이트될 때만 호출
+    }
   }, [profileUpdated, updateProfile]);
 
   const handleMenuClick = (item: string) => {
