@@ -63,12 +63,12 @@ public class ChatbotService {
                 .map(response -> {
                     ChatMessage assistantMessage = ChatMessage.builder()
                             .session(session)
-                            .message(response.getMessage())
+                            .message(response.getAnswer())
                             .role("assistant")
                             .build();
                     chatMessageRepository.save(assistantMessage);
 
-                    return response.getMessage();
+                    return response.getAnswer();
                 });
     }
 
