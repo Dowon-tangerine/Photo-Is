@@ -2,13 +2,18 @@
 import React, { useState } from 'react';
 import styles from './css/ToggleBtn2.module.css';
 
-const ToggleBtn2: React.FC = () => {
+type Props ={
+  changeAccessType: (accessType: string) => void;
+}
+
+const ToggleBtn2: React.FC<Props> = ({ changeAccessType }) => {
   const [clicked, setClicked] = useState<boolean>(false);
-  const [accessType, setAccessType] = useState<String>('');
+  const [accessType, setAccessType] = useState<string>('');
 
   const toggleClickHandler = () => {
     setClicked(!clicked);
     setAccessType(clicked ? 'PRIVATE' : 'PUBLIC');
+    changeAccessType(accessType);
     console.log(accessType);
   }
 
