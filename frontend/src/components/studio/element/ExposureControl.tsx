@@ -10,28 +10,10 @@ extend({ EffectComposer, RenderPass, ShaderPass });
 function ExposureControl() {
     const { gl, scene, camera } = useThree();
     const { exposure } = useCameraStore((state) => ({ exposure: state.exposure }));
-    const composerRef = useRef<EffectComposer | null>(null);
 
     useEffect(() => {
         gl.toneMappingExposure = Math.pow(2, exposure); // exposure 값에 따라 toneMappingExposure 조절
     }, [exposure, gl]);
-
-    useEffect(() => {
-        const composer = new EffectComposer(gl);
-        composer.addPass(new RenderPass(scene, camera));
-        composerRef.current = composer;
-
-        return () => {
-            composer.dispose();
-        };
-    }, [gl, scene, camera]);
-
-    useFrame(() => {
-        if (composerRef.current) {
-            composerRef.current.render();
-            console.log("Composer rendered");
-        }
-    });
 
     return null;
 }
