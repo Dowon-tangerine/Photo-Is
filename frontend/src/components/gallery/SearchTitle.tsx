@@ -175,7 +175,7 @@ const SearchTitle: React.FC = () => {
                 }
             })
         } else {
-            getSearching("title", word, page)
+            getSearching("title", word, 1)
             .then((res) => {
                 if(res){
                     setImgArr([...res]);
