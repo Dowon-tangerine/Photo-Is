@@ -53,11 +53,11 @@ public class ChatbotService {
                 .map(message -> new ChatMessageDto(message.getRole(), message.getMessage()))
                 .collect(Collectors.toList());
 
-        ChatSessionRequest chatSessionRequest = new ChatSessionRequest(question, messageDTOs);
+        ChatSessionRequestDto chatSessionRequestDto = new ChatSessionRequestDto(question, messageDTOs);
 
         return webClient.post()
                 .uri("/api/py/chat")
-                .bodyValue(chatSessionRequest)
+                .bodyValue(chatSessionRequestDto)
                 .retrieve()
                 .bodyToMono(ChatResponseDto.class)
                 .map(response -> {
