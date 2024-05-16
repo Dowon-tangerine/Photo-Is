@@ -17,9 +17,10 @@ public class GetSelectMemberResponse {
     private int followingCnt;
     private int followerCnt;
     private int photoCnt;
+    private int useYear;
 
     @Builder
-    private GetSelectMemberResponse(Long memberId, String nickname, String profileUrl, String backgroundUrl, String introduction, int followingCnt, int followerCnt, int photoCnt) {
+    private GetSelectMemberResponse(Long memberId, String nickname, String profileUrl, String backgroundUrl, String introduction, int followingCnt, int followerCnt, int photoCnt, int useYear) {
         this.memberId = memberId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
@@ -28,6 +29,7 @@ public class GetSelectMemberResponse {
         this.followingCnt = followingCnt;
         this.followerCnt = followerCnt;
         this.photoCnt = photoCnt;
+        this.useYear = useYear;
     }
 
     public static GetSelectMemberResponse from(Members member) {
@@ -40,6 +42,7 @@ public class GetSelectMemberResponse {
                 .followingCnt(member.getFollowingCnt())
                 .followerCnt(member.getFollowerCnt())
                 .photoCnt(member.getPhotoCnt())
+                .useYear(member.getUseYear())
                 .build();
     }
 }
