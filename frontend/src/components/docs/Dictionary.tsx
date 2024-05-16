@@ -1,12 +1,31 @@
 import { Suspense, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Canvas, useThree, useLoader } from '@react-three/fiber';
+import { Canvas, useThree, useLoader, extend } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { SphereGeometry } from 'three';
 import * as THREE from 'three';
 import axios from 'axios';
 import { marked } from 'marked';
 import styles from './css/Dictionary.module.css';
+
+// 타입 정의
+interface Annotation {
+  position: [number, number, number];
+  label: string;
+}
+
+interface AnnotationsProps {
+  onAnnotationClick: (annotation: Annotation) => void;
+}
+
+interface AnnotationModalProps {
+  annotation: Annotation;
+  onClose: () => void;
+}
+
+// Extend THREE with SphereGeometry
+extend({ SphereGeometry });
 
 const modelUrl = '/imgs/FujiFilm_X_T4.obj.glb';
 
@@ -52,6 +71,29 @@ function CameraController() {
     camera.position.set(12, 12, 12);
   }, [camera]);
   return null;
+}
+
+function Annotations({ onAnnotationClick }: AnnotationsProps) {
+  const annotations: Annotation[] = [
+    { position: [1.5, 1.8, 1.5], label: 'Shutter Button' }, // Top right
+    { position: [-1.5, 1.8, 1.5], label: 'Mode Dial' }, // Top left
+    { position: [0, 2.1, 0], label: 'Hot Shoe' }, // Center top
+    { position: [0, 1.8, -1.5], label: 'Viewfinder' }, // Back top center
+    { position: [-1.5, 1.8, -1.5], label: 'Flash' }, // Top left back
+    { position: [1.5, 1.8, -1.5], label: 'Exposure Compensation Dial' }, // Top right back
+    { position: [1.5, 1.8, 0], label: 'ISO Dial' }, // Top right center
+  ];
+
+  return (
+    <>
+      {annotations.map((annotation, index) => (
+        <mesh key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
+          <sphereGeometry args={[0.1, 32, 32]} />
+          <meshStandardMaterial color="red" />
+        </mesh>
+      ))}
+    </>
+  );
 }
 
 interface ChatMessage {
@@ -176,10 +218,23 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   ) : null;
 }
 
-const Dictionary = () => {
+function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
+  return (
+    <div className={styles.annotationModal}>
+      <div className={styles.modalHeader}>
+        <h2>{annotation.label}</h2>
+        <span className={styles.closeButton} onClick={onClose}>&times;</span>
+      </div>
+    </div>
+  );
+}
+
+function Dictionary() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isChatBotModalOpen, setChatBotModalOpen] = useState(false);
+  const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
+  const [annotation, setAnnotation] = useState<Annotation | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,7 +245,17 @@ const Dictionary = () => {
     navigate(`/search/${searchTerm}`);
   };
 
-  const toggleModal = () => setModalOpen(!isModalOpen);
+  const toggleChatBotModal = () => setChatBotModalOpen(!isChatBotModalOpen);
+
+  const handleAnnotationClick = (annotation: Annotation) => {
+    setAnnotation(annotation);
+    setAnnotationModalOpen(true);
+  };
+
+  const closeAnnotationModal = () => {
+    setAnnotation(null);
+    setAnnotationModalOpen(false);
+  };
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
@@ -245,14 +310,18 @@ const Dictionary = () => {
             <Suspense fallback={<Html><div>Loading Model...</div></Html>}>
               <Model />
             </Suspense>
+            <Annotations onAnnotationClick={handleAnnotationClick} />
             <OrbitControls />
           </Canvas>
         </div>
       </div>
-      <button onClick={toggleModal} className={styles.chatButton}><img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" /></button>
-      <ChatBotModal isOpen={isModalOpen} onClose={toggleModal} />
+      <button onClick={toggleChatBotModal} className={styles.chatButton}><img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" /></button>
+      <ChatBotModal isOpen={isChatBotModalOpen} onClose={toggleChatBotModal} />
+      {isAnnotationModalOpen && annotation && (
+        <AnnotationModal annotation={annotation} onClose={closeAnnotationModal} />
+      )}
     </div>
   );
-};
+}
 
 export default Dictionary;

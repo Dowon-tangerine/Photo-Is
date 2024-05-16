@@ -43,16 +43,16 @@ body, html {
 }
 
 .sidebarTop h1 {
-margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .sidebarBottom ol {
-list-style: none;
-padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
-.sidebarbottom button:hover {
-background-color: #555;
+.sidebarBottom button:hover {
+  background-color: #555;
 }
 
 .searchContainer {
@@ -84,7 +84,7 @@ background-color: #555;
 
 .searchButton {
   position: absolute;
-  left: 183px;  /* 왼쪽에서의 위치를 0에서 1px로 조정하여 더 정확하게 맞춤 */
+  right: 1px;  /* 왼쪽에서의 위치를 0에서 1px로 조정하여 더 정확하게 맞춤 */
   top: 1px;  /* 상단에서의 위치도 조정 */
   width: 34px;  /* 버튼의 폭을 지정 */
   height: calc(100% - 2px);  /* 버튼 높이를 입력창과 동일하게 조정 */
@@ -93,7 +93,7 @@ background-color: #555;
   padding: 0;  /* 패딩 제거 */
   cursor: pointer;
   /* border-radius: 0 4px 4px 0;  오른쪽 끝의 라운드 */
-  }
+}
 
 .searchButton img {
   width: 24px;
@@ -104,7 +104,6 @@ background-color: #555;
   flex-grow: 1;
   overflow: hidden; 
 }
-
 
 .chatBotModal {
   position: fixed;
@@ -248,4 +247,28 @@ background-color: #555;
 .chatButton img {
   width: 24px;
   height: 24px;
+}
+
+.annotationModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 1000;
+  padding: 20px;
+}
+
+.annotationModal h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.annotationModal p {
+  margin: 0;
 }
