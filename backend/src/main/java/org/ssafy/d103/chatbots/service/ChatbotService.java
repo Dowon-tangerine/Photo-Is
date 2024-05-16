@@ -52,6 +52,7 @@ public class ChatbotService {
 
         List<ChatMessageDto> messageDTOs = chatHistory.stream()
                 .map(message -> new ChatMessageDto(message.getRole(), message.getMessage()))
+                .filter(dto -> dto.getMessage() != null && !dto.getMessage().isEmpty()) // null 또는 빈 메시지 필터링
                 .collect(Collectors.toList());
 
         ChatSessionRequestDto chatSessionRequestDto = new ChatSessionRequestDto(question, messageDTOs);
