@@ -3,19 +3,56 @@ import styles from "./css/Gallery.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import Carousel from 'react-material-ui-carousel'
 import Masonry from 'react-masonry-css';
-import axios from 'axios';
 import MapComponent from './MapComponent';
 import Toggle from './ToggleBtn';
 import {useNavigate } from "react-router-dom";
+import { getRanking, getSorting, getPhotoDetail } from '../../apis/galleryApi';
 
+
+interface rankingInterface {
+    photoId: number,
+    thumbnailUrl: string,
+    likeCnt: number,
+    isLiked: boolean,
+    profileUrl: string,
+    nickname: string,
+}
 
 interface imgInterface {
-    id: number;
-    url: string;
+    photoId: number,
+    thumbnailUrl: string,
     likeCnt: number,
-    liked: boolean,
+    isLiked: boolean,
     title: string,
-  }
+}
+interface metadataInterface {
+    time: string,
+    cameraType : string,
+    cameraModel : string,
+    lensModel : string,
+    aperture : string,
+    focusDistance : string,
+    shutterSpeed : string,
+    iso : string,
+    latitude : number,
+    longtitude : number,
+}
+interface photoDetailInterface {
+    photoId: number,
+    memberId : number,
+    nickname : string,
+    profileUrl : string,
+    title : string,
+    imageUrl : string,
+    likeCnt : number,
+    isLiked : boolean,
+    createdAt : string,
+    commentCnt : number,
+    accessType : string,
+    metadata: metadataInterface,
+    hashtagList : Array<string>,
+
+}
   
 const Gallery: React.FC = () => {
 
@@ -23,7 +60,6 @@ const Gallery: React.FC = () => {
     const [typeList, setTypeList] = useState<boolean>(false);
     const [isRotated, setIsRotated] = useState<boolean>(false);    
     const [tabIndex, settabIndex] = useState<number>(0);
-    const [sortType, setSortType] = useState<String>("최신");
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
     const [isRotated2, setIsRotated2] = useState<boolean>(false);
     const [imgDetail, setImgDetail] = useState<boolean>(false);
@@ -58,10 +94,6 @@ const Gallery: React.FC = () => {
         setTypeList(!typeList);
 
         setIsRotated(!isRotated);
-    }
-
-    const tabClickHandler = function(index : number){
-        settabIndex(index);
     }
 
     const openSortTypeList = function(){
@@ -253,50 +285,28 @@ const Gallery: React.FC = () => {
 
     ];
 
-    const slice_rank_arr = sliceArray(imageData, 3);
-
-    function sliceArray<T>(array: T[], size: number): T[][] {
-        const sliced_arr: T[][] = [];
-        for (let i = 0; i < array.length; i += size) {
-            sliced_arr.push(array.slice(i, i + size));
-        }
-        return sliced_arr;
-    }
-
-
-    const [page, setPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
-    const [imgArr, setImgArr] = useState<imgInterface[]>([]);
-
-    useEffect(() => {
-      console.log("로드");
+    // useEffect(() => {
+    //   console.log("로드");
   
-      // key가 없으면 응답은 10개씩
-      const API_URL =
-        "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
-      axios.get(API_URL).then((res) => {
-        console.log(res);
+    //   // key가 없으면 응답은 10개씩
+    //   const API_URL =
+    //     "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
+    //   axios.get(API_URL).then((res) => {
+    //     console.log(res);
         
-        // id값과 url만 저장
-        const gotData = res.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-          id: imgs.photoId,
-          url: imgs.thumbnailUrl,
-          likeCnt: imgs.likeCnt,
-          liked: imgs.liked,
-          title: imgs.title,
-        }));
-        setImgArr(gotData);
-      });
-    }, []);
+    //     // id값과 url만 저장
+    //     const gotData = res.data.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; isLiked: boolean; title: string }) => ({
+    //       id: imgs.photoId,
+    //       url: imgs.thumbnailUrl,
+    //       likeCnt: imgs.likeCnt,
+    //       liked: imgs.isLiked,
+    //       title: imgs.title,
+    //     }));
+    //     setImgArr(gotData);
+    //   });
+    // }, []);
 
      // Intersection Observer 설정
-
-  const handleObserver = (entries: IntersectionObserverEntry[]) => {
-    const target = entries[0];
-    if (target.isIntersecting && !isLoading) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
 
   
   /*
@@ -306,7 +316,79 @@ const Gallery: React.FC = () => {
   교차점이 발생하면 page 1 증가
   */
 
-  useEffect(() => {
+  const [rankingArr, setRankingArr] = useState<Array<rankingInterface>>([])
+
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [imgArr, setImgArr] = useState<imgInterface[]>([]);
+  const slice_rank_arr = sliceArray(rankingArr, 3);
+  
+  const [sortType, setSortType] = useState<string>("latest");
+  const [sortName, setSortName] = useState<string>('최신');
+
+  const [photoDetails, setPhotoDetails] = useState<photoDetailInterface | null>(null);
+
+  const handleSortType = function(sortType: string){
+    getSorting(sortType, 1)
+    .then((res) => {
+        if(res){
+            setImgArr(res);
+        }
+    })
+  }
+
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting && !isLoading) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  function sliceArray<T>(array: T[], size: number): T[][] {
+      const sliced_arr: T[][] = [];
+      for (let i = 0; i < array.length; i += size) {
+          sliced_arr.push(array.slice(i, i + size));
+      }
+      return sliced_arr;
+  }
+
+  const clickPhoto = function(selectedId : number){
+    getPhotoDetail(selectedId)
+    .then((res) => {
+        if(res){
+            setPhotoDetails(res);
+        }
+    })
+
+  }
+
+  const tabClickHandler = function(index : number){
+    settabIndex(index);
+
+    let type = ''
+    if(index === 0){
+        type = 'daily'
+    }
+    else if(index === 1){
+        type = 'weekly'
+    }
+    else if(index === 2){
+        type = 'monthly'
+    }
+
+    getRanking(type)
+    .then((res)=>{
+        if(res){
+            setRankingArr(res);
+            console.log(res);
+        }
+        else{
+            alert('예기치 못한 에러가 발생했습니다...');
+        }
+    })
+}
+
+useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       threshold: 0, //  Intersection Observer의 옵션, 0일 때는 교차점이 한 번만 발생해도 실행, 1은 모든 영역이 교차해야 콜백 함수가 실행.
     });
@@ -316,30 +398,39 @@ const Gallery: React.FC = () => {
     if (observerTarget) {
       observer.observe(observerTarget);
     }
+
+    getRanking("daily")
+    .then((res)=>{
+        if(res){
+            setRankingArr(res);
+        }
+        else{
+            alert('예기치 못한 에러가 발생했습니다...');
+        }
+    })
+    .catch((err)=> console.log(err));
+
+    
+    getSorting('latest', 1);
+    getPhotoDetail(0);
   }, []);
 
-    useEffect(() => {
-        fetchData();
-    }, [page]);
+useEffect(() => {
+    fetchData();
+}, [page]);
 
-    const fetchData = async () => {
-        setIsLoading(true);
-        try {
-            const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
-            const response = await axios.get(API_URL);
-            const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-                id: imgs.photoId,
-                url: imgs.thumbnailUrl,
-                likeCnt: imgs.likeCnt,
-                liked: imgs.liked,
-                title: imgs.title,
-            }));
-            setImgArr((prevData) => [...prevData, ...newData]);
-        } catch (error) {
-            console.log(error);
+const fetchData = async () => {
+    setIsLoading(true);
+    
+    getSorting(sortType, page)
+    .then((res) => {
+        if(res){
+            setImgArr([...imgArr, ...res]);
         }
-        setIsLoading(false);
-    };
+    })
+    
+    setIsLoading(false);
+};
 
 
     const rankTabArr=[{
@@ -364,13 +455,13 @@ const Gallery: React.FC = () => {
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
-                                        <img src={item.url} alt='사진' className={styles.rank_photo} />
+                                        <img src={item.thumbnailUrl} alt='사진' className={styles.rank_photo} />
                                         <div className={styles.photo_info}>
-                                            <img src={item.profile} alt='프로필 사진' className={styles.rank_profile}></img>
-                                            <p className={styles.info_txt}>{item.name}</p>
+                                            <img src={item.profileUrl} alt='프로필 사진' className={styles.rank_profile}></img>
+                                            <p className={styles.info_txt}>{item.nickname}</p>
                                             <div className={styles.like_container}>
-                                                <p className={styles.like_txt}>{item.like}</p>
-                                                <img src='/imgs/heart.png' alt='하트' className={styles.heart}></img>
+                                                <p className={styles.like_txt}>{item.likeCnt}</p>
+                                                <img src={item.isLiked ? '/imgs/heart.png' : '/imgs/empty_heart.png'} alt='하트' className={styles.heart}></img>
                                             </div>
                                         </div>
                                     </div>              
@@ -403,13 +494,13 @@ const Gallery: React.FC = () => {
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
-                                        <img src={item.url} alt='사진' className={styles.rank_photo} />
+                                        <img src={item.thumbnailUrl} alt='사진' className={styles.rank_photo} />
                                         <div className={styles.photo_info}>
-                                            <img src={item.profile} alt='프로필 사진' className={styles.rank_profile}></img>
-                                            <p className={styles.info_txt}>{item.name}</p>
+                                            <img src={item.profileUrl} alt='프로필 사진' className={styles.rank_profile}></img>
+                                            <p className={styles.info_txt}>{item.nickname}</p>
                                             <div className={styles.like_container}>
-                                                <p className={styles.like_txt}>{item.like}</p>
-                                                <img src='/imgs/heart.png' alt='하트' className={styles.heart}></img>
+                                                <p className={styles.like_txt}>{item.likeCnt}</p>
+                                                <img src={item.isLiked ? '/imgs/heart.png' : '/imgs/empty_heart.png'} alt='하트' className={styles.heart}></img>
                                             </div>
                                         </div>
                                     </div>              
@@ -442,13 +533,13 @@ const Gallery: React.FC = () => {
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
-                                        <img src={item.url} alt='사진' className={styles.rank_photo} />
+                                        <img src={item.thumbnailUrl} alt='사진' className={styles.rank_photo} />
                                         <div className={styles.photo_info}>
-                                            <img src={item.profile} alt='프로필 사진' className={styles.rank_profile}></img>
-                                            <p className={styles.info_txt}>{item.name}</p>
+                                            <img src={item.profileUrl} alt='프로필 사진' className={styles.rank_profile}></img>
+                                            <p className={styles.info_txt}>{item.nickname}</p>
                                             <div className={styles.like_container}>
-                                                <p className={styles.like_txt}>{item.like}</p>
-                                                <img src='/imgs/heart.png' alt='하트' className={styles.heart}></img>
+                                                <p className={styles.like_txt}>{item.likeCnt}</p>
+                                                <img src={item.isLiked ? '/imgs/heart.png' : '/imgs/empty_heart.png'} alt='하트' className={styles.heart}></img>
                                             </div>
                                         </div>
                                     </div>              
@@ -466,6 +557,7 @@ const Gallery: React.FC = () => {
     const openPhotoDetails = function(){
         document.body.style.overflow = 'hidden';
         setImgDetail(!imgDetail);
+        setPhotoDetails(null)
     }
 
     const [photoLiked, setPhotoLiked] = useState<boolean>(false);
@@ -598,16 +690,16 @@ const Gallery: React.FC = () => {
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails();}}></img>
                 <div className={styles.photo_modal_container}>
                     <div className={styles.img_container}>
-                        <img src='/imgs/photo1.jpg' alt='사진' className={styles.photo}></img>
+                        <img src={photoDetails?.imageUrl} alt='사진' className={styles.photo}></img>
                         <div className={styles.detail_photo_info}>
-                            <img src='/imgs/profile1.jpg' alt='프로필' className={styles.detail_photo_profile}></img>
+                            <img src={photoDetails?.profileUrl} alt='프로필' className={styles.detail_photo_profile}></img>
                             <div className={styles.detail_photo_info_container}>
-                                <p className={styles.photo_title}>버스버스 스타벅스</p>
-                                <p className={styles.photo_date}>October 31, 2017 by 바다탐험대</p>
+                                <p className={styles.photo_title}>{photoDetails?.title}</p>
+                                <p className={styles.photo_date}>{photoDetails?.createdAt.substring(0,10)} by {photoDetails?.nickname}</p>
                             </div>
                             <div className={styles.detail_photo_like}>
-                                <p className={styles.heart_txt}>123</p>
-                                <img src={`/imgs/${photoLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
+                                <p className={styles.heart_txt}>{photoDetails?.likeCnt}</p>
+                                <img src={`/imgs/${photoDetails?.isLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
                             </div>
                         </div>
                     </div>
@@ -618,27 +710,27 @@ const Gallery: React.FC = () => {
                         <div className={styles.camera_info}>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>카메라 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.cameraModel}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>렌즈 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.lensModel}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>조리개 / F : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.aperture}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>초점 거리 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.focusDistance}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>셔터 스피드 / SS : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.shutterSpeed}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>심도 / ISO : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.iso}</p>
                             </div>
                             <div><MapComponent/></div>
                         </div>
@@ -647,8 +739,8 @@ const Gallery: React.FC = () => {
                         </div>
                         <div className={styles.tags_container}>
                             <div className={styles.tags}>
-                                {tagss.map((tag, index)=>{
-                                return <a key={index + 'k'} href='#'>#{tag.tag} </a>
+                                {photoDetails?.hashtagList.map((tag, index)=>{
+                                return <a key={index + 'k'} href='#'>#{tag} </a>
 
                                 })}
                             </div>
@@ -825,15 +917,16 @@ const Gallery: React.FC = () => {
                 </div>
                 <div className={styles.sort_btn}>
                     <div className={styles.dropdown_container} onClick={() => {openSortTypeList();}}>
-                        <p className={styles.dropdown_txt2}>{sortType}순</p>
+                        <p className={styles.dropdown_txt2}>{sortName}순</p>
                         <FaAngleDown  className={`${styles.dropdown_icon2} ${isRotated2 ? styles.rotated : ''}`}/>
                     </div>
 
                     {sortTypeList && (
                         <>
                             <div className={styles.typeList_container2}>
-                                <p className={styles.type_txt1_2} onClick={() => {setSortType("인기"); openSortTypeList();}}>인기</p>
-                                <p className={styles.type_txt2_2} onClick={() => {setSortType("최신"); openSortTypeList();}}>최신</p>
+                                <p className={styles.type_txt1_2} onClick={() => {setSortType("like"); openSortTypeList(); setSortName("인기"); handleSortType("like");}}>인기</p>
+                                <p className={styles.type_txt2_2} onClick={() => {setSortType("view"); openSortTypeList(); setSortName("조회"); handleSortType("view");}}>조회</p>
+                                <p className={styles.type_txt2_3} onClick={() => {setSortType("latest"); openSortTypeList(); setSortName("최신"); handleSortType("latest");}}>최신</p>
                             </div>
                         </>
                     )}
@@ -847,13 +940,13 @@ const Gallery: React.FC = () => {
                     {/* <div className="dog-imgs-container"> */}
                         {imgArr &&
                             imgArr.map((Imgs: imgInterface, idx) => (
-                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails();}}>
-                                    <img src={Imgs.url} />
+                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails(); clickPhoto(Imgs.photoId);}}>
+                                    <img src={Imgs.thumbnailUrl} />
                                     <div className={styles.photo_info2}>
                                         <p className={styles.info_txt2}>{Imgs.title}</p>
                                         <div className={styles.like_container2}>
                                             <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
-                                            <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
+                                            <img src={`/imgs/${Imgs.isLiked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
                                         </div>
                                     </div>
                                 </div>
