@@ -6,7 +6,7 @@ import Masonry from 'react-masonry-css';
 import MapComponent from './MapComponent';
 import Toggle from './ToggleBtn';
 import {useNavigate } from "react-router-dom";
-import { getRanking, getSorting, getPhotoDetail } from '../../apis/galleryApi';
+import { getRanking, getSorting, getPhotoDetail, postLiked, getComment, postComment } from '../../apis/galleryApi';
 
 
 interface rankingInterface {
@@ -25,6 +25,7 @@ interface imgInterface {
     isLiked: boolean,
     title: string,
 }
+
 interface metadataInterface {
     time: string,
     cameraType : string,
@@ -37,6 +38,7 @@ interface metadataInterface {
     latitude : number,
     longtitude : number,
 }
+
 interface photoDetailInterface {
     photoId: number,
     memberId : number,
@@ -52,6 +54,14 @@ interface photoDetailInterface {
     metadata: metadataInterface,
     hashtagList : Array<string>,
 
+}
+
+interface commentInterface{
+    commentId: number,
+    nickname: string,
+    profileUrl: string,
+    comment: string,
+    createdAt: string,
 }
   
 const Gallery: React.FC = () => {
@@ -328,16 +338,6 @@ const Gallery: React.FC = () => {
       return sliced_arr;
   }
 
-  const clickPhoto = function(selectedId : number){
-    getPhotoDetail(selectedId)
-    .then((res) => {
-        if(res){
-            setPhotoDetails(res);
-        }
-    })
-
-  }
-
   const tabClickHandler = function(index : number){
     settabIndex(index);
 
@@ -386,18 +386,6 @@ useEffect(() => {
     })
     .catch((err)=> console.log(err));
 
-    
-    // getSorting('latest', 1)
-    // .then((res)=>{
-    //     if(res){
-    //         setImgArr(res);
-    //     }
-    //     else{
-    //         alert('예기치 못한 에러가 발생했습니다...');
-    //     }
-    // })
-    // .catch((err)=> console.log(err));
-
     getPhotoDetail(0);
   }, []);
 
@@ -437,7 +425,7 @@ const fetchData = async () => {
                         (slice_arr, i) => (
                             <div className={styles.rank_photos} key={i + 'a'}>
                                 {slice_arr.map((item, idx) => (
-                                    <div className={styles.rank_photo_frame} key={idx + 'b'} onClick={() => {openPhotoDetails();}}>
+                                    <div className={styles.rank_photo_frame} key={idx + 'b'} onClick={() => {openPhotoDetails(item.photoId);}}>
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
@@ -476,7 +464,7 @@ const fetchData = async () => {
                         (slice_arr, i) => (
                             <div className={styles.rank_photos} key={i + 'c'}>
                                 {slice_arr.map((item, idx) => (
-                                    <div className={styles.rank_photo_frame} key={idx + 'd'} onClick={() => {openPhotoDetails();}}>
+                                    <div className={styles.rank_photo_frame} key={idx + 'd'} onClick={() => {openPhotoDetails(item.photoId);}}>
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
@@ -515,7 +503,7 @@ const fetchData = async () => {
                         (slice_arr, i) => (
                             <div className={styles.rank_photos} key={i + 'e'}>
                                 {slice_arr.map((item, idx) => (
-                                    <div className={styles.rank_photo_frame} key={idx + 'f'} onClick={() => {openPhotoDetails();}}>
+                                    <div className={styles.rank_photo_frame} key={idx + 'f'} onClick={() => {openPhotoDetails(item.photoId);}}>
                                         <div className={styles.rank_number}>
                                             <p>{i * 3 + idx + 1}</p>
                                         </div>
@@ -540,16 +528,64 @@ const fetchData = async () => {
     }    
     ]
 
-    const openPhotoDetails = function(){
+    const [commentList, setCommentList] = useState<Array<commentInterface>>();
+
+    const openPhotoDetails = function(id : number | undefined){
         document.body.style.overflow = 'hidden';
-        setImgDetail(!imgDetail);
-        setPhotoDetails(null)
+
+        if(!imgDetail) {
+            // 상세정보 불러오기
+            getPhotoDetail(id)
+            .then((res) => {
+                if(res){
+                    setPhotoDetails(res);
+                    getComment(id)
+                    .then((res) => {
+                        if(res){
+                            setCommentList(res);
+                        }
+                    })
+                    setImgDetail(!imgDetail);
+                }
+            })
+        } else {
+            getSorting(sortType, 1)
+            .then((res) => {
+                if(res){
+                    setImgArr([...res]);
+                    setPhotoDetails(null);
+                    setCommentList([]);
+                    setImgDetail(!imgDetail);
+                }
+            })
+        }
     }
 
-    const [photoLiked, setPhotoLiked] = useState<boolean>(false);
+    const sendClick = function(id : number | undefined){
+        setMyComment("");
+        postComment(id, myComment)
+        .then((res) => {
+            if(res){
+                console.log("댓글 목록 조회 " + res)
+                setCommentList(res);
+            }
+            else{
+                setCommentList([]);
+            }
+        })
+    }
 
-    const clickHeart = function(){
-        setPhotoLiked(!photoLiked);
+    const [myComment, setMyComment] = useState<string>("");
+
+    const clickHeart = function(id : number | undefined){
+        postLiked(id)
+        .then((res) => {
+            setPhotoDetails({
+                ...photoDetails!,
+                isLiked: res.liked,
+                likeCnt: res.likeCnt
+            })
+        })
     }
 
     const [uploadPhoto, setUploadPhoto] = useState<boolean>(false);
@@ -592,46 +628,6 @@ const fetchData = async () => {
         setTags(newTags); // 새로운 배열로 상태 업데이트
     };
 
-    const comments = [
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다 뻥이지롱 하하하하하 좋아요 많아서 좋겠다 사실 안부럽지롱 메롱메롱',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-
-    ]
-
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null); // 선택된 이미지의 인덱스
 
     const handleImageClick = (index: number) => {
@@ -644,7 +640,7 @@ const fetchData = async () => {
         {imgDetail && (
             <>
                 <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails();}}></img>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails(photoDetails?.photoId);}}></img>
                 <div className={styles.photo_modal_container}>
                     <div className={styles.img_container}>
                         <img src={photoDetails?.imageUrl} alt='사진' className={styles.photo}></img>
@@ -656,7 +652,7 @@ const fetchData = async () => {
                             </div>
                             <div className={styles.detail_photo_like}>
                                 <p className={styles.heart_txt}>{photoDetails?.likeCnt}</p>
-                                <img src={`/imgs/${photoDetails?.isLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
+                                <img src={`/imgs/${photoDetails?.isLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart(photoDetails?.photoId);}}></img>
                             </div>
                         </div>
                     </div>
@@ -703,25 +699,31 @@ const fetchData = async () => {
                             </div>
                         </div>
                         <div style={{width : '300px', height : 'fit-content', display : 'flex', alignItems: 'center', marginTop : '10px', background : 'white'}}>
-                                <p className={styles.camera_info_title2}>{comments.length} Comments</p>
+                                <p className={styles.camera_info_title2}>{commentList?.length} Comments</p>
                         </div>
                         <div className={styles.comment_container}>
-                            {comments.map((comment, index)=>{
+                            {(commentList === undefined || commentList.length === 0)
+                            ? <>
+                                <div style={{display : "flex", alignItems : 'center', justifyContent : 'center'}}>
+                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록돤 댓글이 없습니다.</p>
+                                </div>
+                            </>
+                            :
+                            commentList.map((comment, index)=>{
                                 return <div key={index + 'm'} style={{padding : '5px', display : 'flex'}}>
-                                    <img src={comment.profile} alt='프로필' className={styles.comment_profile}></img>
+                                    <img src={comment.profileUrl} alt='프로필' className={styles.comment_profile}></img>
                                     <div className={styles.comment_info}>
-                                        <p style={{fontFamily : '부크크고딕bold', fontSize : '14px'}}>{comment.name}</p>
-                                        <p style={{fontFamily : '부크크고딕', fontSize : '12px', marginTop : '-10px', color : 'black'}}>{comment.content}</p>
-                                        <p style={{fontFamily : '부크크고딕', fontSize : '10px', marginTop : '-10px', color : 'gray'}}>{comment.time}</p>
+                                        <p style={{fontFamily : '부크크고딕bold', fontSize : '14px'}}>{comment.nickname}</p>
+                                        <p style={{fontFamily : '부크크고딕', fontSize : '12px', marginTop : '-10px', color : 'black'}}>{comment.comment}</p>
+                                        <p style={{fontFamily : '부크크고딕', fontSize : '10px', marginTop : '-10px', color : 'gray'}}>{comment.createdAt.slice(0,10)}</p>
                                     </div>
                                 </div>
-
                             })}
                         </div>
                         <div className={styles.send_comment_container}>
                             <div className={styles.send_box}>
-                                <input className={styles.input_box2} type="text" placeholder="댓글" ></input>
-                                <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기'></img>
+                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment}></input>
+                                <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기' onClick={() => {sendClick(photoDetails?.photoId);}}></img>
                             </div>
                         </div>  
                     </div>
@@ -897,7 +899,7 @@ const fetchData = async () => {
                     {/* <div className="dog-imgs-container"> */}
                         {imgArr &&
                             imgArr.map((Imgs: imgInterface, idx) => (
-                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails(); clickPhoto(Imgs.photoId);}}>
+                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails(Imgs.photoId);}}>
                                     <img src={Imgs.thumbnailUrl} />
                                     <div className={styles.photo_info2}>
                                         <p className={styles.info_txt2}>{Imgs.title}</p>

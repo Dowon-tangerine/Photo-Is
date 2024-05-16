@@ -4,7 +4,7 @@ import { FaAngleDown } from 'react-icons/fa';
 import Masonry from 'react-masonry-css';
 import { useLocation, useNavigate } from "react-router-dom";
 import MapComponent from './MapComponent';
-import { getSearching } from '../../apis/galleryApi';
+import { getSearching, getPhotoDetail } from '../../apis/galleryApi';
 
 interface imgInterface {
     photoId: number,
@@ -13,14 +13,55 @@ interface imgInterface {
     isLiked: boolean,
     title: string,
 }
-  
+
+
+interface metadataInterface {
+    time: string,
+    cameraType : string,
+    cameraModel : string,
+    lensModel : string,
+    aperture : string,
+    focusDistance : string,
+    shutterSpeed : string,
+    iso : string,
+    latitude : number,
+    longtitude : number,
+}
+
+interface photoDetailInterface {
+    photoId: number,
+    memberId : number,
+    nickname : string,
+    profileUrl : string,
+    title : string,
+    imageUrl : string,
+    likeCnt : number,
+    isLiked : boolean,
+    createdAt : string,
+    commentCnt : number,
+    accessType : string,
+    metadata: metadataInterface,
+    hashtagList : Array<string>,
+
+}
+
 const SearchTag: React.FC = () => {
 
     const [type, setType] = useState<String>("선택");
     const [typeList, setTypeList] = useState<boolean>(false);
     const [isRotated, setIsRotated] = useState<boolean>(false);    
     const [imgDetail, setImgDetail] = useState<boolean>(false);
+    const [photoDetails, setPhotoDetails] = useState<photoDetailInterface | null>(null);
 
+    const clickPhoto = function(selectedId : number){
+        getPhotoDetail(selectedId)
+        .then((res) => {
+            if(res){
+                setPhotoDetails(res);
+            }
+        })
+    
+    }
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -30,6 +71,7 @@ const SearchTag: React.FC = () => {
         navigate("/community/gallery")
     }
 
+    const [word, setWord] = useState<string>(location.state ? location.state.searchWord : "")
     const [word2, setWord2] = useState<string>("");
 
     const moveToSearch = function(){
@@ -44,10 +86,12 @@ const SearchTag: React.FC = () => {
             .then((res) => {
                 setImgArr(res);
             })
+            setWord(word2);
+        }
+        else{
+            alert("검색 카테고리를 선택해주세요!")
         }
     }
-
-    const word = location.state ? location.state.searchWord : "";
 
     const toggleRotation = () => {
         setIsRotated(!isRotated);
@@ -91,6 +135,8 @@ const SearchTag: React.FC = () => {
     if (observerTarget) {
       observer.observe(observerTarget);
     }
+
+    getPhotoDetail(0);
   }, []);
 
     useEffect(() => {
@@ -121,34 +167,6 @@ const SearchTag: React.FC = () => {
     const clickHeart = function(){
         setPhotoLiked(!photoLiked);
     }
-
-    const tagss = [
-        {
-            tag : "하이",
-        },        
-        {
-            tag : "벚꽃",
-        },
-        {
-            tag : "버스",
-        },
-        {
-            tag : "도로",
-        },
-        {
-            tag : "봄",
-        },
-        {
-            tag : "나무",
-        },
-        {
-            tag : "봄향기",
-        },
-        {
-            tag : "분홍분홍",
-        },
-
-    ]
 
     const comments = [
         {
@@ -200,16 +218,16 @@ const SearchTag: React.FC = () => {
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails();}}></img>
                 <div className={styles.photo_modal_container}>
                     <div className={styles.img_container}>
-                        <img src='/imgs/photo1.jpg' alt='사진' className={styles.photo}></img>
+                        <img src={photoDetails?.imageUrl} alt='사진' className={styles.photo}></img>
                         <div className={styles.detail_photo_info}>
-                            <img src='/imgs/profile1.jpg' alt='프로필' className={styles.detail_photo_profile}></img>
+                            <img src={photoDetails?.profileUrl} alt='프로필' className={styles.detail_photo_profile}></img>
                             <div className={styles.detail_photo_info_container}>
-                                <p className={styles.photo_title}>버스버스 스타벅스</p>
-                                <p className={styles.photo_date}>October 31, 2017 by 바다탐험대</p>
+                                <p className={styles.photo_title}>{photoDetails?.title}</p>
+                                <p className={styles.photo_date}>{photoDetails?.createdAt.substring(0,10)} by {photoDetails?.nickname}</p>
                             </div>
                             <div className={styles.detail_photo_like}>
-                                <p className={styles.heart_txt}>123</p>
-                                <img src={`/imgs/${photoLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
+                                <p className={styles.heart_txt}>{photoDetails?.likeCnt}</p>
+                                <img src={`/imgs/${photoDetails?.isLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
                             </div>
                         </div>
                     </div>
@@ -220,27 +238,27 @@ const SearchTag: React.FC = () => {
                         <div className={styles.camera_info}>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>카메라 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.cameraModel}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>렌즈 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.lensModel}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>조리개 / F : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.aperture}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>초점 거리 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.focusDistance}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>셔터 스피드 / SS : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.shutterSpeed}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>심도 / ISO : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.iso}</p>
                             </div>
                             <div><MapComponent/></div>
                         </div>
@@ -249,8 +267,8 @@ const SearchTag: React.FC = () => {
                         </div>
                         <div className={styles.tags_container}>
                             <div className={styles.tags}>
-                                {tagss.map((tag, index)=>{
-                                return <a key={index + 'k'} href='#'>#{tag.tag} </a>
+                                {photoDetails?.hashtagList.map((tag, index)=>{
+                                return <a key={index + 'k'} href='#'>#{tag} </a>
 
                                 })}
                             </div>
@@ -329,7 +347,7 @@ const SearchTag: React.FC = () => {
                     {/* <div className="dog-imgs-container"> */}
                         {imgArr &&
                             imgArr.map((Imgs: imgInterface, idx) => (
-                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails();}}>
+                                <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails(); clickPhoto(Imgs.photoId);}}>
                                     <img src={Imgs.thumbnailUrl} />
                                     <div className={styles.photo_info2}>
                                         <p className={styles.info_txt2}>{Imgs.title}</p>
