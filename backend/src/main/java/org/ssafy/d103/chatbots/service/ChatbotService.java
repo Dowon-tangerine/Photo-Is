@@ -59,7 +59,7 @@ public class ChatbotService {
 
     public Mono<TagResponseDto> generateTags(TagRequestDto request) {
         return webClient.post()
-                .uri("/generate-tags")
+                .uri("/api/py/generate-tags")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(TagResponseDto.class);
