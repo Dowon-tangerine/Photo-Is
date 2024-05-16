@@ -375,7 +375,7 @@
 }
 
 .typeList_container2{
-    height:80px;
+    height:120px;
     width: 140px;
     background: white;
     position: absolute;
@@ -410,6 +410,21 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    font-family: "부크크고딕bold";
+    font-size: 16px;
+    transition: 0.5s all;
+}
+
+.type_txt2_3{
+    color: black;
+    height: 40px;
+    width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     border-bottom: 2px solid black;
     border-left: 2px solid black;
     border-right: 2px solid black;
@@ -429,6 +444,12 @@
     background: black;
     color: white;
 }
+
+.type_txt2_3:hover {
+    background: black;
+    color: white;
+}
+
 .my_masonry_grid {
     display: -webkit-box; 
     display: -ms-flexbox; 
@@ -480,7 +501,7 @@ cursor: pointer;
     width: fit-content;
     position: absolute;
     display: flex;
-    right: 6%;
+    right: 3%;
     align-items: center;
 }
 
@@ -593,9 +614,9 @@ cursor: pointer;
 }
 
 .heart3{
-    height: 25px;
+    height: 20px;
     width: auto;
-    right: 5px;
+    right: 10px;
     position: absolute;
     cursor: pointer;
 }
@@ -669,7 +690,7 @@ cursor: pointer;
 .comment_info{
     width: 300px;
     height: auto;
-    margin-left: 2%;
+    margin-left: 4%;
 }
 
 .send_comment_container{
