@@ -129,30 +129,29 @@ async def describe_image(request: ImageDescriptionRequest):
 class ImageTagRequest(BaseModel):
     image_url: str
 
+class TagResponse(BaseModel):
+    tags: list
+
 # 태그 자동 생성
-@app.post("/api/py/generate-tags")
+@app.post("/api/py/generate-tags", response_model=TagResponse)
 async def generate_tags(request: ImageTagRequest):
     try:
-        # 이미지 다운로드
-        response = requests.get(request.image_url)
-        image = Image.open(BytesIO(response.content))
-        
-        # 이미지를 GPT-4o에게 설명하도록 요청
+        # 이미지를 GPT-4에게 설명하도록 요청
         image_description_prompt = f"Describe the contents of the following image in detail: {request.image_url}"
         
         description_response = openai.Completion.create(
-            engine="gpt-4o",
+            engine="gpt-4",
             prompt=image_description_prompt,
             max_tokens=100,
         )
         
         description = description_response.choices[0].text.strip()
         
-        # 설명을 바탕으로 태그를 추출하도록 GPT-4o에게 요청
+        # 설명을 바탕으로 태그를 추출하도록 GPT-4에게 요청
         tag_prompt = f"Based on the following description, generate appropriate tags: {description}"
         
         tag_response = openai.Completion.create(
-            engine="gpt-4o",
+            engine="gpt-4",
             prompt=tag_prompt,
             max_tokens=50,
         )
