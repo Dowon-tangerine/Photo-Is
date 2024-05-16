@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import styles from "./css/SearchTag.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import Masonry from 'react-masonry-css';
-import axios from 'axios';
 import { useLocation, useNavigate } from "react-router-dom";
 import MapComponent from './MapComponent';
-
+import { getSearching } from '../../apis/galleryApi';
 
 interface imgInterface {
-    id: number;
-    url: string;
+    photoId: number,
+    thumbnailUrl: string,
     likeCnt: number,
-    liked: boolean,
+    isLiked: boolean,
     title: string,
-  }
+}
   
 const SearchTag: React.FC = () => {
 
@@ -31,17 +30,20 @@ const SearchTag: React.FC = () => {
         navigate("/community/gallery")
     }
 
-    const [word2, setWord2] = useState<String>("");
+    const [word2, setWord2] = useState<string>("");
 
     const moveToSearch = function(){
         if(type === "작가"){
-            navigate("/community/gallery/searchName", { state: { searchWord :  word2 + "1"} })
+            navigate("/community/gallery/searchName", { state: { searchWord :  word2} })
         }
         else if(type === "제목"){
             navigate("/community/gallery/searchTitle", { state: { searchWord :  word2} })
         }
         else if(type === "태그"){
-            navigate("/community/gallery/searchTag", { state: { searchWord :  word2} })
+            getSearching("hashtag", word2, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
         }
     }
 
@@ -61,27 +63,6 @@ const SearchTag: React.FC = () => {
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
-
-    useEffect(() => {
-      console.log("로드");
-  
-      // key가 없으면 응답은 10개씩
-      const API_URL =
-        "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
-      axios.get(API_URL).then((res) => {
-        console.log(res);
-        
-        // id값과 url만 저장
-        const gotData = res.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-          id: imgs.photoId,
-          url: imgs.thumbnailUrl,
-          likeCnt: imgs.likeCnt,
-          liked: imgs.liked,
-          title: imgs.title,
-        }));
-        setImgArr(gotData);
-      });
-    }, []);
 
      // Intersection Observer 설정
 
@@ -118,20 +99,14 @@ const SearchTag: React.FC = () => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        try {
-            const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
-            const response = await axios.get(API_URL);
-            const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-                id: imgs.photoId,
-                url: imgs.thumbnailUrl,
-                likeCnt: imgs.likeCnt,
-                liked: imgs.liked,
-                title: imgs.title,
-            }));
-            setImgArr((prevData) => [...prevData, ...newData]);
-        } catch (error) {
-            console.log(error);
-        }
+
+        getSearching("hashtag", word, page)
+        .then((res) => {
+            if(res){
+                setImgArr([...imgArr, ...res]);
+            }
+        })
+
         setIsLoading(false);
     };
 
@@ -355,12 +330,12 @@ const SearchTag: React.FC = () => {
                         {imgArr &&
                             imgArr.map((Imgs: imgInterface, idx) => (
                                 <div key={idx + 'g'} className={styles.img_card} onClick={() => {openPhotoDetails();}}>
-                                    <img src={Imgs.url} />
+                                    <img src={Imgs.thumbnailUrl} />
                                     <div className={styles.photo_info2}>
                                         <p className={styles.info_txt2}>{Imgs.title}</p>
                                         <div className={styles.like_container2}>
                                             <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
-                                            <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
+                                            <img src={`/imgs/${Imgs.isLiked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
                                         </div>
                                     </div>
                                 </div>

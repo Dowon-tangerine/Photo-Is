@@ -44,3 +44,17 @@ export const getPhotoDetail = async (id : number) => {
     })
 
 }
+
+export const getSearching = async (type : string, keyword : string, page : number) => {
+    const url = `/photos/search/${type}?keyword=${keyword}&page=${page}`
+
+    return await instance.get(url)
+    .then(res => {
+        console.log(res);
+        return res.data.data.resultList;
+    })    
+    .catch(error => {
+        error
+        return false;
+    })
+}
