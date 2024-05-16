@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
 import Spinner from "./3Delement/spinner";
 import CameraSettings from "./element/CameraSettings";
@@ -11,36 +11,25 @@ import ExposureControl from "./element/ExposureControl";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { MotionBlurShader } from "./element/MotionBlurShader";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
+import { EffectComposer, RenderPass, ShaderPass } from "postprocessing";
 import { createMotionBlurMaterial } from "./element/MotionBlurShader";
-
-extend({ EffectComposer, RenderPass, ShaderPass });
 
 function Effects({ shutterSpeed }: { shutterSpeed: number }) {
     const { gl, scene, camera } = useThree();
     const composer = useRef<EffectComposer>();
 
     useEffect(() => {
-        const composerInstance = new EffectComposer(gl);
-        const renderPass = new RenderPass(scene, camera);
-        const motionBlurMaterial = createMotionBlurMaterial();
+        if (!composer.current) {
+            const composerInstance = new EffectComposer(gl);
+            const renderPass = new RenderPass(scene, camera);
+            const motionBlurMaterial = createMotionBlurMaterial();
+            motionBlurMaterial.uniforms["velocityFactor"].value = shutterSpeed;
+            const shaderPass = new ShaderPass(motionBlurMaterial);
 
-        // 반비례 계산, 셔터 스피드의 로그 스케일을 사용하여 velocityFactor 계산
-        // 셔터 스피드가 커질수록 velocityFactor가 충분히 감소하도록 조정
-        const baseSpeed = 2.0; // 기준 셔터 스피드
-        const velocityFactor = baseSpeed / Math.pow(shutterSpeed, 0.2); // 여기서 지수를 조정하여 효과 조절
-        motionBlurMaterial.uniforms["velocityFactor"].value = velocityFactor;
-        const shaderPass = new ShaderPass(motionBlurMaterial);
-
-        composerInstance.addPass(renderPass);
-        composerInstance.addPass(shaderPass);
-        composer.current = composerInstance;
-
-        return () => {
-            composerInstance.dispose();
-        };
+            composerInstance.addPass(renderPass);
+            composerInstance.addPass(shaderPass);
+            composer.current = composerInstance;
+        }
     }, [gl, scene, camera, shutterSpeed]);
 
     useFrame((_, delta) => {
@@ -60,21 +49,23 @@ const TutorialPage = () => {
         <>
             <div className={StudioStyle.container}>
                 <div className={StudioStyle.canvasContainer}>
-                    <Canvas gl={{ alpha: true }} shadows camera={{ position: [0, 0, 5], fov: 50 }}>
+                    <Canvas gl={{ alpha: true }} shadows>
                         <ambientLight intensity={1} />
-                        <directionalLight position={[10, 10, 10]} intensity={1} />
                         <Capture setTakeScreenshot={setTakeScreenshot} />
                         <CameraController />
                         <ExposureControl />
                         <Spinner />
                         <Effects shutterSpeed={shutterSpeed} />
+                        {/* <EffectComposer>
+                            <Noise premultiply blendFunction={BlendFunction.ADD} opacity={Math.sqrt(iso / 100) * 0.5} />
+                        </EffectComposer> */}
                     </Canvas>
                     <div className={StudioStyle.imageOverlay}>
                         <img src="/imgs/viewFinder.png" alt="Overlay Image" style={{ width: "100%", height: "100%" }} />
                     </div>
                     <div className="mt-6 setting-info flex justify-center items-center">
                         <div className="font-digital  text-[45px] mx-10 text-green-400">F {aperture}</div>
-                        {shutterSpeed === 1 ? (
+                        {shutterSpeed == 1 ? (
                             <div className="font-digital  text-[45px] mx-10 text-green-400">SS 1</div>
                         ) : (
                             <div className="font-digital  text-[45px] mx-10 text-green-400">SS 1/ {shutterSpeed}</div>
