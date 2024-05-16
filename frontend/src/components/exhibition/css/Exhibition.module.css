@@ -19,6 +19,112 @@
     align-items: center;
 }
 
+.wrapper{
+    padding: 200px;
+    width: 90%;
+    margin-top: 3%;
+    margin-bottom: 1%;
+    overflow: hidden;
+}
+.wrapper .slide_container {
+    width: 100%;
+}
+  .wrapper .slide_container .slide_wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  .wrapper .slide_container .slide {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+  .wrapper .slide_container .slide.original {
+    animation: 50s linear infinite normal none running infiniteAnimation1;
+  }
+  
+  .wrapper .slide_container .slide.clone {
+    animation: 50s linear infinite normal none running infiniteAnimation2;
+  }
+  
+  .wrapper .slide_container .slide.stop {
+    animation-play-state: paused;
+  }
+  
+  .wrapper .slide_container .slide li {
+    cursor: pointer;
+    z-index: 2;
+    transition: 0.3s;
+    transform: scale(1);
+  }
+
+.item{
+    margin-top: -210px;
+    width: 300px;
+    height: 400px;
+}
+
+  .slide li .item img{
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  .wrapper .slide_container .slide li:hover {
+    transform: scale(0.98);
+  }
+  
+  .wrapper .slide_container .slide li:hover::after {
+    content: "";
+    position: absolute;
+    margin-top: -200px;
+    top: 0;
+    left: 10px;
+    bottom: 0;
+    right: 0;
+    width: 280px;
+    height: 400px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+.photo_card_info2{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+.card_photo_profile2{
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    margin-left: 2%;
+    object-fit: cover;
+}
+  
+  @keyframes infiniteAnimation1 {
+    0% {
+      transform: translateX(0%);
+    }
+    50% {
+      transform: translateX(-100%);
+    }
+    50.1% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+  
+  @keyframes infiniteAnimation2 {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-200%);
+    }
+  }
+
 .combo_box{
     width: 110px;
     height: 220px;
@@ -308,6 +414,15 @@
     font-size: 14px;
 }
 
+.exhibition_heart{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 35px;
+    width: auto;
+    cursor: pointer;
+}
+
 .btn_container{
     width: 100vw;
     margin: 40px;
@@ -320,7 +435,7 @@
     height: 40px;
     background: white;
     border: 1px solid black;
-    margin-left: 65%;
+    margin-left: 72.5%;
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -353,6 +468,21 @@
     position: relative;
 }
 
+.open_input_box{
+    height: 50px;
+    width: 100%;
+    padding: 10px;
+    position: relative;
+    color: black;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-family: "부크크고딕bold";
+}
+
+.open_input_box:focus {
+    outline: none;
+}
+
 .dropdown_container{
     display: flex;
     align-items: center;
@@ -375,7 +505,7 @@
 }
 
 .typeList_container2{
-    height:120px;
+    height:80px;
     width: 140px;
     background: white;
     position: absolute;
@@ -410,21 +540,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    transition: 0.5s all;
-}
-
-.type_txt2_3{
-    color: black;
-    height: 40px;
-    width: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
     border-bottom: 2px solid black;
     border-left: 2px solid black;
     border-right: 2px solid black;
@@ -445,28 +560,24 @@
     color: white;
 }
 
-.type_txt2_3:hover {
-    background: black;
-    color: white;
-}
-
-.my_masonry_grid {
-    display: -webkit-box; 
-    display: -ms-flexbox; 
+.card{
+    height: 400px;
+    width: auto;
+    overflow: hidden;
+    margin: 10px;
+    position: relative;
+    background: white;
+    border-radius: 10px;
     display: flex;
-    width: 70vw;
-    height: fit-content;
-}
-.my_masonry_grid_column {
-padding-left: 0.5vw; 
-padding-right: 0.5vw;
-background-clip: padding-box;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s all;
 }
 
-.my_masonry_grid_column > div {
-background: grey;
-margin-bottom: 1vw;
-cursor: pointer;
+.card:hover{
+    transform: scale(1.05);
+    transition: 0.5s all;
 }
 
 .img_card{
@@ -501,7 +612,7 @@ cursor: pointer;
     width: fit-content;
     position: absolute;
     display: flex;
-    right: 3%;
+    right: 6%;
     align-items: center;
 }
 
@@ -551,191 +662,92 @@ cursor: pointer;
     overflow-x: hidden;
 }
 
-.img_container{
-    width: 1000px;
-    height: 700px;
-}
-
-.photo{
-    width: 740px;
-    height: 630px;
-    object-fit: contain;
-    background: black;
-}
-
-.detail_photo_info{
-    width: 740px;
-    height: 70px;
-    display: flex;
-    background: white;
-    align-items: center;
-}
-
-.detail_photo_profile{
-    width: 55px;
-    height: 55px;
-    border-radius: 50px;
-    margin-left: 1%;
-}
-
-.detail_photo_info_container{
-    width: 590px;
-    height: 70px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 2%;
-}
-
-.photo_title{
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-}
-
-.photo_date{
-    font-family: "부크크고딕bold";
-    font-size: 12px;
-    color: gray;
-}
-
-.detail_photo_like{
-    width: 150px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.heart_txt{
-    font-family: "부크크고딕bold";
-    font-size: 18px;
-    position: absolute;
-    right: 40px;
-}
-
-.heart3{
-    height: 20px;
-    width: auto;
-    right: 10px;
-    position: absolute;
-    cursor: pointer;
-}
-
-.other_info_container{
-    width: 300px;
-    height: 100%;
-    margin-left: 10px;
-}
-
-.camera_info{
-    width: 300px;
-    height: 180px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: white;
-    padding: 5px;
-}
-
-.camera_info_title{
+.go_txt{
     font-family: "부크크고딕bold";
     font-size: 24px;
-    margin: 2%;
 }
-
-.camera_info_title2{
-    font-family: "부크크고딕bold";
-    font-size: 20px;
-    margin: 4%;
+.profile_card_container{
+    width: 90vw;
+    height: fit-content;
+    display: grid;
+    cursor: pointer;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
-
-.tags_container{
-    width: 300px;
-    height: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: white;
-    
-    padding: 5px;
-}
-
-.tags{
-    width: 280px;
-    height: 80px;
-    overflow-y: auto;
-}
-
-.tags a{
-    display: inline;
-}
-
-.comment_container{
-    width: 300px;
-    height: 220px;
+.card_img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    cursor: pointer;
     position: relative;
-    overflow-y: auto;
-    background: white;
-    padding: 5px;
+}
+.cover{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+.card_whole_info{
+    position: absolute;
+    width: 100%;
+    height: 150px;
+    bottom: 0;
+    padding: 10px;
+    font-family: "부크크고딕";
+    color: white;
 }
 
-.comment_profile{
-    width: 30px;
-    height: 30px;
-    border-radius: 50px;
+.card_title{
+    margin-left: 2%;
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-family: "부크크고딕bold";
+}
+
+.card_date{
+    margin-left: 3%;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.photo_card_info{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+.card_photo_profile{
+    width: 40px;
+    height: 40px;
+    border-radius: 100px;
+    margin-left: 2%;
     object-fit: cover;
 }
 
-.comment_info{
-    width: 300px;
-    height: auto;
-    margin-left: 4%;
+.card_info_txt{
+    font-size: 14px;
+    margin-left: 2%;
 }
 
-.send_comment_container{
-    height: 50px;
-    width: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-}
-
-.send_box{
-    height: 40px;
-    width: 280px;
-    border-radius: 50px;
-    border: 2px solid black;
-    align-items: center;
-    display: flex;
-}
-
-
-.input_box2{
-    height: 30px;
-    width: 230px;
-    padding: 10px;
-    position: relative;
-    margin-left: 10px;
-    font-family: "부크크고딕bold";
-}
-
-.input_box2:focus {
-    outline: none;
-}
-
-.send_icon{
-    right: 13px;
-    margin-top: -3px;
-    height: 40px;
-    width: auto;
-    cursor: pointer;
+.card_like_container{
+    height: 35px;
+    width: fit-content;
     position: absolute;
+    display: flex;
+    right: 5%;
+    align-items: center;
 }
 
+.card_heart{
+    height: 16px;
+    width: auto;
+    margin-left: 7px;
+    margin-top: 2px;
+}
 
-.upload_modal_container{
+.card_like_txt{
+    font-size: 14px;
+}
+.open_exhibition_modal_container{
     width: 1050px;
     height: 700px;
     top: 50%;
@@ -752,56 +764,53 @@ cursor: pointer;
     overflow-x: hidden;
 }
 
-.upload_modal_title{
-    font-family: "부크크고딕bold";
-    font-size: 48px;
+.open_exhibition_title{
+    font-family: "부크크명조bold";
+    font-size: 56px;
 }
 
-.go_upload_btn_container{
-    width: 700px;
-    height: 100px;
-    margin-top: 3%;
-    border-radius: 10px;
-    background: black;
+.exhibition_info{
+    width: 100%;
+    height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.exhibition_photo_intro_container{
+    width: 400px;
+    height: 400px;
+    border-radius: 10px;
+    border: 1px solid black;
+    background: white;
+    margin-right: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: brightness(100%);
+    transition: 0.5s all;
     cursor: pointer;
-    transition: 0.5s all;
 }
-
-.go_upload_btn_container:hover{
-    background: rgb(87, 87, 87);
-    transition: 0.5s all;
-}
-
-.go_mypage_btn_container:hover{
-    background: rgb(87, 87, 87);
-    transition: 0.5s all;
-}
-
-.upload_txt{
-    color: white;
-    font-size: 24px;
-    font-family: "부크크고딕";
-}
-
-.upload_icon{
-    margin-left: 3%;
-    height: 50px;
+.circle_plus{
+    height: 60px;
     width: auto;
 }
 
-.upload_txt2{ 
-    color: gray;
-    font-size: 16px;
-    margin-top: 3%;
-    font-family: "부크크고딕";
+.is_img{
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: black;
+}
+.exhibition_photo_intro_container:hover{
+    filter: brightness(90%);
+    transition: 0.5s all;
 }
 
-.upload_detail_modal_container{
-    width: 1050px;
-    height: 700px;
+.open_photo_list_container{
+    width: 800px;
+    height: 600px;
     top: 50%;
     left: 50%;
     z-index: 11;
@@ -810,21 +819,23 @@ cursor: pointer;
     overflow-y: hidden;
     background: white;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow-x: hidden;
 }
 
-.upload_photos_container{
+
+.upload_photos_list_container{
     width: 750px;
-    height: 700px;
+    height: 500px;
     display: grid;
     padding: 20px;
     grid-template-columns: 1fr 1fr 1fr;
     overflow-y: auto;
 }
 
-.upload_photo{
+.upload_photos_list{
     height: 170px;
     margin-left: 5px;
     margin-right: 5px;
@@ -832,7 +843,7 @@ cursor: pointer;
     position: relative;
 }
 
-.upload_photo_overlay{
+.upload_photos_list_overlay{
     position: absolute;
     display: flex;
     width: 100%;
@@ -843,249 +854,165 @@ cursor: pointer;
     cursor: pointer;
 }
 
-.upload_photo_overlay:hover{
+.upload_photos_list_overlay:hover{
     background: rgba(0, 0, 0, 0.7);
 }
 
-.upload_photo_overlay_clicked{
+.upload_photos_list_overlay_clicked{
     background: rgba(0, 0, 0, 0.7);
 }
 
-.upload_photo_overlay img{
+.upload_photos_list_overlay img{
     width: 50px;
     height: 50px;
 }
 
-.upimg{
+.photos_list_upimg{
     height: 100%;
     width: 100%;
     cursor: pointer;
     object-fit: cover;
     transition: 0.5s all;
 }
-.upload_photo_no {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    z-index: 11;
-    border: 2px solid red;
-    background: rgba(255, 255, 255, 0); /* 투명 배경 */
-    transition: background-color 0.5s; /* 배경색 변화에 대한 transition 설정 */
-}
 
-.upload_photo_selected {
-    position: absolute;
-    height: 170px;
-    width: 100%;
-    border: 2px solid rgb(0, 200, 255);
-    background: rgba(0, 0, 0, 0.4); /* 불투명한 배경 */
-    transition: background-color 0.5s; /* 배경색 변화에 대한 transition 설정 */
-}
-
-.upload_detail_info_container{
+.selected_img_ok{
+    height: 70px;
     width: 300px;
-    height: 700px;
-    font-family: "부크크명조bold";
-    display: flex;
+    border-radius: 10px;
+    margin-top: 10px;
     background: black;
     color: white;
-    flex-direction: column;
-    align-items: center;
-
-}
-
-.upload_title_container{
-    width: 260px;
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10%;
-}
-
-.input_box3{
-    height: 50px;
-    width: 260px;
-    padding: 10px;
-    position: relative;
-    color: black;
-    border-radius: 10px;
-    font-family: "부크크고딕bold";
-}
-
-.input_box3:focus {
-    outline: none;
-}
-
-.upload_publish_container{
-    width: 260px;
-    height: fit-content;
-    margin-bottom: 10%;
-}
-
-.toggle{
-    width: 260px;
-    height: 40px;
-    border-radius: 10px;
-    background: white;
-}
-
-.upload_tag_container{
-    width: 260px;
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-}
-
-.input_box4{
-    height: 40px;
-    width: 210px;
-    padding: 10px;
-    position: relative;
-    color: black;
-    border-radius: 10px;
-    font-family: "부크크고딕bold";
-}
-
-.input_box4:focus {
-    outline: none;
-}
-
-.input_box4::placeholder {
-    font-size: 14px;
-    color: #999; 
-    font-family: "부크크고딕bold";
-}
-
-.tag_input_container{
-    width: 260px;
-    height: fit-content;
-    display: flex;
-    margin-bottom: 5%;
-}
-
-.plus_btn{
-    height: 40px;
-    width: 40px;
-    border-radius: 50px;
-    background: white;
-    margin-left: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
-
-.upload_tags_container{
-    width: 260px;
-    height: 140px;
-    overflow-y: auto;
-    font-family: "부크크고딕";
-    font-size: 14px;
-    color: black;
-    margin-bottom: 10%;
-}
-
-.upload_tag{
-    height: 30px;
-    width: 48%;
-    background: rgb(130, 130, 130);
-    color: white;
-    border-radius: 10px;
-    margin: 2px;
-    padding: 7px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    float: left;
-}
-
-.upload_btn_container{
-    width: 260px;
-    height: 60px;
-    background: white;
-    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: "부크크명조bold";
+    font-size: 32px;
     cursor: pointer;
     transition: 0.5s all;
 }
 
-.upload_txt3{
-    font-size: 28px;
+.selected_img_ok:hover{
+    background: rgb(87, 87, 87);
+    transition: 0.5s all;
+}
+
+.exhibition_photo_info_container{
+    width: 500px;
+    height: 430px;
+    border-radius: 10px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.open_title_container{
+    font-family: "부크크명조bold";
+    margin-bottom: 10px;
+}
+.open_description_input_box{
+    height: 150px;
+    width: 500px;
+    padding: 10px;
+    position: relative;
     color: black;
-    margin-right: 10%;
-}
-
-.upload_btn_container:hover{
-    background: rgb(197, 197, 197);
-}
-
-.float{
-    float: right;
-}
-
-.upload_ok_txt{
+    border: 1px solid black;
+    border-radius: 10px;
     font-family: "부크크고딕bold";
-    font-size: 48px;
-    margin-bottom: 1%;
+    text-align: left;
+    overflow-x: hidden;
+    overflow-y: auto;
+    resize: none;
 }
 
-.go_detail_txt{
-    font-family: "부크크고딕";
-    font-size: 16px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 7%;
+.open_description_input_box:focus {
+    outline: none;
 }
 
-.go_all_btn_container{
-    width: 600px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.open_description_input_box::placeholder {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 0; 
 }
 
-.go_gallery_btn_container{
-    width: 280px;
-    height: 60px;
+.exhibition_btn{
+    width: 150px;
+    height: 40px;
     background: white;
     border: 1px solid black;
     border-radius: 10px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 2%;
-    margin-right: 2%;
-    cursor: pointer;
-    transition: filter 0.3s; /* 호버 효과를 부드럽게 하기 위한 transition */
-    filter: brightness(100%); /* 기본값은 원래 밝기로 설정 */
+    font-family: "부크크고딕bold";
+    font-size: 16px;
+    margin-right: 10px;
+    filter: brightness(100%);
+    transition: 0.5s all;
 }
 
-.go_gallery_btn_container:hover{
+.exhibition_btn:hover{
     filter: brightness(80%);
+    transition: 0.5s all;
+}
+.open_btn_txt{
+    font-family: "부크크명조bold";
+    font-size: 48px;
 }
 
-.go_mypage_btn_container{
-    width: 280px;
-    height: 60px;
+.exhibition_photo_intro_container2{
+    width: 400px;
+    height: 400px;
+    border-radius: 10px;
+    border: 1px solid black;
+    background: white;
+    margin-right: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: brightness(100%);
+    transition: 0.5s all;
+}
+
+.exhibition_photo_info_container2{
+    width: 500px;
+    height: 400px;
+    border-radius: 10px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.open_title_container2{
+    font-family: "부크크명조bold";
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.photo_mode_container2{
+    height: 300px;
+    width: 90vw;
+    margin-top: 50px;
+    position: relative;
+}
+
+.exhibition_open_btn{
+    width: 400px;
+    height: 80px;
+    margin-top: 2%;
     background: black;
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     color: white;
-    margin-left: 2%;
-    margin-right: 2%;
+    display: flex;
+    justify-content: center;
     cursor: pointer;
     transition: 0.5s all;
 }
 
-
-.go_txt{
-    font-family: "부크크고딕bold";
-    font-size: 24px;
+.exhibition_open_btn:hover{
+    background: rgb(87, 87, 87);
+    transition: 0.5s all;
 }
+
+

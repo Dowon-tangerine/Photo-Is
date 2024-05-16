@@ -267,6 +267,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    filter: brightness(100%);
+    transition: 0.5s all;
+}
+
+.follow_btn_container:hover{
+    filter: brightness(80%);
+    transition: 0.5s all;
 }
 
 .no_follow_btn_container{
@@ -280,6 +287,12 @@
     color: white;
     align-items: center;
     justify-content: center;
+    transition: 0.5s all;
+}
+
+.no_follow_btn_container:hover{
+    background: rgb(86, 86, 86);
+    transition: 0.5s all;
 }
 
 .plus_txt{
