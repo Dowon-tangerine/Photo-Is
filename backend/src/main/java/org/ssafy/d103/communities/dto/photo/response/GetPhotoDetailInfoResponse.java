@@ -15,6 +15,7 @@ public class GetPhotoDetailInfoResponse {
     private Long memberId;
     private String nickname;
     private String title;
+    private String profileUrl;
     private String imageUrl;
     private Integer viewCnt;
     private Integer commentCnt;
@@ -26,11 +27,12 @@ public class GetPhotoDetailInfoResponse {
     private List<String> hashtagList;
 
     @Builder
-    private GetPhotoDetailInfoResponse(Long photoId, Long memberId, String nickname, String title, String imageUrl, Integer viewCnt, Integer commentCnt, Integer likeCnt, Boolean isLiked, LocalDateTime createdAt, String accessType, PhotoMetadata metadata, List<String> hashtagList) {
+    private GetPhotoDetailInfoResponse(Long photoId, Long memberId, String nickname, String title, String profileUrl, String imageUrl, Integer viewCnt, Integer commentCnt, Integer likeCnt, Boolean isLiked, LocalDateTime createdAt, String accessType, PhotoMetadata metadata, List<String> hashtagList) {
         this.photoId = photoId;
         this.memberId = memberId;
         this.nickname = nickname;
         this.title = title;
+        this.profileUrl = profileUrl;
         this.imageUrl = imageUrl;
         this.viewCnt = viewCnt;
         this.commentCnt = commentCnt;
@@ -48,6 +50,7 @@ public class GetPhotoDetailInfoResponse {
                 .memberId(photo.getMember().getId())
                 .nickname(photo.getMember().getNickname())
                 .title(photo.getTitle())
+                .profileUrl(photo.getMember().getProfileUrl())
                 .imageUrl(photo.getImageUrl())
                 .viewCnt(photo.getPhotoDetail().getViewCnt())
                 .commentCnt(photo.getPhotoDetail().getCommentCnt())
