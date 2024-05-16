@@ -3,9 +3,7 @@ package org.ssafy.d103.chatbots.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.ssafy.d103.chatbots.dto.ChatRequestDto;
-import org.ssafy.d103.chatbots.dto.ChatResponseDto;
-import org.ssafy.d103.chatbots.dto.ImageRequestDto;
+import org.ssafy.d103.chatbots.dto.*;
 import org.ssafy.d103.chatbots.entity.ChatSession;
 import org.ssafy.d103.chatbots.repository.ChatSessionRepository;
 import reactor.core.publisher.Mono;
@@ -57,5 +55,13 @@ public class ChatbotService {
 
     public List<ChatSession> getChatSessions(String sessionId) {
         return chatSessionRepository.findBySessionId(sessionId);
+    }
+
+    public Mono<TagResponseDto> generateTags(TagRequestDto request) {
+        return webClient.post()
+                .uri("/generate-tags")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(TagResponseDto.class);
     }
 }
