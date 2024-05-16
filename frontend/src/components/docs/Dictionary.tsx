@@ -3,29 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Canvas, useThree, useLoader, extend } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { SphereGeometry } from 'three';
+import { ConeGeometry, SphereGeometry } from 'three';
 import * as THREE from 'three';
 import axios from 'axios';
 import { marked } from 'marked';
 import styles from './css/Dictionary.module.css';
 
-// 타입 정의
-interface Annotation {
-  position: [number, number, number];
-  label: string;
-}
-
-interface AnnotationsProps {
-  onAnnotationClick: (annotation: Annotation) => void;
-}
-
-interface AnnotationModalProps {
-  annotation: Annotation;
-  onClose: () => void;
-}
-
-// Extend THREE with SphereGeometry
-extend({ SphereGeometry });
+// Extend THREE with Geometry
+extend({ ConeGeometry, SphereGeometry });
 
 const modelUrl = '/imgs/FujiFilm_X_T4.obj.glb';
 
@@ -73,24 +58,39 @@ function CameraController() {
   return null;
 }
 
+interface Annotation {
+  position: [number, number, number];
+  label: string;
+}
+
+interface AnnotationsProps {
+  onAnnotationClick: (annotation: Annotation) => void;
+}
+
 function Annotations({ onAnnotationClick }: AnnotationsProps) {
   const annotations: Annotation[] = [
-    { position: [1.5, 1.8, 1.5], label: 'Shutter Button' }, // Top right
-    { position: [-1.5, 1.8, 1.5], label: 'Mode Dial' }, // Top left
-    { position: [0, 2.1, 0], label: 'Hot Shoe' }, // Center top
-    { position: [0, 1.8, -1.5], label: 'Viewfinder' }, // Back top center
-    { position: [-1.5, 1.8, -1.5], label: 'Flash' }, // Top left back
-    { position: [1.5, 1.8, -1.5], label: 'Exposure Compensation Dial' }, // Top right back
-    { position: [1.5, 1.8, 0], label: 'ISO Dial' }, // Top right center
+    { position: [5, 8, -3.85], label: '다이얼 잠금 해제' },
+    { position: [-5.4, 7.5, -4.4], label: '노출 보정 다이얼' },
+    { position: [0, 2.1, 0], label: 'Hot Shoe' },
+    { position: [0, 1.8, -1.5], label: 'Viewfinder' },
+    { position: [-1.5, 1.8, -1.5], label: 'Flash' },
+    { position: [1.5, 1.8, -1.5], label: 'Exposure Compensation Dial' },
+    { position: [1.5, 1.8, 0], label: 'ISO Dial' },
   ];
 
   return (
     <>
       {annotations.map((annotation, index) => (
-        <mesh key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
-          <sphereGeometry args={[0.1, 32, 32]} />
-          <meshStandardMaterial color="red" />
-        </mesh>
+        <group key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
+          <mesh position={[0, 0.225, 0]}>
+            <sphereGeometry args={[0.15, 32, 32]} />
+            <meshStandardMaterial color="red" />
+          </mesh>
+          <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.15, 0]}>
+            <coneGeometry args={[0.15, 0.3, 32]} />
+            <meshStandardMaterial color="red" />
+          </mesh>
+        </group>
       ))}
     </>
   );
@@ -218,11 +218,16 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   ) : null;
 }
 
+interface AnnotationModalProps {
+  annotation: Annotation;
+  onClose: () => void;
+}
+
 function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
   return (
     <div className={styles.annotationModal}>
       <div className={styles.modalHeader}>
-        <h2>{annotation.label}</h2>
+        <h2 className={styles.annotationTitle}>{annotation.label}</h2>
         <span className={styles.closeButton} onClick={onClose}>&times;</span>
       </div>
     </div>
