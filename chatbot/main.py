@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from typing import List
 import openai
 import requests
 from PIL import Image
@@ -27,34 +28,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class ChatRequest(BaseModel):
+class ChatMessageDTO(BaseModel):
+    role: str
+    message: str
+
+class ChatSessionRequest(BaseModel):
     question: str
+    messages: List[ChatMessageDTO]
+
+class ChatResponse(BaseModel):
+    answer: str
 
 # 간단한 챗봇 대화 구현
-@app.post("/api/py/camera-chat")
-async def camera_chat(request: ChatRequest):
+@app.post("/api/py/chat", response_model=ChatResponse)
+async def chat(request: ChatSessionRequest):
     client = openai.OpenAI()
     try:
+        # 프롬프트와 이전 대화기록을 포함한 질문
+        formatted_messages = [
+            {"role": "system", "content": (
+                "You are a kind camera expert.\n"
+                "The questioner is a beginner who is new to photography and cameras.\n"
+                "Explain complex camera concepts in simple terms. Give examples if necessary.\n"
+                "Please answer all the answers in Korean."
+            )}
+        ]
+        
+        formatted_messages += [{"role": msg.role, "content": msg.message} for msg in request.messages]
+        formatted_messages.append({"role": "user", "content": request.question})
+
         # GPT-4o 모델을 사용하여 챗봇 응답 생성
         response = client.chat.completions.create(
             model="gpt-4o",
-            messages=[
-                {
-                    "role": "user",
-                    # 사용자 역할을 좀 더 명확하게 설정하여 효율적인 질문 응답을 도모
-                    "content": 
-                    """
-                        You are a kind camera expert.
-                        The questioner is a beginner who is new to photography and cameras.
-                        Explain complex camera concepts in simple terms. Give examples if necessary.
-                        Please answer all the answers in Korean.
-                    """
-                },
-                {
-                    "role": "user",
-                    "content": request.question  # 사용자의 질문
-                }
-            ],
+            messages=formatted_messages,
             max_tokens=1000,  # 응답의 최대 토큰 수
         )
 
