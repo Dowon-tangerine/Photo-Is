@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.ssafy.d103.chatbots.dto.*;
 import org.ssafy.d103.chatbots.entity.ChatMessage;
 import org.ssafy.d103.chatbots.entity.ChatSession;
@@ -59,8 +60,19 @@ public class ChatbotService {
                 .uri("/api/py/chat")
                 .bodyValue(chatSessionRequestDto)
                 .retrieve()
+                .onStatus(
+                        status -> status.is4xxClientError() || status.is5xxServerError(),
+                        clientResponse -> clientResponse.bodyToMono(String.class).flatMap(errorBody -> {
+                            return Mono.error(new RuntimeException("Error response from server: " + errorBody));
+                        })
+                )
                 .bodyToMono(ChatResponseDto.class)
-                .map(response -> {
+                .<String>handle((response, sink) -> {
+                    if (response == null || response.getAnswer() == null) {
+                        sink.error(new NullPointerException("Received null response from server"));
+                        return;
+                    }
+
                     ChatMessage assistantMessage = ChatMessage.builder()
                             .session(session)
                             .message(response.getAnswer())
@@ -68,7 +80,10 @@ public class ChatbotService {
                             .build();
                     chatMessageRepository.save(assistantMessage);
 
-                    return response.getAnswer();
+                    sink.next(response.getAnswer());
+                })
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    return Mono.error(new RuntimeException("Failed to call external API", e));
                 });
     }
 
