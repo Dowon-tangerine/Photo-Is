@@ -539,7 +539,7 @@ public class PhotoService {
 
                     boolean isFollow = authentication != null && followedMemberIds.contains(member.getId());
 
-                    return AuthorProfileDto.of(member.getNickname(), member.getProfileUrl(), member.getCity(), member.getCountry(), uploadedPhotoCount, followingCount, followerCount, isFollow);
+                    return AuthorProfileDto.of(member.getNickname(), member.getProfileUrl(), member.getUseYear(), member.getCity(), member.getCountry(), uploadedPhotoCount, followingCount, followerCount, isFollow);
                 })
                 .collect(Collectors.toList());
 
