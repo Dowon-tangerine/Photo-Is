@@ -22,13 +22,13 @@ public class ChatbotService {
 
     public ChatbotService(WebClient.Builder webClientBuilder, ChatSessionRepository chatSessionRepository) {
         //this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io/api/py").build();
-        this.webClient = webClientBuilder.baseUrl("http://localhost:9001/api/py").build();
+        this.webClient = webClientBuilder.baseUrl("http://localhost:9001").build();
         this.chatSessionRepository = chatSessionRepository;
     }
 
     public Mono<String> getChatbotResponse(String sessionId, String question) {
         return this.webClient.post()
-                .uri("/camera-chat")
+                .uri("/api/py/camera-chat")
                 .bodyValue(new ChatRequestDto(question, sessionId))
                 .retrieve()
                 .bodyToMono(ChatResponseDto.class)
@@ -40,7 +40,7 @@ public class ChatbotService {
 
     public Mono<String> describeImage(String imageUrl) {
         return this.webClient.post()
-                .uri("/describe-image")
+                .uri("/api/py/describe-image")
                 .bodyValue(new ImageRequestDto(imageUrl))
                 .retrieve()
                 .bodyToMono(String.class);
@@ -60,7 +60,7 @@ public class ChatbotService {
 
     public Mono<TagResponseDto> generateTags(TagRequestDto request) {
         return webClient.post()
-                .uri("/generate-tags")
+                .uri("/api/py/generate-tags")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(TagResponseDto.class);
