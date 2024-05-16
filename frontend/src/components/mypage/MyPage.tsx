@@ -6,15 +6,46 @@ import MapComponent from '../gallery/MapComponent';
 import Toggle2 from '../gallery/ToggleBtn2';
 import Calendar from './Calendar';
 import {useNavigate } from "react-router-dom";
-
+import { searchProfile } from '../../apis/memberApi';
+import { uploadGalleryPhoto, selectEachPhotoList } from '../../apis/photoApi';
 
 interface imgInterface {
-    id: number;
-    url: string;
+    photoId: number;
+    thumbnailUrl: string;
     likeCnt: number,
-    liked: boolean,
     title: string,
-  }
+    isLiked: boolean,
+}
+// 전시회 인터페이스
+interface exhibitionInterface {
+    exhibitionId: number,
+    title: string,
+    posterUrl: string,
+    startDate: string,
+    endDate: string
+}
+// 팔로우 인터페이스
+interface profileInterface {
+    memberId: number,
+    profileUrl: string,
+    nickname: string
+}
+
+interface memberInfoInterface { 
+    memberId: number;
+    nickname: string;
+    profileUrl: string;
+    backgroundUrl: string;
+    photoCnt: number;
+    introduction: string;
+    followerCnt: number;
+    followingCnt: number;
+}
+interface uploadPhotoInterface {
+    title: string;
+    accessType: string;
+    hashtag: Array<string>
+}
   
 const MyPage: React.FC = () => {
 
@@ -23,6 +54,22 @@ const MyPage: React.FC = () => {
     const [tabIndex3, settabIndex3] = useState<number>(0);
     const [imgDetail, setImgDetail] = useState<boolean>(false);
     const [isUploadFinished, setIsUploadFinished] = useState<boolean>(false);
+    const [memberInfo, setMemberInfo] = useState<memberInfoInterface>({
+        memberId: -1,
+        nickname: '',
+        profileUrl: '',
+        backgroundUrl: '',
+        photoCnt: 0,
+        introduction: '',
+        followerCnt: 0,
+        followingCnt: 0,
+    });
+    const [uploadPhotoInfo, setUploadPhotoInfo] = useState<uploadPhotoInterface>({
+        title: '',
+        accessType: 'PUBLIC',
+        hashtag: [],
+    });
+    const [accessType, setAccessType] = useState<string>('PUBLIC');
     
     const navigate = useNavigate();
     
@@ -36,7 +83,24 @@ const MyPage: React.FC = () => {
 
 
     const tabClickHandler = function(index : number){
+        let accessType = '';
+        if(index == 0){
+            accessType = 'PUBLIC';
+            setAccessType('PUBLIC');
+        }
+        else if(index == 1){
+            accessType = 'PRIVATE';
+            setAccessType('PRIVATE');
+        }
+        else{
+            accessType = 'STUDIO';
+            setAccessType('STUDIO');
+        }
         settabIndex(index);
+        selectEachPhotoList(accessType, 1)
+        .then(res=>{
+            setImgArr(res)
+        })
     }
 
     const tabClickHandler2 = function(index : number){
@@ -46,42 +110,24 @@ const MyPage: React.FC = () => {
     const tabClickHandler3 = function(index : number){
         settabIndex3(index);
     }
-
-    const my = [
-        {
-            back : '/imgs/photo4.jpg',
-            profile : '/imgs/profile1.jpg',
-            follow : 1232,
-            following : 3452,
-            year : 3,
-            name : 'BLG ㅗㅗㅗ',
-            intro : '안녕하세여 사진 관련 물어보는거 다 환영이예요 fake다 이자식아 blg 엿먹어',
-        }
-    ]
     
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
+    const [exhibitionArr, setExhibitionArr] = useState<exhibitionInterface[]>([]);
+    const [profileArr, setProfileArr] = useState<profileInterface[]>([]);
+
+    // 에러 방지를 위해 무의미하게 써놓은 변수들(꼭 지우시오)
+    exhibitionArr
+    setExhibitionArr
+    setProfileArr
 
     useEffect(() => {
-      console.log("로드");
-  
-      // key가 없으면 응답은 10개씩
-      const API_URL =
-        "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
-      axios.get(API_URL).then((res) => {
-        console.log(res);
-        
-        // id값과 url만 저장
-        const gotData = res.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-          id: imgs.photoId,
-          url: imgs.thumbnailUrl,
-          likeCnt: imgs.likeCnt,
-          liked: imgs.liked,
-          title: imgs.title,
-        }));
-        setImgArr(gotData);
-      });
+        selectEachPhotoList('PUBLIC', 1)
+        .then(res=>{
+            setImgArr(res);
+        })
     }, []);
 
      // Intersection Observer 설정
@@ -111,6 +157,17 @@ const MyPage: React.FC = () => {
     if (observerTarget) {
       observer.observe(observerTarget);
     }
+    const memberId = Number(localStorage.getItem('memberId'));
+    searchProfile(memberId)
+    .then((res)=>{
+        if(res){
+            setMemberInfo(res);
+        }
+        else{
+            console.log("예기치 못한 에러가 발생했습니다.");
+        }
+    })
+
   }, []);
 
     useEffect(() => {
@@ -119,20 +176,12 @@ const MyPage: React.FC = () => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        try {
-            const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
-            const response = await axios.get(API_URL);
-            const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-                id: imgs.photoId,
-                url: imgs.thumbnailUrl,
-                likeCnt: imgs.likeCnt,
-                liked: imgs.liked,
-                title: imgs.title,
-            }));
-            setImgArr((prevData) => [...prevData, ...newData]);
-        } catch (error) {
-            console.log(error);
-        }
+        selectEachPhotoList(accessType, page)
+        .then(res=>{
+            if(res){
+                setImgArr(res);
+            }
+        })
         setIsLoading(false);
     };
 
@@ -212,14 +261,16 @@ const MyPage: React.FC = () => {
                 {imgArr &&
                     imgArr.map((Imgs: imgInterface, idx) => (
                         <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
+                            {/* 내 전시회 목록은 프로필사진이 없어야 함 */}
+                            {/* <img src={Imgs.} alt='프로필' className={styles.card_img}/> */}
                             <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
                             
                             <div className={styles.card_whole_info}>
                                 <p className={styles.card_title}>{Imgs.title}</p>
                                 <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
                                 <div className={styles.photo_card_info}>
-                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
+                                    {/* 내 전시회 목록은 프로필사진이 없어야 함 */}
+                                    {/* <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img> */}
                                     <p className={styles.card_info_txt}>{Imgs.title}</p>
                                     <div className={styles.card_like_container}>
                                         <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
@@ -256,14 +307,15 @@ const MyPage: React.FC = () => {
                 {imgArr &&
                     imgArr.map((Imgs: imgInterface, idx) => (
                         <div key={idx + 'g'} className={styles.card} onClick={() => {openFinExhibitionDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_img}/>
+                            {/* <img src={Imgs.url} alt='프로필' className={styles.card_img}/> */}
                             <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
                             
                             <div className={styles.card_whole_info}>
                                 <p className={styles.card_title}>{Imgs.title}</p>
                                 <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
                                 <div className={styles.photo_card_info}>
-                                    <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img>
+                                    {/* 내 전시회 목록은 프로필 사진이 없어야 함 */}
+                                    {/* <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img> */}
                                     <p className={styles.card_info_txt}>{Imgs.title}</p>
                                     <div className={styles.card_like_container}>
                                         <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
@@ -302,41 +354,40 @@ const MyPage: React.FC = () => {
                 className={styles.my_masonry_grid}
                 columnClassName={styles.my_masonry_grid_column}>
                     
-                    {/* <div className="dog-imgs-container"> */}
-                        {imgArr &&
-                            imgArr.map((Imgs: imgInterface, idx) => (
-                                <div key={idx + 'g'} className={styles.img_card} onMouseLeave={handleMouseLeave}>
-                                    <div className={styles.edit_photo_container}>
-                                        <div className={styles.sam_container} onClick={openEdit}>
-                                            <img src='/imgs/samjum.png' alt='삼점' style={{width : '30px', height : 'auto'}}></img>
-                                        </div>
-
-                                        {isEdit && <>
-                                            <div className={styles.edit}>
-                                                <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
-
-                                                <div className={styles.edit_container} onClick={openEditmodal}>
-                                                    <img src='/imgs/pencil.png' alt='연필' className={styles.pencil}></img>
-                                                    <p>Edit</p>
-                                                </div>
-                                                
-                                                <div className={styles.delete_container}>
-                                                    <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
-                                                    <p>Delete</p>
-                                                </div>
-                                            </div>
-                                        </>}
+                    {imgArr &&
+                        imgArr.map((Imgs: imgInterface, idx) => (
+                            <div key={idx + 'g'} className={styles.img_card} onMouseLeave={handleMouseLeave}>
+                                <div className={styles.edit_photo_container}>
+                                    <div className={styles.sam_container} onClick={openEdit}>
+                                        <img src='/imgs/samjum.png' alt='삼점' style={{width : '30px', height : 'auto'}}></img>
                                     </div>
-                                    <img src={Imgs.url} className={styles.img2}  onClick={() => {openPhotoDetails();}} />
-                                    <div className={styles.photo_info2}>
-                                        <p className={styles.info_txt2}>{Imgs.title}</p>
-                                        <div className={styles.like_container2}>
-                                            <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
-                                            <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
+
+                                    {isEdit && <>
+                                        <div className={styles.edit}>
+                                            <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
+
+                                            <div className={styles.edit_container} onClick={openEditmodal}>
+                                                <img src='/imgs/pencil.png' alt='연필' className={styles.pencil}></img>
+                                                <p>Edit</p>
+                                            </div>
+                                            
+                                            <div className={styles.delete_container}>
+                                                <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
+                                                <p>Delete</p>
+                                            </div>
                                         </div>
+                                    </>}
+                                </div>
+                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails()}} />
+                                <div className={styles.photo_info2}>
+                                    <p className={styles.info_txt2}>{Imgs.title}</p>
+                                    <div className={styles.like_container2}>
+                                        <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
+                                        <img src={`/imgs/${Imgs.isLiked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
                                     </div>
                                 </div>
-                                ))}
+                            </div>
+                            ))}
                 </Masonry>
 
                 {isLoading && <p style={{width : '100%', textAlign : 'center'}}>Loading...</p>}
@@ -364,41 +415,40 @@ const MyPage: React.FC = () => {
                 className={styles.my_masonry_grid}
                 columnClassName={styles.my_masonry_grid_column}>
                     
-                    {/* <div className="dog-imgs-container"> */}
-                        {imgArr &&
-                            imgArr.map((Imgs: imgInterface, idx) => (
-                                <div key={idx + 'g'} className={styles.img_card} onMouseLeave={handleMouseLeave}>
-                                    <div className={styles.edit_photo_container}>
-                                        <div className={styles.sam_container} onClick={openEdit}>
-                                            <img src='/imgs/samjum.png' alt='삼점' style={{width : '30px', height : 'auto'}}></img>
-                                        </div>
-
-                                        {isEdit && <>
-                                            <div className={styles.edit}>
-                                                <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
-
-                                                <div className={styles.edit_container} onClick={openEditmodal}>
-                                                    <img src='/imgs/pencil.png' alt='연필' className={styles.pencil}></img>
-                                                    <p>Edit</p>
-                                                </div>
-                                                
-                                                <div className={styles.delete_container}>
-                                                    <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
-                                                    <p>Delete</p>
-                                                </div>
-                                            </div>
-                                        </>}
+                    {imgArr &&
+                        imgArr.map((Imgs: imgInterface, idx) => (
+                            <div key={idx + 'g'} className={styles.img_card} onMouseLeave={handleMouseLeave}>
+                                <div className={styles.edit_photo_container}>
+                                    <div className={styles.sam_container} onClick={openEdit}>
+                                        <img src='/imgs/samjum.png' alt='삼점' style={{width : '30px', height : 'auto'}}></img>
                                     </div>
-                                    <img src={Imgs.url} className={styles.img2}  onClick={() => {openPhotoDetails();}} />
-                                    <div className={styles.photo_info2}>
-                                        <p className={styles.info_txt2}>{Imgs.title}</p>
-                                        <div className={styles.like_container2}>
-                                            <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
-                                            <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
+
+                                    {isEdit && <>
+                                        <div className={styles.edit}>
+                                            <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
+
+                                            <div className={styles.edit_container} onClick={openEditmodal}>
+                                                <img src='/imgs/pencil.png' alt='연필' className={styles.pencil}></img>
+                                                <p>Edit</p>
+                                            </div>
+                                            
+                                            <div className={styles.delete_container}>
+                                                <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
+                                                <p>Delete</p>
+                                            </div>
                                         </div>
+                                    </>}
+                                </div>
+                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails();}} />
+                                <div className={styles.photo_info2}>
+                                    <p className={styles.info_txt2}>{Imgs.title}</p>
+                                    <div className={styles.like_container2}>
+                                        <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
+                                        <img src={`/imgs/${Imgs.isLiked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
                                     </div>
                                 </div>
-                                ))}
+                            </div>
+                            ))}
                 </Masonry>
 
                     {isLoading && <p style={{width : '100%', textAlign : 'center'}}>Loading...</p>}
@@ -425,42 +475,40 @@ const MyPage: React.FC = () => {
                 breakpointCols={3}
                 className={styles.my_masonry_grid}
                 columnClassName={styles.my_masonry_grid_column}>
-                    
-                    {/* <div className="dog-imgs-container"> */}
-                        {imgArr &&
-                            imgArr.map((Imgs: imgInterface, idx) => (
-                                <div key={idx + 'g'} className={styles.img_card} onMouseLeave={handleMouseLeave}>
-                                    <div className={styles.edit_photo_container}>
-                                        <div className={styles.sam_container} onClick={openEdit}>
-                                            <img src='/imgs/samjum.png' alt='삼점' style={{width : '30px', height : 'auto'}}></img>
-                                        </div>
-
-                                        {isEdit && <>
-                                            <div className={styles.edit}>
-                                                <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
-
-                                                <div className={styles.edit_container} onClick={openSharemodal}>
-                                                    <img src='/imgs/share.png' alt='공유' className={styles.pencil}></img>
-                                                    <p>Share</p>
-                                                </div>
-                                                
-                                                <div className={styles.delete_container}>
-                                                    <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
-                                                    <p>Delete</p>
-                                                </div>
-                                            </div>
-                                        </>}
+                    {imgArr &&
+                        imgArr.map((Imgs: imgInterface, idx) => (
+                            <div key={idx + 'g'} className={styles.img_card} onMouseLeave={handleMouseLeave}>
+                                <div className={styles.edit_photo_container}>
+                                    <div className={styles.sam_container} onClick={openEdit}>
+                                        <img src='/imgs/samjum.png' alt='삼점' style={{width : '30px', height : 'auto'}}></img>
                                     </div>
-                                    <img src={Imgs.url} className={styles.img2}  onClick={() => {openPhotoDetails();}} />
-                                    <div className={styles.photo_info2}>
-                                        <p className={styles.info_txt2}>{Imgs.title}</p>
-                                        <div className={styles.like_container2}>
-                                            <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
-                                            <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
+
+                                    {isEdit && <>
+                                        <div className={styles.edit}>
+                                            <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
+
+                                            <div className={styles.edit_container} onClick={openSharemodal}>
+                                                <img src='/imgs/share.png' alt='공유' className={styles.pencil}></img>
+                                                <p>Share</p>
+                                            </div>
+                                            
+                                            <div className={styles.delete_container}>
+                                                <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
+                                                <p>Delete</p>
+                                            </div>
                                         </div>
+                                    </>}
+                                </div>
+                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails();}} />
+                                <div className={styles.photo_info2}>
+                                    <p className={styles.info_txt2}>{Imgs.title}</p>
+                                    <div className={styles.like_container2}>
+                                        <p className={styles.like_txt2}>{Imgs.likeCnt}</p>
+                                        <img src={`/imgs/${Imgs.isLiked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
                                     </div>
                                 </div>
-                                ))}
+                            </div>
+                            ))}
                 </Masonry>
 
                 {isLoading && <p style={{width : '100%', textAlign : 'center'}}>Loading...</p>}
@@ -503,14 +551,14 @@ const MyPage: React.FC = () => {
     ]
 
     
-    const following = function(idx : number, follow : boolean){
+    // const following = function(idx : number, follow : boolean){
 
-        let newArr = [...imgArr];
+    //     let newArr = [...imgArr];
 
-        newArr[idx].liked = !follow;
+    //     newArr[idx].isLiked = !follow;
 
-        setImgArr(newArr);
-    }
+    //     setImgArr(newArr);
+    // }
 
     const tabArr3=[{
         tabTitle:(
@@ -526,14 +574,14 @@ const MyPage: React.FC = () => {
         tabCont:(
             <> 
              <div className={styles.profile_card_container2}>
-                {imgArr &&
-                    imgArr.map((Imgs: imgInterface, idx) => (
+                {profileArr &&
+                    profileArr.map((Profiles: profileInterface, idx) => (
                         <div key={idx + 'g'} className={styles.follow_profile}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_profile}/>
+                            <img src={Profiles.profileUrl} alt='프로필' className={styles.card_profile}/>
                             <p className={styles.profile_name2}>김짱구잠옷</p>
-                            <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
-                                <p className={styles.f_b_t}>{Imgs.liked ? `Following` : `Follow`}</p>
-                            </div>
+                            {/* <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}> */}
+                                {/* <p className={styles.f_b_t}>{Imgs.liked ? `Following` : `Follow`}</p> */}
+                            {/* </div> */}
                         </div>
                 ))}
             </div>
@@ -559,14 +607,14 @@ const MyPage: React.FC = () => {
         tabCont:(
             <> 
              <div className={styles.profile_card_container2}>
-                {imgArr &&
-                    imgArr.map((Imgs: imgInterface, idx) => (
+                {profileArr &&
+                    profileArr.map((Profiles: profileInterface, idx) => (
                         <div key={idx + 'g'} className={styles.follow_profile}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_profile}/>
+                            <img src={Profiles.profileUrl} alt='프로필' className={styles.card_profile}/>
                             <p className={styles.profile_name2}>김짱구잠옷</p>
-                            <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
+                            {/* <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
                                 <p className={styles.f_b_t}>{Imgs.liked ? `Delete` : `Follow`}</p>
-                            </div>
+                            </div> */}
                         </div>
                 ))}
             </div>
@@ -602,7 +650,6 @@ const MyPage: React.FC = () => {
     }
 
     const uploadClickHandler = () => {
-        console.log('눌리긴하냐')
         setUploadPhotoDetail(false);
         setIsUploadFinished(true);
     }
@@ -611,23 +658,17 @@ const MyPage: React.FC = () => {
         openUploadModal();
         setIsUploadFinished(false);
     }
-
-    const photoDetailInfo = {
-        url : '/imgs/photo1.jpg',
-        tag : ["하이", "꽃", "버스", "꽃", "도로", "봄봄봄봄", "봄나무", "헬리콥터", "봄사랑벚꽃말고", "아이유"]
-
-    }
     
 
     const [inputText, setInputText] = useState(''); // 입력된 텍스트 상태 변수
-    const [tags, setTags] = useState(photoDetailInfo.tag); // 태그 배열 상태 변수
+    const [tags, setTags] = useState<Array<string>>([]); // 태그 배열 상태 변수
 
 
     // 입력된 텍스트를 태그 배열에 추가하는 함수
     const addTag = () => {
         console.log(inputText)
         if (inputText.trim() !== '') { // 입력된 텍스트가 공백이 아닌 경우에만 추가
-            setTags(prevTags => [...prevTags, inputText]); // 이전 태그 배열에 새로운 텍스트 추가
+            setTags([...tags, inputText]); // 이전 태그 배열에 새로운 텍스트 추가
             setInputText(''); // 입력된 텍스트 초기화
         }
     }
@@ -767,7 +808,71 @@ const MyPage: React.FC = () => {
             };
             reader.readAsDataURL(file);
         }
+        // 이걸로 사진 올려야 함
     };
+
+    const handleUploadPhotoTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUploadPhotoInfo({
+            ...uploadPhotoInfo,
+            title: e.target.value
+        })
+        console.log(uploadPhotoInfo)
+    }
+
+    const changeAccessType = (accessType: string) => {
+        setUploadPhotoInfo({
+            ...uploadPhotoInfo,
+            accessType: accessType
+        })
+    }
+
+    const handleUploadPhoto = () => {
+        if(!selectedFile)
+        {
+            alert('사진을 첨부해주세요.');
+            return;
+        }
+        else if(uploadPhotoInfo.title === ''){
+            alert('제목을 입력해주세요.');
+            return;
+        }
+        else if(!uploadPhotoInfo.accessType){
+            alert('접근 범위를 지정해주세요.');
+            return;
+        }
+        else{
+            const formData = new FormData();
+            formData.append('photo', selectedFile);
+            const photoInfo = JSON.stringify({
+                title: uploadPhotoInfo.title,
+                accessType: uploadPhotoInfo.accessType,
+                hashtagList: tags
+            });
+            const blob = new Blob([photoInfo], {type: "application/json"});
+            formData.append("photoInfo", blob);
+            setIsUploading(true);
+
+            uploadGalleryPhoto(formData)
+            .then(res=>{
+                if(res){
+                    setUploadPhotoInfo({
+                        title: '',
+                        accessType: 'PUBLIC',
+                        hashtag: [],
+                    });
+                    setSelectedFile(null);
+                }
+                else{
+                    alert('문제가 발생했습니다..');
+                }
+            })
+            .catch(err=>console.log(err))
+            .finally(()=>{
+                setIsUploading(false);
+            })
+            uploadClickHandler();
+        }
+    }
 
     return (
         <>
@@ -816,7 +921,8 @@ const MyPage: React.FC = () => {
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openEditmodal();}}></img>
                 <div  className={styles.edit_detail_modal_container}>
                     <div className={styles.edit_photos_container}>
-                        <img src={photoDetailInfo.url} alt='사진' className={styles.edit_photo}></img>
+                        {/* 고쳐야함 */}
+                        <img src={'photoDetailInfo.url'} alt='사진' className={styles.edit_photo}></img>
                     </div>
                     <div className={styles.edit_detail_info_container}>
                         <p style={{fontSize : '36px', margin : '10%'}}>Edit</p>
@@ -826,7 +932,7 @@ const MyPage: React.FC = () => {
                         </div>
                         <div className={styles.edit_publish_container}>
                             <p style={{fontSize : '20px'}}>Publish</p>
-                            <Toggle2/>
+                            <Toggle2 changeAccessType={changeAccessType}/>
                         </div>
                         <div className={styles.edit_tag_container}>
                             <p style={{fontSize : '20px'}}>Tags</p>
@@ -881,7 +987,8 @@ const MyPage: React.FC = () => {
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openSharemodal();}}></img>
                 <div  className={styles.edit_detail_modal_container}>
                     <div className={styles.edit_photos_container}>
-                        <img src={photoDetailInfo.url} alt='사진' className={styles.edit_photo}></img>
+                        {/* 고쳐야함 */}
+                        <img src={'photoDetailInfo.url'} alt='사진' className={styles.edit_photo}></img>
                     </div>
                     <div className={styles.edit_detail_info_container}>
                         <p style={{fontSize : '36px', margin : '10%'}}>Share</p>
@@ -923,11 +1030,12 @@ const MyPage: React.FC = () => {
                             <div className={styles.upload_photos_list_container}>
                                 {imgArr.map((image, index)=>{
                                     return( 
-                                        <div key={index + 'o'} className={styles.upload_photos_list} onClick={() => {handleIsImg(image.url);}}>
+                                        <div key={index + 'o'} className={styles.upload_photos_list} onClick={() => {handleIsImg(image.thumbnailUrl);}}>
                                             <div className={`${styles.upload_photos_list_overlay} ${selectedImageIndex === index && styles.upload_photos_list_overlay_clicked}`} onClick={() => {handleImageClick(index);}}>
                                                 {selectedImageIndex === index && <img src='/imgs/check_white.png'></img>}
                                             </div>
-                                            <img src={image.url} alt='이미지' className={styles.photos_list_upimg}></img>
+                                            {/* 고쳐야함 */}
+                                            <img src={'image.url'} alt='이미지' className={styles.photos_list_upimg}></img>
                                         </div>
                                     )
                                 })}
@@ -1055,7 +1163,11 @@ const MyPage: React.FC = () => {
                 <div className={styles.modal_background}></div>
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
                 <div  className={styles.upload_detail_modal_container}>
-                    <div className={styles.upload_photos_container}>
+                    {
+                        isUploading
+                        ? <h1>업로드중...</h1>
+                        : <>
+                        <div className={styles.upload_photos_container}>
                         {mainImg == ''
                         ? <>
                             <div style={{width : '100%', height : '650px', objectFit : 'contain', background : 'black', color : 'white', display : 'flex', alignItems : 'center', justifyContent : 'center'}}>
@@ -1080,11 +1192,11 @@ const MyPage: React.FC = () => {
                         <p style={{fontSize : '36px', margin : '10%'}}>Detail</p>
                         <div className={styles.edit_title_container}>
                             <p style={{fontSize : '20px'}}>Title</p>
-                            <input className={styles.edit_input_box3} type="text" placeholder="제목을 입력해주세요." ></input>
+                            <input className={styles.edit_input_box3} type="text" placeholder="제목을 입력해주세요." value={uploadPhotoInfo.title} onChange={handleUploadPhotoTitle}></input>
                         </div>
                         <div className={styles.edit_publish_container}>
                             <p style={{fontSize : '20px'}}>Publish</p>
-                            <Toggle2/>
+                            <Toggle2 changeAccessType={changeAccessType}/>
                         </div>
                         <div className={styles.edit_tag_container}>
                             <p style={{fontSize : '20px'}}>Tags</p>
@@ -1103,13 +1215,14 @@ const MyPage: React.FC = () => {
 
                                     })}
                             </div>
-                            {/* 문제 */}
-                            <div className={styles.edit_btn_container} onClick={() => {uploadClickHandler();}}>
+                            <div className={styles.edit_btn_container} onClick={handleUploadPhoto}>
                                 <p className={styles.upload_txt3} style={{color : 'white'}}>Upload</p>
                                 <img src='/imgs/upload_icon.png' alt='아이콘' style={{height : '45px', width : 'auto', marginLeft : '10%'}}></img>
                             </div>
                         </div>
                     </div>
+                        </>
+                    }
                 </div>
                 </> 
                 : // 이 안에 삼항 연산자가 하나 더 있어야 함
@@ -1220,24 +1333,24 @@ const MyPage: React.FC = () => {
 
 
         <div className={styles.main_container}>
-            <div  className={styles.mypage_info_container} style={{background : `url(${my[0].back})`, backgroundSize : 'cover', height : '350px', position : 'relative', backgroundPosition : 'center'}}>
+            <div className={styles.mypage_info_container} style={{backgroundImage : `url(${memberInfo.backgroundUrl})`, backgroundSize : 'cover', height : '350px', position : 'relative', backgroundPosition : 'center'}}>
                 <div className={styles.info_container}>
-                    <img src={my[0].profile} alt='프로필' className={styles.profile}></img>
+                    <img src={memberInfo.profileUrl} alt='프로필' className={styles.profile}></img>
                     <div className={styles.info}>
                         <div className={styles.edit_btn}>
                             <p>Edit</p>
                         </div>
-                        <p>{my[0].name}</p>
-                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" }}>Camera using by {my[0].year} years</p>
-                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" , cursor : 'pointer' }} onClick={() => {openFollowList();}}>{my[0].follow} Follower / {my[0].following} Following</p>
-                        <p style={{fontSize : '16px'}}>{my[0].intro}</p>
+                        <p>{memberInfo.nickname}</p>
+                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" }}>Camera using by 수정해야함 years</p>
+                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" , cursor : 'pointer' }} onClick={() => {openFollowList();}}>{memberInfo.followerCnt} Follower / {memberInfo.followingCnt} Following</p>
+                        <p style={{fontSize : '16px'}}>{memberInfo.introduction}</p>
                     </div>
-                </div>
 
-                <div className={styles.line}></div>
+                </div>
             </div>
 
             <div className={styles.photo_mode_container}>
+                <div className={styles.line}></div>
                 <div className={styles.mode_tabs}>
                         {tabArr.map((mode, index)=>{
                             return <div key={index}>{mode.tabTitle}</div>
