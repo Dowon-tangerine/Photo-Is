@@ -132,36 +132,60 @@ class ImageTagRequest(BaseModel):
 class TagResponse(BaseModel):
     tags: list
 
-# 태그 자동 생성
 @app.post("/api/py/generate-tags", response_model=TagResponse)
 async def generate_tags(request: ImageTagRequest):
+    client = openai.OpenAI()
     try:
-        # 이미지를 GPT-4에게 설명하도록 요청
-        image_description_prompt = f"Describe the contents of the following image in detail: {request.image_url}"
-        
-        description_response = openai.Completion.create(
-            engine="gpt-4",
-            prompt=image_description_prompt,
-            max_tokens=100,
+        # 이미지를 GPT-4o 모델을 사용하여 설명하도록 요청
+        description_response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Describe the contents of the following image in detail"
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": request.image_url,  # 요청받은 이미지 URL
+                                "detail": "low"
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens=100,  # 응답의 최대 토큰 수
         )
         
-        description = description_response.choices[0].text.strip()
+        description = description_response.choices[0].message.content
+
+        tag_prompt = f"Based on the following description, generate a list of appropriate tags in bullet points, one tag per line, for korean word not sentence:" 
         
-        # 설명을 바탕으로 태그를 추출하도록 GPT-4에게 요청
-        tag_prompt = f"Based on the following description, generate appropriate tags: {description}"
-        
-        tag_response = openai.Completion.create(
-            engine="gpt-4",
-            prompt=tag_prompt,
+        tag_response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                            {
+                                "type": "text",
+                                "text": tag_prompt + "\n" + description
+                            },
+                        ],
+                }  
+            ],
             max_tokens=50,
         )
-        
-        tags = tag_response.choices[0].text.strip().split(', ')
-        
+
+        tags_text = tag_response.choices[0].message.content.strip()
+        tags = [tag.strip('- ').strip() for tag in tags_text.split('\n') if tag.startswith('-')]
         return {"tags": tags}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 # 프로그램의 시작점이면 run
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=9001)
