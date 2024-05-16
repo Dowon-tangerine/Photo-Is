@@ -12,6 +12,12 @@ body, html {
   overflow: hidden;
 }
 
+.canvasContainer {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Canvas의 스크롤 방지 */
+}
+
 .sidebar {
   width: 250px;
   background-color: #000000;
@@ -37,16 +43,16 @@ body, html {
 }
 
 .sidebarTop h1 {
-margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .sidebarBottom ol {
-list-style: none;
-padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
-.sidebarbottom button:hover {
-background-color: #555;
+.sidebarBottom button:hover {
+  background-color: #555;
 }
 
 .searchContainer {
@@ -78,7 +84,7 @@ background-color: #555;
 
 .searchButton {
   position: absolute;
-  left: 183px;  /* 왼쪽에서의 위치를 0에서 1px로 조정하여 더 정확하게 맞춤 */
+  right: 1px;  /* 왼쪽에서의 위치를 0에서 1px로 조정하여 더 정확하게 맞춤 */
   top: 1px;  /* 상단에서의 위치도 조정 */
   width: 34px;  /* 버튼의 폭을 지정 */
   height: calc(100% - 2px);  /* 버튼 높이를 입력창과 동일하게 조정 */
@@ -87,7 +93,7 @@ background-color: #555;
   padding: 0;  /* 패딩 제거 */
   cursor: pointer;
   /* border-radius: 0 4px 4px 0;  오른쪽 끝의 라운드 */
-  }
+}
 
 .searchButton img {
   width: 24px;
@@ -96,32 +102,131 @@ background-color: #555;
 
 .content {
   flex-grow: 1;
-  overflow: hidden; /* 내부 스크롤 방지 */
+  overflow: hidden; 
 }
-
 
 .chatBotModal {
   position: fixed;
-  bottom: 20px;
+  bottom: 20px; /* 아이콘 위에 나타나도록 조정 */
   right: 20px;
-  width: 300px;
+  width: 450px; /* 모달 크기 */
+  height: 600px; /* 모달 크기 */
   background-color: white;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ccc;
+  border-radius: 10px 10px 0 0;
+}
+
+.modalHeader span {
+  font-weight: bold;
 }
 
 .modalContent {
-  padding: 20px;
+  flex-grow: 1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 전체 내용이 길어지면 스크롤이 생기도록 설정 */
 }
 
-.closeButton {
-  float: right;
-  font-size: 25px;
+.chatContainer {
+  flex-grow: 1;
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 활성화 */
+  padding: 10px;
+  border-bottom: 1px solid #ccc; /* 입력 부분을 구분하는 경계선 추가 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 중앙에 정렬 */
+}
+
+.botMessage,
+.userMessage {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 70%;
+  word-break: break-word; /* 긴 단어를 자동으로 줄 바꿈 */
+  display: inline-block; /* 메시지를 inline-block으로 설정 */
+}
+
+.botMessage {
+  background-color: #e0e0e0;
+  align-self: flex-start; /* 왼쪽 정렬 */
+}
+
+.userMessage {
+  background-color: #000;
+  color: white;
+  align-self: flex-end; /* 오른쪽 정렬 */
+}
+
+.chatForm {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: #fff; /* 배경색을 흰색으로 */
+}
+
+.questionInput {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  border: none;
+  background-color: #000;
+  color: white;
+  border-radius: 0 5px 5px 0;
   cursor: pointer;
 }
 
+.recommendationsToggle {
+  padding: 10px;
+  margin-bottom: 7px;
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  text-align: center;
+}
+
+.recommendedQuestions {
+  padding: 10px;
+}
+
+.recommendedQuestions p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.recommendedQuestions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recommendedQuestions li {
+  margin: 5px 0;
+  cursor: pointer;
+  color: #000;
+}
+
+/* 챗봇 아이콘 스타일 */
 .chatButton {
   position: fixed;
   bottom: 20px;
@@ -139,3 +244,31 @@ background-color: #555;
   box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* 그림자 추가 */
 }
 
+.chatButton img {
+  width: 24px;
+  height: 24px;
+}
+
+.annotationModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 1000;
+  padding: 20px;
+}
+
+.annotationModal h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.annotationModal p {
+  margin: 0;
+}
