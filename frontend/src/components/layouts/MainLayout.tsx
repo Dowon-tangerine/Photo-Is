@@ -6,7 +6,6 @@ const MainLayout: React.FC = () => {
   return (
     <>
       <Header />
-      <div style={{paddingTop: '80px'}}></div>
       <Outlet />
     </>
   );

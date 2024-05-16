@@ -69,6 +69,7 @@ const MyPage: React.FC = () => {
         accessType: 'PUBLIC',
         hashtag: [],
     });
+    const [accessType, setAccessType] = useState<string>('PUBLIC');
     
     const navigate = useNavigate();
     
@@ -85,12 +86,15 @@ const MyPage: React.FC = () => {
         let accessType = '';
         if(index == 0){
             accessType = 'PUBLIC';
+            setAccessType('PUBLIC');
         }
         else if(index == 1){
             accessType = 'PRIVATE';
+            setAccessType('PRIVATE');
         }
         else{
             accessType = 'STUDIO';
+            setAccessType('STUDIO');
         }
         settabIndex(index);
         selectEachPhotoList(accessType, 1)
@@ -172,20 +176,12 @@ const MyPage: React.FC = () => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        try {
-            const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
-            const response = await axios.get(API_URL);
-            const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-                id: imgs.photoId,
-                url: imgs.thumbnailUrl,
-                likeCnt: imgs.likeCnt,
-                liked: imgs.liked,
-                title: imgs.title,
-            }));
-            setImgArr((prevData) => [...prevData, ...newData]);
-        } catch (error) {
-            console.log(error);
-        }
+        selectEachPhotoList(accessType, page)
+        .then(res=>{
+            if(res){
+                setImgArr(res);
+            }
+        })
         setIsLoading(false);
     };
 
@@ -1337,7 +1333,7 @@ const MyPage: React.FC = () => {
 
 
         <div className={styles.main_container}>
-            <div className={styles.mypage_info_container} style={{background : `url(${memberInfo.backgroundUrl})`, backgroundSize : 'cover', height : '350px', position : 'relative', backgroundPosition : 'center'}}>
+            <div className={styles.mypage_info_container} style={{backgroundImage : `url(${memberInfo.backgroundUrl})`, backgroundSize : 'cover', height : '350px', position : 'relative', backgroundPosition : 'center'}}>
                 <div className={styles.info_container}>
                     <img src={memberInfo.profileUrl} alt='프로필' className={styles.profile}></img>
                     <div className={styles.info}>
