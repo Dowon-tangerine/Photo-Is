@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TagRequestDto {
-    private String imageUrl;
+    private String image_url;
 }
