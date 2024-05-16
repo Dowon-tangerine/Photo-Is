@@ -28,18 +28,8 @@ public class ChatbotController {
             description = "챗봇 질문에 대한 답을 받습니다."
     )
     @PostMapping("/chat")
-    public Mono<ResponseEntity<Map<String, String>>> chat(@RequestBody ChatRequestDto request) {
-        String sessionId = request.getSessionId() == null || request.getSessionId().isEmpty()
-                ? UUID.randomUUID().toString()
-                : request.getSessionId();
-
-        return chatbotService.getChatbotResponse(sessionId, request.getQuestion())
-                .map(response -> {
-                    Map<String, String> responseBody = new HashMap<>();
-                    responseBody.put("answer", response);
-                    responseBody.put("session_id", sessionId);
-                    return ResponseEntity.ok(responseBody);
-                });
+    public Mono<String> askQuestion(@RequestParam String sessionId, @RequestParam String userId, @RequestParam String question) {
+        return chatbotService.getChatbotResponse(sessionId, userId, question);
     }
 
     @Operation(summary = "사진 분석",

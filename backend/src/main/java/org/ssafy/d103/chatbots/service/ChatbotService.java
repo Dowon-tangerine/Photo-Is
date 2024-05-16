@@ -1,40 +1,74 @@
 package org.ssafy.d103.chatbots.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.ssafy.d103.chatbots.dto.*;
+import org.ssafy.d103.chatbots.entity.ChatMessage;
 import org.ssafy.d103.chatbots.entity.ChatSession;
+import org.ssafy.d103.chatbots.repository.ChatMessageRepository;
 import org.ssafy.d103.chatbots.repository.ChatSessionRepository;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ChatbotService {
 
     private final ChatSessionRepository chatSessionRepository;
+    private final ChatMessageRepository chatMessageRepository;
+    private final WebClient.Builder webClientBuilder;
+    private WebClient webClient;
 
-    private final WebClient webClient;
-
-    public ChatbotService(WebClient.Builder webClientBuilder, ChatSessionRepository chatSessionRepository) {
-        //this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io/api/py").build();
+    @PostConstruct
+    private void initWebClient() {
         this.webClient = webClientBuilder.baseUrl("http://localhost:9001").build();
-        this.chatSessionRepository = chatSessionRepository;
     }
 
-    public Mono<String> getChatbotResponse(String sessionId, String question) {
-        return this.webClient.post()
-                .uri("/api/py/camera-chat")
-                .bodyValue(new ChatRequestDto(question, sessionId))
+    public Mono<String> getChatbotResponse(String sessionId, String userId, String question) {
+        Optional<ChatSession> sessionOptional = chatSessionRepository.findBySessionId(sessionId);
+        ChatSession session;
+
+        if (sessionOptional.isEmpty()) {
+            session = ChatSession.builder().sessionId(sessionId).userId(userId).build();
+            chatSessionRepository.save(session);
+        } else {
+            session = sessionOptional.get();  // Optional에서 세션 추출
+        }
+
+        ChatMessage userMessage = ChatMessage.builder()
+                .session(session)
+                .message(question)
+                .role("user")
+                .build();
+        chatMessageRepository.save(userMessage);
+
+        List<ChatMessage> chatHistory = chatMessageRepository.findBySession(session);
+
+        List<ChatMessageDto> messageDTOs = chatHistory.stream()
+                .map(message -> new ChatMessageDto(message.getRole(), message.getMessage()))
+                .collect(Collectors.toList());
+
+        ChatSessionRequest chatSessionRequest = new ChatSessionRequest(sessionId, userId, messageDTOs);
+
+        return webClient.post()
+                .uri("/api/py/chat")
+                .bodyValue(chatSessionRequest)
                 .retrieve()
                 .bodyToMono(ChatResponseDto.class)
-                .flatMap(response -> {
-                    saveChatSession(sessionId, question, response.getAnswer());
-                    return Mono.just(response.getAnswer());
+                .map(response -> {
+                    ChatMessage assistantMessage = ChatMessage.builder()
+                            .session(session)
+                            .message(response.getMessage())
+                            .role("assistant")
+                            .build();
+                    chatMessageRepository.save(assistantMessage);
+
+                    return response.getMessage();
                 });
     }
 
@@ -44,18 +78,6 @@ public class ChatbotService {
                 .bodyValue(new ImageRequestDto(imageUrl))
                 .retrieve()
                 .bodyToMono(String.class);
-    }
-
-    private void saveChatSession(String sessionId, String userMessage, String botResponse) {
-        ChatSession chatSession = new ChatSession();
-        chatSession.setSessionId(sessionId);
-        chatSession.setUserMessage(userMessage);
-        chatSession.setBotResponse(botResponse);
-        chatSessionRepository.save(chatSession);
-    }
-
-    public List<ChatSession> getChatSessions(String sessionId) {
-        return chatSessionRepository.findBySessionId(sessionId);
     }
 
     public Mono<TagResponseDto> generateTags(TagRequestDto request) {
