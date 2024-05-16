@@ -9,10 +9,17 @@ const CameraSettings: React.FC = () => {
         useCameraStore();
 
     const updateExposure = (currentValue: any, newValue: any, valuesArray: any) => {
-        const currentIndex = valuesArray.indexOf(currentValue);
-        const newIndex = valuesArray.indexOf(newValue);
-        const exposureChange = newIndex - currentIndex;
-        setExposure(exposure + exposureChange);
+        if (valuesArray == apertureValues) {
+            const currentIndex = valuesArray.indexOf(currentValue);
+            const newIndex = valuesArray.indexOf(newValue);
+            const exposureChange = currentIndex - newIndex;
+            setExposure(exposure + exposureChange);
+        } else {
+            const currentIndex = valuesArray.indexOf(currentValue);
+            const newIndex = valuesArray.indexOf(newValue);
+            const exposureChange = newIndex - currentIndex;
+            setExposure(exposure + exposureChange);
+        }
     };
     const handleApertureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newAperture = apertureValues[parseInt(event.target.value)];

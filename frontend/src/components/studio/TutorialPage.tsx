@@ -15,12 +15,14 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { createMotionBlurMaterial } from "./element/MotionBlurShader";
+import { createExposureMaterial } from "./element/ExposureShader"; // Import the ExposureShader
 
 extend({ EffectComposer, RenderPass, ShaderPass });
 
 function Effects({ shutterSpeed }: { shutterSpeed: number }) {
     const { gl, scene, camera } = useThree();
     const composer = useRef<EffectComposer>();
+    const { exposure } = useCameraStore((state) => ({ exposure: state.exposure }));
 
     useEffect(() => {
         const composerInstance = new EffectComposer(gl);
@@ -34,14 +36,21 @@ function Effects({ shutterSpeed }: { shutterSpeed: number }) {
         motionBlurMaterial.uniforms["velocityFactor"].value = velocityFactor;
         const shaderPass = new ShaderPass(motionBlurMaterial);
 
+        // ExposureShader 설정
+        const exposureMaterial = createExposureMaterial();
+        exposureMaterial.uniforms["exposure"].value = Math.pow(2, exposure);
+        const exposurePass = new ShaderPass(exposureMaterial);
+
         composerInstance.addPass(renderPass);
         composerInstance.addPass(shaderPass);
+        composerInstance.addPass(exposurePass);
+
         composer.current = composerInstance;
 
         return () => {
             composerInstance.dispose();
         };
-    }, [gl, scene, camera, shutterSpeed]);
+    }, [gl, scene, camera, shutterSpeed, exposure]);
 
     useFrame((_, delta) => {
         if (composer.current) {
