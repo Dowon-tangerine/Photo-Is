@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./css/SearchName.module.css";
 import { FaAngleDown } from 'react-icons/fa';
-import axios from 'axios';
 import { useLocation, useNavigate } from "react-router-dom";
+import { getSearching } from '../../apis/galleryApi';
 
 interface imgInterface {
-    id: number;
-    url: string;
-    likeCnt: number,
-    liked: boolean,
-    title: string,
-  }
+    nickname: string,
+    profileUrl: string,
+    city: null | string,
+    country: null | string,
+    uploadedPhotoCnt: number,
+    followingCnt: number,
+    followerCnt: number,
+    follow: boolean
+}
   
 const SearchName: React.FC = () => {
 
@@ -32,11 +35,14 @@ const SearchName: React.FC = () => {
         navigate("/myPage")
     }    
     
-    const [word2, setWord2] = useState<String>("");
+    const [word2, setWord2] = useState<string>("");
 
     const moveToSearch = function(){
         if(type === "작가"){
-            navigate("/community/gallery/searchName", { state: { searchWord :  word2 + "1"} })
+            getSearching("author", word2, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
         }
         else if(type === "제목"){
             navigate("/community/gallery/searchTitle", { state: { searchWord :  word2} })
@@ -62,27 +68,6 @@ const SearchName: React.FC = () => {
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
-
-    useEffect(() => {
-      console.log("로드");
-  
-      // key가 없으면 응답은 10개씩
-      const API_URL =
-        "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
-      axios.get(API_URL).then((res) => {
-        console.log(res);
-        
-        // id값과 url만 저장
-        const gotData = res.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-          id: imgs.photoId,
-          url: imgs.thumbnailUrl,
-          likeCnt: imgs.likeCnt,
-          liked: imgs.liked,
-          title: imgs.title,
-        }));
-        setImgArr(gotData);
-      });
-    }, []);
 
      // Intersection Observer 설정
 
@@ -119,20 +104,14 @@ const SearchName: React.FC = () => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        try {
-            const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
-            const response = await axios.get(API_URL);
-            const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-                id: imgs.photoId,
-                url: imgs.thumbnailUrl,
-                likeCnt: imgs.likeCnt,
-                liked: imgs.liked,
-                title: imgs.title,
-            }));
-            setImgArr((prevData) => [...prevData, ...newData]);
-        } catch (error) {
-            console.log(error);
-        }
+
+        getSearching("author", word, page)
+        .then((res) => {
+            if(res){
+                setImgArr([...imgArr, ...res]);
+            }
+        })
+
         setIsLoading(false);
     };
 
@@ -146,7 +125,7 @@ const SearchName: React.FC = () => {
 
         let newArr = [...imgArr];
 
-        newArr[idx].liked = !follow;
+        newArr[idx].follow = !follow;
 
         setImgArr(newArr);
     }
@@ -197,19 +176,19 @@ const SearchName: React.FC = () => {
                 {imgArr &&
                     imgArr.map((Imgs: imgInterface, idx) => (
                         <div key={idx + 'g'} className={styles.card} onClick={() => {openPhotoDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_profile} onClick={moveToMyPage}/>
-                            <p className={styles.profile_name}>김짱구잠옷</p>
+                            <img src={Imgs.profileUrl} alt='프로필' className={styles.card_profile} onClick={moveToMyPage}/>
+                            <p className={styles.profile_name}>{Imgs.nickname}</p>
                             <div className={styles.profile_info}>
                                 <p>Cameara use 1 years</p>
                                 <div className={styles.imgs_cnt}>
                                     <img src='/imgs/photo_icon.png' alt='사진 아이콘' className={styles.photo_icon}></img>
                                     <p style={{marginLeft : '10px'}}>180</p>
                                 </div>
-                                <p>following 170 / follower 230</p>
+                                <p>follower {Imgs.followerCnt} / following {Imgs.followingCnt} </p>
                             </div>
-                            <div className={Imgs.liked ? styles.follow_btn_container : styles.no_follow_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
-                                <p className={styles.plus_txt}>{Imgs.liked ? `Follower` : `Follow`}</p>
-                                <img src={Imgs.liked ? `` : `/imgs/white_plus.png`} className={Imgs.liked ? `` : styles.plus_icon}></img>
+                            <div className={Imgs.follow ? styles.follow_btn_container : styles.no_follow_btn_container} onClick={() => {following(idx, Imgs.follow);}}>
+                                <p className={styles.plus_txt}>{Imgs.follow ? `Follower` : `Follow`}</p>
+                                <img src={Imgs.follow ? `` : `/imgs/white_plus.png`} className={Imgs.follow ? `` : styles.plus_icon}></img>
                             </div>
                         </div>
                 ))}

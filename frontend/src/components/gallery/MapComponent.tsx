@@ -1,10 +1,10 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-type locationType = {
-  latitude: number,
-  longitude: number
-}
+// type locationType = {
+//   latitude: number,
+//   longitude: number
+// }
 export default function MapComponent() {
   
   return (

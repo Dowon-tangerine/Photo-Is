@@ -75,7 +75,7 @@ const Gallery: React.FC = () => {
 
     const moveToSearch = function(){
         if(type === "작가"){
-            navigate("/community/gallery/searchName", { state: { searchWord :  word + "1"} })
+            navigate("/community/gallery/searchName", { state: { searchWord :  word} })
         }
         else if(type === "제목"){
             navigate("/community/gallery/searchTitle", { state: { searchWord :  word} })
@@ -285,30 +285,6 @@ const Gallery: React.FC = () => {
 
     ];
 
-    // useEffect(() => {
-    //   console.log("로드");
-  
-    //   // key가 없으면 응답은 10개씩
-    //   const API_URL =
-    //     "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
-    //   axios.get(API_URL).then((res) => {
-    //     console.log(res);
-        
-    //     // id값과 url만 저장
-    //     const gotData = res.data.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; isLiked: boolean; title: string }) => ({
-    //       id: imgs.photoId,
-    //       url: imgs.thumbnailUrl,
-    //       likeCnt: imgs.likeCnt,
-    //       liked: imgs.isLiked,
-    //       title: imgs.title,
-    //     }));
-    //     setImgArr(gotData);
-    //   });
-    // }, []);
-
-     // Intersection Observer 설정
-
-  
   /*
   handleObserver: 교차점이 발생했을 때 실행되는 콜백 함수.
   entries: 교차점 정보를 담는 배열
@@ -411,7 +387,17 @@ useEffect(() => {
     .catch((err)=> console.log(err));
 
     
-    getSorting('latest', 1);
+    // getSorting('latest', 1)
+    // .then((res)=>{
+    //     if(res){
+    //         setImgArr(res);
+    //     }
+    //     else{
+    //         alert('예기치 못한 에러가 발생했습니다...');
+    //     }
+    // })
+    // .catch((err)=> console.log(err));
+
     getPhotoDetail(0);
   }, []);
 
@@ -605,35 +591,6 @@ const fetchData = async () => {
         newTags.splice(index, 1); // 해당 인덱스의 태그 제거
         setTags(newTags); // 새로운 배열로 상태 업데이트
     };
-
-
-    const tagss = [
-        {
-            tag : "하이",
-        },        
-        {
-            tag : "벚꽃",
-        },
-        {
-            tag : "버스",
-        },
-        {
-            tag : "도로",
-        },
-        {
-            tag : "봄",
-        },
-        {
-            tag : "나무",
-        },
-        {
-            tag : "봄향기",
-        },
-        {
-            tag : "분홍분홍",
-        },
-
-    ]
 
     const comments = [
         {
