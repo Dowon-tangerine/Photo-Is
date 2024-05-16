@@ -72,7 +72,7 @@ const CameraSettings: React.FC = () => {
             <div className="py-6 px-6">
                 <div className="text-white flex justify-between">
                     <div className="flex items-center pb-3">
-                        <label>심도 / ISO</label>
+                        <label>감도 / ISO</label>
                         <img src="/imgs/question.png" alt="" className="ml-3 w-[18px] h-[18px]" />
                     </div>
                     <div>
