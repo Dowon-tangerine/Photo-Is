@@ -53,8 +53,8 @@ async def chat(request: ChatSessionRequestDto):
                 "Please answer all the answers in Korean."
             )}
         ]
-        
-        formatted_messages += [{"role": msg.role, "content": msg.message} for msg in request.messages]
+        if request.messages:
+            formatted_messages += [{"role": msg.role, "content": msg.message} for msg in request.messages]
         formatted_messages.append({"role": "user", "content": request.question})
 
         # GPT-4o 모델을 사용하여 챗봇 응답 생성
