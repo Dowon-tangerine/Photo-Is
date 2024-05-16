@@ -4,24 +4,24 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChatSession {
+public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String sessionId;
-    private String userId;
-
-    @OneToMany(mappedBy = "session")
-    private List<ChatMessage> chatMessages;
+    private String message;
+    private String role; // "user" or "assistant"
 
     @Column(updatable = false, insertable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    private ChatSession session;
+
 }

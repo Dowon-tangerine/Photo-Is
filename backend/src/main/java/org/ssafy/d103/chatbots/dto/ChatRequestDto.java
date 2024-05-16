@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 
 @Data
 public class ChatRequestDto {
-    private String question;
+    private String message;
+    private String userId;
     private String sessionId;
 
-    public ChatRequestDto(String question, String sessionId) {
-        this.question = question;
+    public ChatRequestDto(String message, String userId, String sessionId) {
+        this.message = message;
+        this.userId = userId;
         this.sessionId = sessionId;
     }
 
-    // Getters and setters
 }

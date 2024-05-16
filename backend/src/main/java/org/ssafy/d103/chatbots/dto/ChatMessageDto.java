@@ -1,11 +1,11 @@
 package org.ssafy.d103.chatbots.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ChatResponseDto {
+public class ChatMessageDto {
+    private String role;
     private String message;
 }
