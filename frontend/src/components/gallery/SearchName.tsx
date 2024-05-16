@@ -12,7 +12,8 @@ interface imgInterface {
     uploadedPhotoCnt: number,
     followingCnt: number,
     followerCnt: number,
-    follow: boolean
+    follow: boolean,
+    useYear: number,
 }
   
 const SearchName: React.FC = () => {
@@ -35,6 +36,7 @@ const SearchName: React.FC = () => {
         navigate("/myPage")
     }    
     
+    const [word, setWord] = useState<string>(location.state ? location.state.searchWord : "")
     const [word2, setWord2] = useState<string>("");
 
     const moveToSearch = function(){
@@ -43,6 +45,7 @@ const SearchName: React.FC = () => {
             .then((res) => {
                 setImgArr(res);
             })
+            setWord(word2)
         }
         else if(type === "제목"){
             navigate("/community/gallery/searchTitle", { state: { searchWord :  word2} })
@@ -50,9 +53,10 @@ const SearchName: React.FC = () => {
         else if(type === "태그"){
             navigate("/community/gallery/searchTag", { state: { searchWord :  word2} })
         }
+        else{
+            alert("검색 카테고리를 선택해주세요!")
+        }
     } 
-
-    const word = location.state ? location.state.searchWord : "";
 
     const toggleRotation = () => {
         setIsRotated(!isRotated);
@@ -179,7 +183,7 @@ const SearchName: React.FC = () => {
                             <img src={Imgs.profileUrl} alt='프로필' className={styles.card_profile} onClick={moveToMyPage}/>
                             <p className={styles.profile_name}>{Imgs.nickname}</p>
                             <div className={styles.profile_info}>
-                                <p>Cameara use 1 years</p>
+                                <p>Cameara use {Imgs.useYear} years</p>
                                 <div className={styles.imgs_cnt}>
                                     <img src='/imgs/photo_icon.png' alt='사진 아이콘' className={styles.photo_icon}></img>
                                     <p style={{marginLeft : '10px'}}>180</p>

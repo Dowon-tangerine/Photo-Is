@@ -30,7 +30,7 @@ export const getSorting = async (type : string, page : number) => {
 
 }
 
-export const getPhotoDetail = async (id : number) => {
+export const getPhotoDetail = async (id : number | undefined) => {
     const url = `/photos/${id}`
 
     return await instance.get(url)
@@ -52,6 +52,49 @@ export const getSearching = async (type : string, keyword : string, page : numbe
     .then(res => {
         console.log(res);
         return res.data.data.resultList;
+    })    
+    .catch(error => {
+        error
+        return false;
+    })
+}
+
+export const postLiked = async (id : number | undefined) => {
+    const url = `/photos/${id}/change-like`
+
+    return await instance.post(url)
+    .then(res => {
+        console.log(res);
+        return res.data.data;
+    })    
+    .catch(error => {
+        error
+        return false;
+    })
+}
+
+export const getComment = async (id : number | undefined) => {
+    const url = `/photos/${id}/comment`
+
+    return await instance.get(url)
+    .then(res => {
+        console.log(res);
+        return res.data.data.commentCnt != 0 ? res.data.data.commentList : false;
+    })    
+    .catch(error => {
+        error
+        return false;
+    })
+}
+
+export const postComment = async (id : number | undefined, comment : string) => {
+    const url = `/photos/${id}/comment`
+
+    const data = {comment: comment}
+    return await instance.post(url, data)
+    .then(res => {
+        console.log(res);
+        return res.data.data.commentList;
     })    
     .catch(error => {
         error

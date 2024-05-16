@@ -501,7 +501,7 @@ cursor: pointer;
     width: fit-content;
     position: absolute;
     display: flex;
-    right: 6%;
+    right: 3%;
     align-items: center;
 }
 
@@ -690,7 +690,7 @@ cursor: pointer;
 .comment_info{
     width: 300px;
     height: auto;
-    margin-left: 2%;
+    margin-left: 4%;
 }
 
 .send_comment_container{
