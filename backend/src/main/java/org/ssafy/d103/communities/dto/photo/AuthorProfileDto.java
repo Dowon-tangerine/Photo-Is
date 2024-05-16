@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 public class AuthorProfileDto {
 
+    private Long memberId;
     private String nickname;
     private String profileUrl;
     private Integer useYear;
@@ -17,7 +18,8 @@ public class AuthorProfileDto {
     private boolean isFollow;
 
     @Builder
-    private AuthorProfileDto(String nickname, String profileUrl, Integer useYear, String city, String country, Integer uploadedPhotoCnt, Integer followingCnt, Integer followerCnt, boolean isFollow) {
+    private AuthorProfileDto(Long memberId, String nickname, String profileUrl, Integer useYear, String city, String country, Integer uploadedPhotoCnt, Integer followingCnt, Integer followerCnt, boolean isFollow) {
+        this.memberId = memberId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
         this.useYear = useYear;
@@ -29,8 +31,9 @@ public class AuthorProfileDto {
         this.isFollow = isFollow;
     }
 
-    public static AuthorProfileDto of(String nickname, String profileUrl, Integer useYear, String city, String country, Integer uploadedPhotoCnt, Integer followingCnt, Integer followerCnt, boolean isFollow) {
+    public static AuthorProfileDto of(Long memberId, String nickname, String profileUrl, Integer useYear, String city, String country, Integer uploadedPhotoCnt, Integer followingCnt, Integer followerCnt, boolean isFollow) {
         return builder()
+                .memberId(memberId)
                 .nickname(nickname)
                 .profileUrl(profileUrl)
                 .useYear(useYear)
