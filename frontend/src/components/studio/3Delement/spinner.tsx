@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useLoader, useThree, useFrame } from "@react-three/fiber";
+import { useLoader, useFrame } from "@react-three/fiber";
 import { DirectionalLight, Object3D } from "three";
 import { Sky, OrbitControls } from "@react-three/drei";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
@@ -87,7 +87,7 @@ function Spinner() {
             });
         }
     });
-    const { gl } = useThree();
+    // const { gl } = useThree();
 
     return (
         <>

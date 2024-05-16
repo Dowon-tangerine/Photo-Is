@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import headerStyle from "./css/Header.module.css";
+import useLoginStatus from "../stores/member";
 
 interface MenuItem {
     name: string;
@@ -24,9 +25,15 @@ const menuItems: MenuItems = {
     Exhibition: [],
 };
 
-const Header = () => {
+const Header: React.FC = () => {
     const [openMenu, setOpenMenu] = useState<string>("");
+    const [profileUrl, setProfileUrl] = useState<string | null>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const { isLogin } = useLoginStatus();
+
     const navigate = useNavigate();
+    const location = useLocation(); // useLocation 훅 추가
+
     const headerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -37,17 +44,25 @@ const Header = () => {
         }
 
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
     }, [headerRef]);
+
+    // 페이지 경로 변경 시 드롭다운 메뉴 닫기
+    useEffect(() => {
+        setOpenMenu("");
+    }, [location]);
+
+    useEffect(() => {
+        const savedProfileUrl = localStorage.getItem("profileUrl");
+        setIsLoggedIn(true);
+        setProfileUrl(savedProfileUrl);
+    }, [isLogin]);
 
     const handleMenuClick = (item: string) => {
         if (item === "Studio") {
             navigate("/studio-enter"); // Studio 메뉴 클릭 시 이동
         }
         if (item === "Exhibition") {
-            navigate("/studio-enter"); // Studio 메뉴 클릭 시 이동
+            navigate("/Exhibition"); // Studio 메뉴 클릭 시 이동
         } else {
             setOpenMenu(openMenu === item ? "" : item);
         }
@@ -59,19 +74,19 @@ const Header = () => {
                 <button className={headerStyle.logo} onClick={() => navigate("/")}>
                     PhotoIs
                 </button>
-                <div className="rightSection flex">
+                <div className="rightSection flex items-center">
                     {Object.keys(menuItems).map((item) => (
                         <div className="relative" onClick={() => handleMenuClick(item)} key={item}>
                             <button className={headerStyle.btn}>{item}</button>
                             {openMenu === item && menuItems[item].length > 0 && (
                                 <div
-                                    className={`absolute left-1/2 transform -translate-x-1/2 top-[53px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
+                                    className={` absolute left-1/2 transform -translate-x-1/2 top-[51.5px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
                                 >
-                                    <ul>
+                                    <ul className="list-none">
                                         {menuItems[item].map((subItem: MenuItem) => (
                                             <li
                                                 key={subItem.name}
-                                                className="px-4 py-2 hover:bg-[#4C4C4C] hover:text-white"
+                                                className="px-4 py-2 hover:bg-[#4C4C4C] hover:text-whiteu "
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigate(subItem.path);
@@ -85,9 +100,18 @@ const Header = () => {
                             )}
                         </div>
                     ))}
-                    <button className={headerStyle["btn-signin"]} onClick={() => navigate("/signin")}>
-                        SIGN IN
-                    </button>
+                    {isLoggedIn && profileUrl ? (
+                        <img
+                            src={profileUrl}
+                            alt="Profile"
+                            className={headerStyle["btn-profile"]}
+                            onClick={() => navigate("/mypage")}
+                        />
+                    ) : (
+                        <button className={headerStyle["btn-signin"]} onClick={() => navigate("/signin")}>
+                            SIGN IN
+                        </button>
+                    )}
                 </div>
             </header>
         </div>

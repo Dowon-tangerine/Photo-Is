@@ -1,152 +1,185 @@
+@font-face {
+  font-family: "부크크고딕bold";
+  src: url(/fonts/부크크고딕_굵은글씨.ttf);
+}
+
+@font-face {
+  font-family: "부크크명조bold";
+  src: url(/fonts/부크크명조_굵은글씨.ttf);
+}
+
 .signupContainer {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .leftPanel {
-    flex: 1;
-    background: black;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative; 
-  }
-  
-  .cameraImage {
-    width: 100%;  
-    height: auto;
-  }
-  
-  .overlayText {
-    position: absolute;
-    top: 20%;  
-    left: 50%;  
-    transform: translate(-50%, -50%);  
-    font-size: 2em;  
-    color: white;  
-  }
-  
-  .rightPanel {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
+  display: flex;
+  height: 100vh;
+}
 
-  
-  .stepIndicator {
-    display: flex;
-    justify-content: space-between; /* 원을 균등하게 분포시키기 */
-    list-style: none;
-    padding: 0;
-    margin-top: -150px; 
-    margin-bottom: 50px;
-    position: relative; /* 선을 그리기 위한 상대 위치 */
-    width: 70%; /* 원 사이의 간격을 조절하기 위해 폭 조정 */
-    left: 10%; /* 전체 컨테이너를 왼쪽으로 조금 이동 */
-  }
-  
-  .stepContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .stepIndicator li {
-    width: 40px;
-    height: 40px;
-    border: 2px solid #000; 
-    border-radius: 50%; /* 원 형태 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff; 
-    position: relative; /* 선을 그리기 위한 상대 위치 */
-  }
-  
-  .stepIndicator li::before {
-    content: attr(data-step); /* attr 함수를 사용하여 data-step의 값을 출력 */
-    color: black; 
-    font-weight: bold;
-  }
-  
-  .stepIndicator li:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: -50%; /* 선을 오른쪽으로 확장 */
-    width: 100%; /* 다음 원까지의 거리 */
-    height: 2px;
-    background-color: #000; /* 선의 색상 */
-    z-index: -1;
-  }
-  
-  .stepIndicator li.active {
-    background-color: #000; 
-  }
-  
-  .stepIndicator li.active::before {
-    color: #fff; 
-  }
-  
-  .stepText {
-    margin-top: 5px; 
-    color: black; 
-    font-size: 13px; 
-  }
+.leftPanel {
+  flex: 1;
+  background: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
 
-  .signupForm {
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    margin-top: 150px;
-  }
-  
-  .signupForm input[type="text"],
-  .signupForm input[type="password"] {
-    width: 100%;
-    margin: 10px 0;
-    padding: 8px;
-    border: 1px solid #ccc;
-  box-sizing: border-box; 
-  }
-  
-  .submitButton {
-    padding: 10px;
-    background-color: black;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 80px;
-  }
-  
+.cameraImage {
+  width: 100%;
+  height: auto;
+}
 
-  .finalStepContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: -100px; /* 조정이 필요할 수 있습니다. */
-  }
-  
-  .finalCheckmark {
-    margin-top: 60px;
-    margin-bottom: 20px; /* 아이콘과 텍스트 사이 간격 */
-  }
-  
-  .finalHeader {
-    font-size: 22px;
-    color: black;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .finalMessage {
-    text-align: center;
-    color: black;
-    font-size: 15px;
-  } 
+.overlayText {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  color: white;
+}
+
+.rightPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+.stepIndicator {
+  display: flex;
+  margin-top: -100px;  /* 상단 공간 조정 */
+  margin-bottom: 50px;  /* 하단 공간 조정 */
+  position: relative;
+  justify-content: center;
+}
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepIndicator li {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  margin: 25px;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "부크크고딕bold";
+}
+
+.stepIndicator li::before {
+  content: attr(data-step);
+  color: black;
+  font-weight: bold;
+}
+
+
+.stepIndicator li.active {
+  background-color: #000;
+}
+
+.stepIndicator li.active::before {
+  color: #fff;
+}
+
+.stepText {
+  margin-top: -10px;
+  margin-bottom: -10px;  /* stepText 아래 공간 조정 */
+  color: black;
+  font-size: 15px;
+  font-weight: bold;
+  font-family: "부크크고딕bold";
+}
+
+.signupForm {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.signupForm input {
+  width: 100%;
+  height: 50px;
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  border-radius: 10px;
+  outline: none;
+}
+
+.submitButton {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 40px;  /* submitButton 상단 마진 조정 */
+  border-radius: 10px;
+  font-weight: bold;
+  font-family: "부크크명조bold";
+}
+.gotoLogin{
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 40px;  /* submitButton 상단 마진 조정 */
+  border-radius: 10px;
+  font-weight: bold;
+  font-family: "부크크고딕bold";
+}
+
+.finalStepContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -100px; /* 조정이 필요할 수 있습니다. */
+}
+
+.finalCheckmark {
+  margin-top: 85px;
+  margin-bottom: 20px; /* 아이콘과 텍스트 사이 간격 */
+}
+
+.finalHeader {
+  font-size: 22px;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 28px;
+}
+
+.finalMessage {
+  text-align: center;
+  color: black;
+  font-size: 15px;
+  margin-bottom: 35px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox  */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+

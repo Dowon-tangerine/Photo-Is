@@ -1,11 +1,14 @@
-import Header from "./Header.tsx";
+import React from "react";
 import { Outlet } from "react-router-dom";
-function MainLayout() {
-    return (
-        <>
-            <Header />
-            <Outlet />
-        </>
-    );
-}
+import Header from "../layouts/Header";
+
+const MainLayout: React.FC = () => {
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
+};
+
 export default MainLayout;
