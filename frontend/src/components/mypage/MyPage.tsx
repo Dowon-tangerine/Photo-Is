@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./css/MyPage.module.css";
 import Masonry from 'react-masonry-css';
-import axios from 'axios';
 import MapComponent from '../gallery/MapComponent';
 import Toggle2 from '../gallery/ToggleBtn2';
 import Calendar from './Calendar';
