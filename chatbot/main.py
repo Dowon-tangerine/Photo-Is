@@ -66,7 +66,7 @@ async def chat(request: ChatSessionRequestDto):
 
         # API 응답으로 챗봇의 답변을 반환
         chat_response = response.choices[0].message.content if response.choices else "Sorry, I could not generate a response."
-        return {"answer": chat_response}
+        return ChatResponseDto(chat_response)
     except Exception as e:
         # 예외 발생 시, HTTP 500 에러와 함께 오류 메시지 반환
         raise HTTPException(status_code=500, detail=str(e))
