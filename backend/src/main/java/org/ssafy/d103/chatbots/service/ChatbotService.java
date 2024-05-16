@@ -53,7 +53,7 @@ public class ChatbotService {
                 .map(message -> new ChatMessageDto(message.getRole(), message.getMessage()))
                 .collect(Collectors.toList());
 
-        ChatSessionRequest chatSessionRequest = new ChatSessionRequest(sessionId, userId, messageDTOs);
+        ChatSessionRequest chatSessionRequest = new ChatSessionRequest(question, messageDTOs);
 
         return webClient.post()
                 .uri("/api/py/chat")

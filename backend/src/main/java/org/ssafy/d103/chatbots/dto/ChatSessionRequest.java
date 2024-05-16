@@ -8,7 +8,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ChatSessionRequest {
-    private String sessionId;
-    private String userId;
+    private String question;
     private List<ChatMessageDto> messages;
 }
