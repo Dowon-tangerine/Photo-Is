@@ -28,20 +28,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class ChatMessageDTO(BaseModel):
+class ChatMessageDto(BaseModel):
     role: str
     message: str
 
-class ChatSessionRequest(BaseModel):
+class ChatSessionRequestDto(BaseModel):
     question: str
-    messages: List[ChatMessageDTO]
+    messages: List[ChatMessageDto]
 
-class ChatResponse(BaseModel):
+class ChatResponseDto(BaseModel):
     answer: str
 
 # 간단한 챗봇 대화 구현
-@app.post("/api/py/chat", response_model=ChatResponse)
-async def chat(request: ChatSessionRequest):
+@app.post("/api/py/chat", response_model=ChatResponseDto)
+async def chat(request: ChatSessionRequestDto):
     client = openai.OpenAI()
     try:
         # 프롬프트와 이전 대화기록을 포함한 질문
