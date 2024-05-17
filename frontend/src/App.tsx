@@ -16,6 +16,7 @@ import SignIn from "./components/signin/SignIn";
 import SignUp from "./components/signin/SignUp";
 import LandScapePage from "./components/studio/LandScapePage";
 import TutorialPage from "./components/studio/TutorialPage";
+import MyPageEdit from "./components/mypage/MyPageEdit";
 
 export default function App() {
 
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/community/gallery/searchTitle" element={<SearchTitle />} />
           <Route path="/community/gallery/searchTag" element={<SearchTag />} />
           <Route path="/myPage" element={<MyPage />}></Route>
+          <Route path="/myPageEdit" element={<MyPageEdit />}></Route>
           <Route path="/Exhibition" element={<Exhibition />}></Route>
           <Route path="/community/qna" element={<Qna />}></Route>
           <Route path="/docs/product1" element={<HelloPhoto />} />
