@@ -3,10 +3,15 @@ package org.ssafy.d103.communities.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.ssafy.d103.communities.entity.photo.*;
-import org.ssafy.d103.communities.repository.photo.*;
+import org.ssafy.d103.communities.entity.photo.DailyPhotoRanking;
+import org.ssafy.d103.communities.entity.photo.MonthlyPhotoRanking;
+import org.ssafy.d103.communities.entity.photo.PhotoDetail;
+import org.ssafy.d103.communities.entity.photo.WeeklyPhotoRanking;
+import org.ssafy.d103.communities.repository.photo.DailyPhotoRankingRepository;
+import org.ssafy.d103.communities.repository.photo.MonthlyPhotoRankingRepository;
+import org.ssafy.d103.communities.repository.photo.PhotoDetailRepository;
+import org.ssafy.d103.communities.repository.photo.WeeklyPhotoRankingRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,10 +24,10 @@ public class PhotoRankingService {
     private final MonthlyPhotoRankingRepository monthlyPhotoRankingRepository;
 
     @Transactional
-    public void calculateDailyRankings() {
+    public List<PhotoDetail> calculateDailyRankings() {
         List<PhotoDetail> photoDetails = photoDetailRepository.findAll();
 
-        List<PhotoDetail> sortedPhotos = photoDetails.stream()
+        return photoDetails.stream()
                 .filter(p -> p.getDailyLikeUpdatedAt() != null)
                 .sorted((p1, p2) -> {
                     int compareLikes = p2.getDailyLikeCnt().compareTo(p1.getDailyLikeCnt());
@@ -34,31 +39,15 @@ public class PhotoRankingService {
                     }
                     return compareLikes;
                 })
-                .limit(9)
+                .limit(10)
                 .toList();
-
-        dailyPhotoRankingRepository.deleteAll();
-        dailyPhotoRankingRepository.flush();
-
-        LocalDateTime localDateTime = LocalDateTime.now();
-
-        for (int i = 0; i < sortedPhotos.size(); i++) {
-            PhotoDetail photoDetail = sortedPhotos.get(i);
-            DailyPhotoRanking dailyRanking = DailyPhotoRanking.builder()
-                    .dailyRanking(i + 1)
-                    .photo(photoDetail.getPhoto())
-                    .build();
-            dailyPhotoRankingRepository.save(dailyRanking);
-            photoDetail.resetDailyLikeCnt(localDateTime);
-            photoDetailRepository.save(photoDetail);
-        }
     }
 
     @Transactional
-    public void calculateWeeklyRankings() {
+    public List<PhotoDetail> calculateWeeklyRankings() {
         List<PhotoDetail> photoDetails = photoDetailRepository.findAll();
 
-        List<PhotoDetail> sortedPhotos = photoDetails.stream()
+        return photoDetails.stream()
                 .filter(p -> p.getWeeklyLikeUpdatedAt() != null)
                 .sorted((p1, p2) -> {
                     int compareLikes = p2.getWeeklyLikeCnt().compareTo(p1.getWeeklyLikeCnt());
@@ -70,31 +59,15 @@ public class PhotoRankingService {
                     }
                     return compareLikes;
                 })
-                .limit(9)
+                .limit(10)
                 .toList();
-
-        weeklyPhotoRankingRepository.deleteAll();
-        weeklyPhotoRankingRepository.flush();
-
-        LocalDateTime localDateTime = LocalDateTime.now();
-
-        for (int i = 0; i < sortedPhotos.size(); i++) {
-            PhotoDetail photoDetail = sortedPhotos.get(i);
-            WeeklyPhotoRanking weeklyRanking = WeeklyPhotoRanking.builder()
-                    .weeklyRanking(i + 1)
-                    .photo(photoDetail.getPhoto())
-                    .build();
-            weeklyPhotoRankingRepository.save(weeklyRanking);
-            photoDetail.resetWeeklyLikeCnt(localDateTime);
-            photoDetailRepository.save(photoDetail);
-        }
     }
 
     @Transactional
-    public void calculateMonthlyRankings() {
+    public List<PhotoDetail> calculateMonthlyRankings() {
         List<PhotoDetail> photoDetails = photoDetailRepository.findAll();
 
-        List<PhotoDetail> sortedPhotos = photoDetails.stream()
+        return photoDetails.stream()
                 .filter(p -> p.getMonthlyLikeUpdatedAt() != null)
                 .sorted((p1, p2) -> {
                     int compareLikes = p2.getMonthlyLikeCnt().compareTo(p1.getMonthlyLikeCnt());
@@ -106,23 +79,29 @@ public class PhotoRankingService {
                     }
                     return compareLikes;
                 })
-                .limit(9)
+                .limit(10)
                 .toList();
+    }
 
+    @Transactional
+    public void saveDailyPhotoRankings(List<DailyPhotoRanking> rankings) {
+        dailyPhotoRankingRepository.deleteAll();
+        dailyPhotoRankingRepository.flush();
+        dailyPhotoRankingRepository.saveAll(rankings);
+    }
+
+    @Transactional
+    public void saveWeeklyPhotoRankings(List<WeeklyPhotoRanking> rankings) {
+        weeklyPhotoRankingRepository.deleteAll();
+        weeklyPhotoRankingRepository.flush();
+        weeklyPhotoRankingRepository.saveAll(rankings);
+    }
+
+    @Transactional
+    public void saveMonthlyPhotoRankings(List<MonthlyPhotoRanking> rankings) {
         monthlyPhotoRankingRepository.deleteAll();
         monthlyPhotoRankingRepository.flush();
-
-        LocalDateTime localDateTime = LocalDateTime.now();
-
-        for (int i = 0; i < sortedPhotos.size(); i++) {
-            PhotoDetail photoDetail = sortedPhotos.get(i);
-            MonthlyPhotoRanking monthlyRanking = MonthlyPhotoRanking.builder()
-                    .monthlyRanking(i + 1)
-                    .photo(photoDetail.getPhoto())
-                    .build();
-            monthlyPhotoRankingRepository.save(monthlyRanking);
-            photoDetail.resetMonthlyLikeCnt(localDateTime);
-            photoDetailRepository.save(photoDetail);
-        }
+        monthlyPhotoRankingRepository.saveAll(rankings);
     }
+
 }
