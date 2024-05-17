@@ -4,6 +4,7 @@ import styles from './css/MyPage.module.css';
 import editStyles from './css/MyPageEdit.module.css';
 import { searchProfile, editBackgroundImg, editProfile } from '../../apis/memberApi';
 import useLoginStatus from '../stores/member';
+import { useNavigate } from 'react-router-dom';
 
 interface memberInfoInterface { 
 	memberId: number;
@@ -46,6 +47,7 @@ const MyPageEdit: React.FC = () =>{
 	backgroundImgFile
 	const [profileImgFile, setProfileImgFile] = useState<File | null>(null);
 	const { updateLoginStatus } = useLoginStatus();
+	const navigate = useNavigate();
 
 	useEffect(()=>{
 		loadMemberInfo();
@@ -114,8 +116,8 @@ const MyPageEdit: React.FC = () =>{
 		.then(res=>{
 			if(res){
 				alert('정보 수정에 성공하였습니다!');
-				localStorage.setItem('profileUrl', profileImg as string)
 				updateLoginStatus(true);
+				navigate(-1);
 			}
 			else{
 				alert('중복된 닉네임입니다.')
@@ -154,20 +156,24 @@ const MyPageEdit: React.FC = () =>{
 							<tbody>
 							<tr>
 								<th>Nickname</th>
-								<td><input name='nickname' value={memberInfo.nickname} onChange={onChangeHandler}/></td>
+								<td><input name='nickname' value={memberInfo.nickname || ''} onChange={onChangeHandler}/></td>
+							</tr>
+							<tr>
+								<th>Introduction</th>
+								<td><input name='introduction' value={memberInfo.introduction || ''} onChange={onChangeHandler}/></td>
 							</tr>
 							<tr>
 								<th>Password</th>
-								<td><input name='password' value={memberInfo.password} onChange={onChangeHandler}/></td>
+								<td><input name='password' value={memberInfo.password || ''} onChange={onChangeHandler}/></td>
 							</tr>
 							<tr>
 								<th>Birthyear</th>
-								<td><input name='birthYear' type='number'  value={memberInfo.birthYear} onChange={onChangeHandler}/></td>
+								<td><input name='birthYear' type='number'  value={memberInfo.birthYear || ''} onChange={onChangeHandler}/></td>
 							</tr>
 							<tr>
 								<th>MyCamera</th>
 								<td style={{paddingLeft: '15px'}}>
-									<select style={{height: '60px', outline: 'none'}} name='camera' onChange={onSelectHandler}>
+									<select style={{height: '60px', outline: 'none'}} name='camera' key={memberInfo.camera} defaultValue={memberInfo.camera} onChange={onSelectHandler}>
 										<option value="FUJI">FUJI</option>
 										<option value="CANON">CANON</option>
 										<option value="NIKON">NIKON</option>
@@ -177,15 +183,15 @@ const MyPageEdit: React.FC = () =>{
 							</tr>
 							<tr>
 								<th>Useyear</th>
-								<td><input name='useYear' type='number' value={memberInfo.useYear} onChange={onChangeHandler}/></td>
+								<td><input name='useYear' type='number' value={memberInfo.useYear || 0} onChange={onChangeHandler}/></td>
 							</tr>
 							<tr>
 								<th>Country</th>
-								<td><input name='country' value={memberInfo.country} onChange={onChangeHandler}/></td>
+								<td><input name='country' value={memberInfo.country || ''} onChange={onChangeHandler}/></td>
 							</tr>
 							<tr>
 								<th>City</th>
-								<td><input name='city' value={memberInfo.city} onChange={onChangeHandler}/></td>
+								<td><input name='city' value={memberInfo.city || ''} onChange={onChangeHandler}/></td>
 							</tr>
 							</tbody>
 							

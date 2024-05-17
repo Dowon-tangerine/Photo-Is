@@ -106,6 +106,9 @@ const Header: React.FC = () => {
                             alt="Profile"
                             className={headerStyle["btn-profile"]}
                             onClick={() => navigate("/mypage")}
+                            style={{
+                                cursor:'pointer'
+                            }}
                         />
                     ) : (
                         <button className={headerStyle["btn-signin"]} onClick={() => navigate("/signin")}>
