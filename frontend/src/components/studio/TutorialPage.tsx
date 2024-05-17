@@ -16,6 +16,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { createMotionBlurMaterial } from "./element/MotionBlurShader";
 import { createExposureMaterial } from "./element/ExposureShader"; // Import the ExposureShader
+import Modal from "./element/Modal";
 
 extend({ EffectComposer, RenderPass, ShaderPass });
 
@@ -62,6 +63,8 @@ function Effects({ shutterSpeed }: { shutterSpeed: number }) {
 }
 
 const TutorialPage = () => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [ImgUrl, setImgUrl] = useState<string | null>(null);
     const [takeScreenshot, setTakeScreenshot] = useState<(() => void) | null>(null);
     const { iso, shutterSpeed, aperture, exposure } = useCameraStore();
 
@@ -72,24 +75,33 @@ const TutorialPage = () => {
                     <Canvas gl={{ alpha: true }} shadows camera={{ position: [0, 0, 5], fov: 50 }}>
                         <ambientLight intensity={1} />
                         <directionalLight position={[10, 10, 10]} intensity={1} />
-                        <Capture setTakeScreenshot={setTakeScreenshot} />
+                        <Capture
+                            setTakeScreenshot={setTakeScreenshot}
+                            setImgUrl={setImgUrl}
+                            setModalIsOpen={setModalIsOpen}
+                        />
                         <CameraController />
                         <ExposureControl />
                         <Spinner />
                         <Effects shutterSpeed={shutterSpeed} />
                     </Canvas>
+                    {modalIsOpen && ImgUrl ? <Modal setModalIsOpen={setModalIsOpen} ImgUrl={ImgUrl}></Modal> : null}
                     <div className={StudioStyle.imageOverlay}>
                         <img src="/imgs/viewFinder.png" alt="Overlay Image" style={{ width: "100%", height: "100%" }} />
                     </div>
                     <div className="mt-6 setting-info flex justify-center items-center">
-                        <div className="font-digital  text-[45px] mx-10 text-green-400">F {aperture}</div>
+                        <div className="font-digital   text-[45px] mx-10 text-green-400">F {aperture}</div>
                         {shutterSpeed === 1 ? (
-                            <div className="font-digital  text-[45px] mx-10 text-green-400">SS 1</div>
+                            <div className="font-digital  text-[45px] mx-10 text-green-400"> 1</div>
                         ) : (
-                            <div className="font-digital  text-[45px] mx-10 text-green-400">SS 1/ {shutterSpeed}</div>
+                            <div className="font-digital  text-[45px] mx-10 text-green-400"> 1 / {shutterSpeed} </div>
                         )}
                         <div className="font-digital text-[45px] mx-10 text-green-400">{iso} </div>
-                        <div className="font-digital text-[45px] mx-10 text-green-400">{exposure} EV</div>
+                        {exposure > 0 ? (
+                            <div className="font-digital text-[45px] mx-10 text-green-400"> +{exposure} EV</div>
+                        ) : (
+                            <div className="font-digital text-[45px] mx-10 text-green-400">{exposure} EV</div>
+                        )}
                     </div>
                 </div>
                 <div className=" w-[300px] border-l-[1px] bg-black h-full flex flex-col items-center">
