@@ -51,6 +51,7 @@ async def chat(request: ChatSessionRequestDto):
                 "The questioner is a beginner who is new to photography and cameras.\n"
                 "Explain complex camera concepts in simple terms. Give examples if necessary.\n"
                 "Please answer all the answers in Korean."
+                "max_tokens = 500"
             )}
         ]
         if request.messages:
@@ -61,7 +62,7 @@ async def chat(request: ChatSessionRequestDto):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=formatted_messages,
-            max_tokens=300,  # 응답의 최대 토큰 수
+            max_tokens=500,  # 응답의 최대 토큰 수
         )
 
         # API 응답으로 챗봇의 답변을 반환
