@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -133,6 +134,19 @@ public class PhotoDetail {
     public void resetMonthlyLikeCnt(LocalDateTime localDateTime) {
         this.monthlyLikeCnt = 0;
         this.monthlyLikeUpdatedAt = localDateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhotoDetail that = (PhotoDetail) o;
+        return Objects.equals(photoDetailId, that.photoDetailId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(photoDetailId);
     }
 
 }

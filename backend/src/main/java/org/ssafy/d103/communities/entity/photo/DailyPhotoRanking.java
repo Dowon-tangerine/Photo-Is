@@ -28,7 +28,7 @@ public class DailyPhotoRanking {
         this.photo = photo;
     }
 
-    public DailyPhotoRanking of(Integer dailyRanking, Photo photo) {
+    public static DailyPhotoRanking of(Integer dailyRanking, Photo photo) {
         return builder()
                 .dailyRanking(dailyRanking)
                 .photo(photo)
