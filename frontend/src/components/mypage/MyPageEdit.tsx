@@ -3,6 +3,7 @@ import './css/MyPageEdit.module.css';
 import styles from './css/MyPage.module.css';
 import editStyles from './css/MyPageEdit.module.css';
 import { searchProfile, editBackgroundImg, editProfile } from '../../apis/memberApi';
+import useLoginStatus from '../stores/member';
 
 interface memberInfoInterface { 
 	memberId: number;
@@ -44,6 +45,7 @@ const MyPageEdit: React.FC = () =>{
 	const [backgroundImgFile, setBackgroundImgFile] = useState<File | null>(null);
 	backgroundImgFile
 	const [profileImgFile, setProfileImgFile] = useState<File | null>(null);
+	const { updateLoginStatus } = useLoginStatus();
 
 	useEffect(()=>{
 		loadMemberInfo();
@@ -75,7 +77,6 @@ const MyPageEdit: React.FC = () =>{
 
 	const onSelectHandler = (e: React.ChangeEvent<HTMLSelectElement>)=>{
 		const name = e.target.name;
-		alert(name)
 		setMemberInfo({
 			...memberInfo,
 			[name]: e.target.value
@@ -113,6 +114,8 @@ const MyPageEdit: React.FC = () =>{
 		.then(res=>{
 			if(res){
 				alert('정보 수정에 성공하였습니다!');
+				localStorage.setItem('profileUrl', profileImg as string)
+				updateLoginStatus(true);
 			}
 			else{
 				alert('중복된 닉네임입니다.')
