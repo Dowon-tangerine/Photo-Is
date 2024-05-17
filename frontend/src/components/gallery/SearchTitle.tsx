@@ -28,6 +28,7 @@ interface metadataInterface {
     latitude : number,
     longtitude : number,
 }
+
 interface photoDetailInterface {
     photoId: number,
     memberId : number,
