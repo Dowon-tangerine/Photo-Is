@@ -17,9 +17,14 @@ public class GetSelectMemberResponse {
     private int followingCnt;
     private int followerCnt;
     private int photoCnt;
+    private int useYear;
+    private int birthYear;
+    private Members.Camera camera;
+    private String city;
+    private String country;
 
     @Builder
-    private GetSelectMemberResponse(Long memberId, String nickname, String profileUrl, String backgroundUrl, String introduction, int followingCnt, int followerCnt, int photoCnt) {
+    private GetSelectMemberResponse(Long memberId, String nickname, String profileUrl, String backgroundUrl, String introduction, int followingCnt, int followerCnt, int photoCnt, int useYear, int birthYear, Members.Camera camera, String city, String country) {
         this.memberId = memberId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
@@ -28,6 +33,11 @@ public class GetSelectMemberResponse {
         this.followingCnt = followingCnt;
         this.followerCnt = followerCnt;
         this.photoCnt = photoCnt;
+        this.useYear = useYear;
+        this.birthYear = birthYear;
+        this.camera = camera;
+        this.city = city;
+        this.country = country;
     }
 
     public static GetSelectMemberResponse from(Members member) {
@@ -40,6 +50,11 @@ public class GetSelectMemberResponse {
                 .followingCnt(member.getFollowingCnt())
                 .followerCnt(member.getFollowerCnt())
                 .photoCnt(member.getPhotoCnt())
+                .useYear(member.getUseYear())
+                .birthYear(member.getBirthYear())
+                .camera(member.getCamera())
+                .city(member.getCity())
+                .country(member.getCountry())
                 .build();
     }
 }
