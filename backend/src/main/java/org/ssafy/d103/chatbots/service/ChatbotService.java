@@ -28,7 +28,8 @@ public class ChatbotService {
 
     @PostConstruct
     private void initWebClient() {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:9001").build();
+        //this.webClient = webClientBuilder.baseUrl("http://localhost:9001").build();
+        this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io").build();
     }
 
     public Mono<String> getChatbotResponse(String sessionId, String userId, String question) {
