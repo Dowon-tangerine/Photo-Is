@@ -126,6 +126,10 @@ const SearchName: React.FC = () => {
             const tmp = [ ...imgArr];
             tmp[idx].follow = res;
             setImgArr(tmp);
+            getSearching("author", word, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
         })
     }
 
@@ -135,16 +139,26 @@ const SearchName: React.FC = () => {
             const tmp = [ ...imgArr];
             tmp[idx].follow = res;
             setImgArr(tmp);
+            getSearching("author", word, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
         })
     }
     
     const openPhotoDetails = function(){
         setImgDetail(!imgDetail);
     }
+
+    const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === 'Enter'){
+            moveToSearch();
+        }
+    }
     
     return (
         <>
-        <div className={styles.main_container}>
+        <div className={styles.main_container} style={{marginTop: '77px'}}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
@@ -163,7 +177,7 @@ const SearchName: React.FC = () => {
                     )}
                 </div>
                 <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}}></input>
+                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}} onKeyDown={onKeyDownHandler}></input>
                 <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
             </div>
 
