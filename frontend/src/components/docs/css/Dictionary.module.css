@@ -1,34 +1,32 @@
+.annotationLine {
+  position: absolute;
+  width: 2px;
+  background: red;
+  transform-origin: top left;
+}
+
 .annotationModal {
-  position: fixed;
-  top: 20%; /* Adjusted top position */
-  left: 70%; /* Adjusted left position */
-  transform: translate(-50%, -50%);
-  width: 300px;
-  font-size: 12px;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  z-index: 1000;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  background: white;
   padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
-.annotationModal .modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.annotationTitle {
+  margin: 0;
+  padding: 0;
 }
 
-.annotationModal .annotationTitle {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.annotationModal .closeButton {
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
-  font-size: 18px;
-  padding: 5px;
 }
 
 /* 기존 스타일 추가 */
@@ -47,13 +45,15 @@
 
 .sidebar {
   width: 250px;
-  background-color: #000000;
+  background-color: #000;
   color: white;
   padding: 20px;
   overflow-y: auto;
+  transition: all 0.3s ease;
 }
 
-.sidebarTop, .sidebarBottom {
+.sidebarTop,
+.sidebarBottom {
   margin-bottom: 20px;
 }
 
@@ -73,13 +73,17 @@
   margin-bottom: 20px;
 }
 
-.sidebarBottom ol {
+.sidebarBottom div {
   list-style: none;
   padding: 0;
 }
 
 .sidebarBottom button:hover {
   background-color: #555;
+}
+
+.sidebarBottom .dropdownContent button {
+  background-color: grey;
 }
 
 .searchContainer {
@@ -140,8 +144,8 @@
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
   display: flex;
   flex-direction: column;
 }
@@ -266,10 +270,52 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 2000;
 }
 
 .chatButton img {
   width: 24px;
   height: 24px;
+}
+
+/* New styles for the right-side detail window */
+.sidebarDetail {
+  position: fixed;
+  top: 10%;
+  right: -450px;
+  width: 450px;
+  height: 100%;
+  background-color: #f9f9f9;
+  border-left: 1px solid #ccc;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebarDetailOpen {
+  right: 0;
+}
+
+.sidebarDetailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ccc;
+}
+
+.sidebarDetailContent {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
