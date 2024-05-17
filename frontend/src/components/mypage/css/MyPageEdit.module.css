@@ -16,16 +16,21 @@
 
 .input_container{
 	width: 500px;
-	border: 1px solid red;
 	background-color: pink;
 	position: relative;
 	display: flex;
 }
 td, th{
 	border-spacing: 0px;
-	border: 1px solid black;
+	border: 1px solid rgb(154, 154, 154);
 	border-left: none;
 	font-family: "부크크명조bold";
+}
+th{
+	width: 200px;
+	font-size: 20px;
+	text-align: left;
+	padding-left: 20px;
 }
 td{
 	font-family: "부크크고딕bold";
@@ -38,14 +43,22 @@ table input{
 	outline: none;
 }
 .button{
-	width: 200px;
+	width: 400px;
 	height: 50px;
 	background: black;
 	color: white;
 	font-family: "부크크명조bold";
-	text-align: center;
-	border: 1px solid red;
-	margin-top: 500px;
+	margin-top: 680px;
 	margin-bottom: 100px;
 	cursor: pointer;
+	text-align: center;
+	padding-top: 10px;
+	border-radius: 10px;
+	font-size: 20px;
+}
+.h1{
+	font-family: "부크크명조bold";
+	font-size:50px;
+	text-align: left;
+	margin-bottom: 20px;
 }
