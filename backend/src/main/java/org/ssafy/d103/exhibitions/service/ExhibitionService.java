@@ -204,7 +204,7 @@ public class ExhibitionService {
         Members target = memberRepository.findById(memberId)
                 .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_MEMBER));
 
-        List<Exhibitions> exhibitionList = exhibitionRepository.findAllByMemberId(target)
+        List<Exhibitions> exhibitionList = exhibitionRepository.findAllByMemberId(target.getId())
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
 
         return GetMemberExhibitionListResponse.from(exhibitionList);

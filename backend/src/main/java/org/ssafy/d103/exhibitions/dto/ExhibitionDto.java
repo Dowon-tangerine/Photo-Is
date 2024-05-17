@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class ExhibitionDto {
-
+//프로필 사진, 좋아요 여부,
     private Long exhibitionId;
     private Long memberId;
     private String nickname;

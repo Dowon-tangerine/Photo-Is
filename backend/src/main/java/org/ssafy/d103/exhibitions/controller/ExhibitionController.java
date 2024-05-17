@@ -98,7 +98,7 @@ public class ExhibitionController {
      * 상대방 전시회 목록 조회
      */
     @Operation(summary = "상대방 전체목록 조회 요청")
-    @GetMapping("/{member-id}")
+    @GetMapping("/all/{member-id}")
     public ApiResponseDto<?> selectExhibitionList(Authentication authentication, @PathVariable("member-id") Long memberId) {
         return ResponseUtils.ok(exhibitionService.selectMemberExhibitionList(authentication, memberId), MsgType.SELECT_EXHIBITION_LIST_SUCCESSFULLY);
     }
