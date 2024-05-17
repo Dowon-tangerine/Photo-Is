@@ -114,6 +114,7 @@ export const editProfile = async (memberInfo: FormData) => {
 		if(res.data.errorResponse){
 			return false;
 		}
+		localStorage.setItem('profileUrl', res.data.data.profileUrl);
 		return res.data.data;
 	})
 	.catch(err => {
