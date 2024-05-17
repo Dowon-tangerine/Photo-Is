@@ -28,7 +28,7 @@ public class MonthlyPhotoRanking {
         this.photo = photo;
     }
 
-    public MonthlyPhotoRanking of(Integer monthlyRanking, Photo photo) {
+    public static MonthlyPhotoRanking of(Integer monthlyRanking, Photo photo) {
         return builder()
                 .monthlyRanking(monthlyRanking)
                 .photo(photo)
