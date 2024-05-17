@@ -69,7 +69,7 @@ const Header: React.FC = () => {
     };
 
     return (
-        <div ref={headerRef} className="header">
+        <div ref={headerRef} className="header" style={{position:'fixed', width: '100%', zIndex:'9', top:'1px'}}>
             <header className="h-[80px] bg-black text-white font-bookkMyungjoBold p-3 flex justify-between items-center">
                 <button className={headerStyle.logo} onClick={() => navigate("/")}>
                     PhotoIs

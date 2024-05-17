@@ -34,7 +34,7 @@ function StudioEnterPage() {
                     backgroundImage: `url(${tutorialPicture})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    height: sectionHeight,
+                    height: '55vh',
                 }}
             >
                 <p className={StudioStyle.enterTitle}>TUTORIAL</p>
