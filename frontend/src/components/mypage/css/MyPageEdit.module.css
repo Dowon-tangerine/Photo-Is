@@ -1,0 +1,47 @@
+@font-face {
+	font-family: "부크크명조bold";
+	src: url(/fonts/부크크명조_굵은글씨.ttf);
+}
+@font-face {
+	font-family: "부크크고딕bold";
+	src: url(/fonts/부크크고딕_굵은글씨.ttf);
+}
+.info{
+	width: 100%;
+	height: 150px;
+	margin-top: 60px;    
+	font-family: "부크크고딕bold";
+	font-size: 30px;
+}
+
+.input_container{
+	width: 500px;
+	border: 1px solid red;
+	background-color: pink;
+	position: relative;
+	display: flex;
+}
+td, th{
+	border-spacing: 0px;
+	border: 1px solid black;
+	border-left: none;
+	font-family: "부크크명조bold";
+}
+td{
+	font-family: "부크크고딕bold";
+	border-right: none;
+	padding-left: 20px;
+}
+table input{
+	height: 55px;
+	width: 100%;
+	outline: none;
+}
+.button{
+	width: 200px;
+	height: 100px;
+	background: black;
+	color: white;
+	font-family: "부크크명조bold";
+	text-align: center;
+}

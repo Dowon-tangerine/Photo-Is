@@ -243,6 +243,9 @@ const MyPage: React.FC = () => {
         setFinExhibitionDetail(!finExhibitionDetail);
     }
 
+    const handleEditClick = () =>{
+        navigate('/myPageEdit');
+    }
     const tabArr2=[{
         tabTitle:(
             <>
@@ -1336,7 +1339,7 @@ const MyPage: React.FC = () => {
                 <div className={styles.info_container}>
                     <img src={memberInfo.profileUrl} alt='프로필' className={styles.profile}></img>
                     <div className={styles.info}>
-                        <div className={styles.edit_btn}>
+                        <div className={styles.edit_btn} onClick={handleEditClick}>
                             <p>Edit</p>
                         </div>
                         <p>{memberInfo.nickname}</p>
