@@ -27,6 +27,7 @@ import org.ssafy.d103.exhibitions.repository.ExhibitionRepository;
 import org.ssafy.d103.follows.entity.Follows;
 import org.ssafy.d103.follows.repository.FollowRepository;
 import org.ssafy.d103.members.entity.Members;
+import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class ExhibitionService {
     private final ExhibitionLikeRepository exhibitionLikeRepository;
     private final FollowRepository followRepository;
     private final PhotoRepository photoRepository;
+    private final MemberRepository memberRepository;
     private final CommonService commonService;
 
     @Transactional
@@ -181,8 +183,7 @@ public class ExhibitionService {
                 .orElse(null);
         log.warn("{}", followList.size());
 
-        List<Exhibitions> exhibitionList = exhibitionRepository.findAllExhibitions()
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+        List<Exhibitions> exhibitionList = exhibitionRepository.findAll();
 
         List<Exhibitions> followExhibitionList = new ArrayList<>();
 
@@ -196,5 +197,16 @@ public class ExhibitionService {
         }
 
         return GetExhibitionListResponse.from(followExhibitionList, exhibitionList);
+    }
+
+    public GetMemberExhibitionListResponse selectMemberExhibitionList(Authentication authentication, Long memberId) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+        Members target = memberRepository.findById(memberId)
+                .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_MEMBER));
+
+        List<Exhibitions> exhibitionList = exhibitionRepository.findAllByMemberId(target)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        return GetMemberExhibitionListResponse.from(exhibitionList);
     }
 }

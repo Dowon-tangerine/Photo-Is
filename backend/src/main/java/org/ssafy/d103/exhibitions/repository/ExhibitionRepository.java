@@ -19,6 +19,7 @@ public interface ExhibitionRepository extends JpaRepository<Exhibitions, Long> {
     @Query(value =
             "SELECT * " +
             "FROM exhibitions " +
-            "WHERE end_date >= NOW()", nativeQuery = true)
-    Optional<List<Exhibitions>> findAllExhibitions();
+            "WHERE end_date >= NOW() " +
+            "AND member_id = :memberId", nativeQuery = true)
+    Optional<List<Exhibitions>> findAllByMemberId(Members memberId);
 }
