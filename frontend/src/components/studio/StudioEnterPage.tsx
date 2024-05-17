@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import tutorialPicture from "/imgs/tutorialBackImg.png";
-import landscapePicture from "/imgs/landScapeBackImg.png";
-import portraitPicture from "/imgs/portraitBackImg.png";
+import tutorialPicture from "/imgs/tutorialBackImg.jpg";
+import landscapePicture from "/imgs/landScapeBackImg.jpg";
+import portraitPicture from "/imgs/portraitBackImg.jpg";
 import StudioStyle from "./css/Studio.module.css";
 
 function StudioEnterPage() {
@@ -34,7 +34,7 @@ function StudioEnterPage() {
                     backgroundImage: `url(${tutorialPicture})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    height: sectionHeight,
+                    height: '55vh',
                 }}
             >
                 <p className={StudioStyle.enterTitle}>TUTORIAL</p>
