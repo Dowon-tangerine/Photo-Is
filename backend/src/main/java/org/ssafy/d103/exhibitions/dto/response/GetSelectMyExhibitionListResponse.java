@@ -22,13 +22,10 @@ public class GetSelectMyExhibitionListResponse {
         this.content = content;
     }
 
-    public static GetSelectMyExhibitionListResponse from(List<Exhibitions> exhibitionList) {
+    public static GetSelectMyExhibitionListResponse from(List<ExhibitionDto> exhibitionDtoList) {
         return builder()
-                .totalCnt(exhibitionList.size())
-                .content(exhibitionList
-                        .stream()
-                        .map(ExhibitionDto::from)
-                        .collect(Collectors.toList()))
+                .totalCnt(exhibitionDtoList.size())
+                .content(exhibitionDtoList)
                 .build();
     }
 }
