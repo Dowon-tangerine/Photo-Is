@@ -45,6 +45,11 @@ public class FollowService {
                     .build();
         followRepository.save(follow);
 
+        member.updateFollowCnt(member.getFollowerCnt(), member.getFollowingCnt()+1);
+        target.updateFollowCnt(target.getFollowerCnt()+1, target.getFollowingCnt());
+        memberRepository.save(member);
+        memberRepository.save(target);
+
         return true;
     }
 
@@ -59,6 +64,11 @@ public class FollowService {
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_FOLLOW));
 
         followRepository.delete(follow);
+
+        member.updateFollowCnt(member.getFollowerCnt(), member.getFollowingCnt()-1);
+        target.updateFollowCnt(target.getFollowerCnt()-1, target.getFollowingCnt());
+        memberRepository.save(member);
+        memberRepository.save(target);
 
         return false;
     }

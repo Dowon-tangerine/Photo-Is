@@ -7,6 +7,7 @@ import org.ssafy.d103.members.entity.Members;
 public class PutUpdateMemberRequest {
 
     private String password;
+    private String introduction;
     private String nickname;
     private int birthYear;
     private int useYear;
