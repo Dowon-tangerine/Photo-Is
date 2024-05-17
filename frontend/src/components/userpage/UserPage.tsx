@@ -4,7 +4,7 @@ import Masonry from 'react-masonry-css';
 import MapComponent from '../gallery/MapComponent';
 import { useLocation } from "react-router-dom";
 import { searchProfile } from '../../apis/memberApi';
-import { getPhoto, getExhibition } from '../../apis/otherMemberApi';
+import { getPhoto, getExhibition, getExhibitionDetail, changeExhibitionLike } from '../../apis/otherMemberApi';
 import { getPhotoDetail, postComment, getComment, postLiked, postFollow, deleteUnFollow } from '../../apis/galleryApi';
 
 
@@ -26,7 +26,18 @@ interface exhibitionInterface {
     profileUrl: string,
     nickname: string,
     likeCnt: number,
-    isLiked: boolean,
+    liked: boolean,
+}
+interface exhibitionWithoutLikedInterface {
+    exhibitionId: number,
+    title: string,
+    posterUrl: string,
+    startDate: string,
+    endDate: string,
+    profileUrl: string,
+    nickname: string,
+    likeCnt: number,
+    liked: boolean,
 }
 
 interface memberInfoInterface { 
@@ -108,6 +119,7 @@ const UserPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
     const [exhibitionArr, setExhibitionArr] = useState<exhibitionInterface[]>([]);
+    const [detailedExhibition, setDetailedExhibition] = useState<exhibitionWithoutLikedInterface>();
     // const [profileArr, setProfileArr] = useState<profileInterface[]>([]);
 
     // 에러 방지를 위해 무의미하게 써놓은 변수들(꼭 지우시오)
@@ -191,23 +203,35 @@ const UserPage: React.FC = () => {
 
         setIsLoading(false);
     };
-    
-    const [photoLiked2, setPhotoLiked2] = useState<boolean>(false);
 
-    const clickHeart2 = function(){
-        setPhotoLiked2(!photoLiked2);
-    }
-
-    const [photoLiked3, setPhotoLiked3] = useState<boolean>(false);
-
-    const clickHeart3 = function(){
-        setPhotoLiked3(!photoLiked3);
+    const clickHeart3 = function(exhibitionId: number | undefined){
+        setDetailedExhibition({
+            ...detailedExhibition!,
+            liked: !detailedExhibition!.liked
+        })
+        changeExhibitionLike(exhibitionId!)
     }
 
     const [exhibitionDetail, setExhibitionDetail] = useState<boolean>(false);
 
-    const openExhibitionDetails = function(){
-        setExhibitionDetail(!exhibitionDetail);
+    const openExhibitionDetails = function(exhibitionId: number){
+        // 상세 정보 요청
+        document.body.style.overflow = 'hidden';
+        getExhibitionDetail(exhibitionId)
+        .then(res=>{
+            setDetailedExhibition(res);
+            setExhibitionDetail(true);
+        })
+    }
+    const closeExhibitionDetails = ()=>{
+        document.body.style.overflow = 'auto';
+        getExhibition(targetId)
+        .then((res) => {
+            if(res){
+                setExhibitionArr(res);
+                setExhibitionDetail(false);
+            }
+        })
     }
 
     const tabArr=[{
@@ -218,7 +242,6 @@ const UserPage: React.FC = () => {
                         <p onClick={() => tabClickHandler(0)}>Public</p>
                     </div>
                 </div>
-
             </>
         ),
         tabCont:(
@@ -266,21 +289,21 @@ const UserPage: React.FC = () => {
             <div className={styles.profile_card_container}>
                 {exhibitionArr &&
                     exhibitionArr.map((Imgs: exhibitionInterface, idx) => (
-                        <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails();}}>
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails(Imgs.exhibitionId);}}>
                             {/* 내 전시회 목록은 프로필사진이 없어야 함 */}
                             <img src={Imgs.posterUrl} alt='프로필' className={styles.card_img}/>
                             <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
                             
                             <div className={styles.card_whole_info}>
                                 <p className={styles.card_title}>{Imgs.title}</p>
-                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
+                                <p className={styles.card_date}>{Imgs.startDate.slice(0,10)} ~ {Imgs.endDate.slice(0,10)}</p>
                                 <div className={styles.photo_card_info}>
                                     {/* 내 전시회 목록은 프로필사진이 없어야 함 */}
                                     <img src={Imgs.profileUrl} alt='프로필 사진' className={styles.card_photo_profile}></img>
                                     <p className={styles.card_info_txt}>{Imgs.nickname}</p>
                                     <div className={styles.card_like_container}>
                                         <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
-                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
+                                        <img src={`/imgs/${Imgs.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.heart2}></img>
                                     </div>
                                 </div>
                             </div>
@@ -360,14 +383,6 @@ const UserPage: React.FC = () => {
         })
     }
 
-
-    const exhibition = {
-        thumbNail : 'imgs/photo4.jpg',
-        title : '먹을 수 없는 감은 장난감ㅋ',
-        date : '2024/04/17 ~ 2024/05/17',
-        description : '제 전시회로 말할거 같으면 ~~~~~~~ 짱구 보고 오세요 보고 오면 이해됨 이상무 전현무 깔깔'
-    }
-
     const [isFollowList, setIsFollowList] = useState<boolean>(false);
 
     const openFollowList = function(){
@@ -381,6 +396,14 @@ const UserPage: React.FC = () => {
                 ...memberInfo!,
                 follow: res
             });
+            searchProfile(targetId)
+            .then((res)=>{
+                if(res){
+                    setMemberInfo(res);
+                }
+                else{
+                    console.log("예기치 못한 에러가 발생했습니다.");
+                }})
         })
     }
 
@@ -391,6 +414,14 @@ const UserPage: React.FC = () => {
                 ...memberInfo!,
                 follow: res
             });
+            searchProfile(targetId)
+            .then((res)=>{
+                if(res){
+                    setMemberInfo(res);
+                }
+                else{
+                    console.log("예기치 못한 에러가 발생했습니다.");
+                }})
         })
     }
 
@@ -493,27 +524,27 @@ const UserPage: React.FC = () => {
         {exhibitionDetail && (
             <>
             <div className={styles.modal_background}> </div>
-            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionDetails();}}></img>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={closeExhibitionDetails}></img>
             <div className={styles.open_exhibition_modal_container}>
-            <img src={`/imgs/${photoLiked3 ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3();}}></img>
+            <img src={`/imgs/${detailedExhibition?.liked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3(detailedExhibition?.exhibitionId);}}></img>
                 <p className={styles.open_exhibition_title}>Exhibition Info</p>
                 <div className={styles.exhibition_info}>
                     <div className={styles.exhibition_photo_intro_container2}>
-                        <img src={exhibition.thumbNail} alt='썸네일' className={styles.is_img}></img>
+                        <img src={detailedExhibition?.posterUrl} alt='썸네일' className={styles.is_img}></img>
                     </div>
 
                     <div className={styles.exhibition_photo_info_container2}>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Title</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.title}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.title}</p>
                         </div>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Date</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.date}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.startDate} ~ {detailedExhibition?.endDate}</p>
                         </div>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Description</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.description}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>수정해야함</p>
                         </div>
                     </div>
                 </div>
@@ -535,7 +566,7 @@ const UserPage: React.FC = () => {
                         </div>
                         <p>{memberInfo.nickname}</p>
                         <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" }}>Camera using by {memberInfo.useYear} years</p>
-                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" , cursor : 'pointer' }} onClick={() => {openFollowList();}}>{memberInfo.followerCnt} Follower / {memberInfo.followingCnt} Following</p>
+                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold"}} onClick={() => {openFollowList();}}>{memberInfo.followerCnt} Follower / {memberInfo.followingCnt} Following</p>
                         <p style={{fontSize : '16px'}}>{memberInfo.introduction}</p>
                     </div>
 
