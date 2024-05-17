@@ -271,7 +271,7 @@ public class ExhibitionService {
 
         // 좋아요 리스트 조회
         List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
-                .orElse(null);
+                .orElse(new ArrayList<>());
 
         Members target = memberRepository.findById(memberId)
                 .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_MEMBER));
@@ -282,22 +282,20 @@ public class ExhibitionService {
 
         List<ExhibitionDto> exhibitionDtoList = new ArrayList<>();
 
-        if(exhibitionLikeList != null){
-            for(ExhibitionLike e: exhibitionLikeList){
-                for(Exhibitions ex: exhibitionList){
-                    if(e.getExhibitionId().getId() == ex.getId()) {
-                        exhibitionDtoList.add(ExhibitionDto.from(ex, true));
-                    }
-                    exhibitionDtoList.add(ExhibitionDto.from(ex, false));
-                }
-            }
-        }
-        else{
-            for(Exhibitions ex: exhibitionList){
+        // 좋아요가 없는 경우 false로 전부 추가
+        if (exhibitionLikeList.isEmpty()) {
+            for (Exhibitions ex : exhibitionList) {
                 exhibitionDtoList.add(ExhibitionDto.from(ex, false));
+            }
+        } else {
+            for (Exhibitions ex : exhibitionList) {
+                boolean isLiked = exhibitionLikeList.stream()
+                        .anyMatch(e -> e.getExhibitionId().getId().equals(ex.getId()));
+                exhibitionDtoList.add(ExhibitionDto.from(ex, isLiked));
             }
         }
 
         return GetMemberExhibitionListResponse.from(exhibitionDtoList);
     }
+
 }
