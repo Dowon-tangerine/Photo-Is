@@ -154,7 +154,7 @@ public class MemberService {
 
         Members member = commonService.findMemberByAuthentication(authentication);
 
-        if(memberRepository.findMembersByNicknameAndDeletedAtIsNull(request.getNickname()).isPresent()){
+        if(!member.getNickname().equals(request.getNickname()) && memberRepository.findMembersByNicknameAndDeletedAtIsNull(request.getNickname()).isPresent()){
             throw new CustomException(ErrorType.DUPLICATED_NICKNAME);
         }
 
