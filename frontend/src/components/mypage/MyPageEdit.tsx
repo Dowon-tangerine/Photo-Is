@@ -42,6 +42,7 @@ const MyPageEdit: React.FC = () =>{
 	const [backgroundImg, setBackgroundImg] = useState<ArrayBuffer | string | null>(null);
 	const [profileImg, setProfileImg] = useState<ArrayBuffer | string | null>(null);
 	const [backgroundImgFile, setBackgroundImgFile] = useState<File | null>(null);
+	backgroundImgFile
 	const [profileImgFile, setProfileImgFile] = useState<File | null>(null);
 
 	useEffect(()=>{
