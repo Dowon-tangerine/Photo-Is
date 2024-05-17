@@ -32,7 +32,7 @@ import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -87,32 +87,26 @@ public class ExhibitionService {
         Members member = commonService.findMemberByAuthentication(authentication);
 
         List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
-                .orElse(null);
+                .orElse(new ArrayList<>());
 
         List<Exhibitions> exhibitionList = exhibitionRepository.findExhibitionsByMemberId(member)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
 
         List<ExhibitionDto> exhibitionDtoList = new ArrayList<>();
 
-        if(exhibitionLikeList != null) {
-            for(ExhibitionLike e: exhibitionLikeList) {
-                for(Exhibitions ex: exhibitionList) {
-                    if(Objects.equals(e.getExhibitionId().getId(), ex.getId())) {
-                        exhibitionDtoList.add(ExhibitionDto.from(ex, true));
-                        continue;
-                    }
-                    exhibitionDtoList.add(ExhibitionDto.from(ex, false));
-                }
-            }
-        }
-        else{
-            for(Exhibitions ex: exhibitionList) {
-                exhibitionDtoList.add(ExhibitionDto.from(ex, false));
-            }
+        // 좋아요 상태를 미리 확인하여 매핑
+        Set<Long> likedExhibitionIds = exhibitionLikeList.stream()
+                .map(e -> e.getExhibitionId().getId())
+                .collect(Collectors.toSet());
+
+        for (Exhibitions ex : exhibitionList) {
+            boolean isLiked = likedExhibitionIds.contains(ex.getId());
+            exhibitionDtoList.add(ExhibitionDto.from(ex, isLiked));
         }
 
         return GetSelectMyExhibitionListResponse.from(exhibitionDtoList);
     }
+
 
     public GetSelectExhibitionResponse selectExhibition(Authentication authentication, Long exhibitionId) {
 
@@ -211,58 +205,47 @@ public class ExhibitionService {
 
         // 좋아요 리스트 조회
         List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
-                .orElse(null);
+                .orElse(new ArrayList<>());
 
+        // 팔로우 리스트 조회
         List<Follows> followList = followRepository.findFollowsByFollowerId(member)
-                .orElse(null);
+                .orElse(new ArrayList<>());
 
+        // 모든 전시회 목록 조회
         List<Exhibitions> exhibitionList = exhibitionRepository.findAll();
 
+        // 팔로우한 사용자의 전시회 목록 생성
         List<Exhibitions> followExhibitionList = new ArrayList<>();
-
         for (Exhibitions e : exhibitionList) {
             for (Follows f : followList) {
-                if (e.getMemberId().getId() == f.getFollowingId().getId()) {
+                if (e.getMemberId().getId().equals(f.getFollowingId().getId())) {
                     followExhibitionList.add(e);
+                    break;
                 }
             }
         }
+
         List<ExhibitionDto> totalExhibitionDtoList = new ArrayList<>();
         List<ExhibitionDto> followExhibitionDtoList = new ArrayList<>();
 
-        if(exhibitionLikeList != null){
-            for(ExhibitionLike el: exhibitionLikeList){
-                // 팔로우 목록 체크
-                for(Exhibitions e: followExhibitionList){
-                    if(el.getExhibitionId().getId() == e.getId()){
-                        followExhibitionDtoList.add(ExhibitionDto.from(e, true));
-                        continue;
-                    }
-                    followExhibitionDtoList.add(ExhibitionDto.from(e, false));
-                }
-                // 언팔로우 목록 체크
-                for(Exhibitions e: exhibitionList){
-                    if(el.getExhibitionId().getId() == e.getId()){
-                        totalExhibitionDtoList.add(ExhibitionDto.from(e, true));
-                        continue;
-                    }
-                    totalExhibitionDtoList.add(ExhibitionDto.from(e, false));
-                }
-            }
+        for (Exhibitions e : followExhibitionList) {
+            boolean isLiked = exhibitionLikeList.stream()
+                    .anyMatch(el -> el.getExhibitionId().getId().equals(e.getId()));
+            followExhibitionDtoList.add(ExhibitionDto.from(e, isLiked));
         }
-        else{
-            // 팔로우 목록 체크
-            for(Exhibitions e: followExhibitionList){
-                followExhibitionDtoList.add(ExhibitionDto.from(e, false));
+
+        for (Exhibitions e : exhibitionList) {
+            if (followExhibitionList.contains(e)) {
+                continue; // 이미 followExhibitionDtoList에 추가된 전시회는 건너뜀
             }
-            // 언팔로우 목록 체크
-            for(Exhibitions e: exhibitionList){
-                totalExhibitionDtoList.add(ExhibitionDto.from(e, false));
-            }
+            boolean isLiked = exhibitionLikeList.stream()
+                    .anyMatch(el -> el.getExhibitionId().getId().equals(e.getId()));
+            totalExhibitionDtoList.add(ExhibitionDto.from(e, isLiked));
         }
 
         return GetExhibitionListResponse.from(followExhibitionDtoList, totalExhibitionDtoList);
     }
+
 
     public GetMemberExhibitionListResponse selectMemberExhibitionList(Authentication authentication, Long memberId) {
 
