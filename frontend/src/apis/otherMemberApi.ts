@@ -27,3 +27,33 @@ export const getExhibition = async (id : number) => {
     })
 }
 
+// 전시회 상세 정보 요청
+export const getExhibitionDetail = async (id : number) => {
+    const url = `/exhibitions/${id}`
+    return await instance.get(url)
+    .then(res => {
+        console.log(res);
+        return res.data.data;   
+    })
+    .catch(error => {
+        console.log(error);
+        return false;
+    })
+}
+
+// 전시회 좋아요 요청
+export const changeExhibitionLike = async (id : number) => {
+    const url = `/exhibitions/change-like`
+    return await instance.put(url, {
+        exhibitionId: id
+    })
+    .then(res => {
+        if(res){
+            return res.data.data;
+        }
+    })
+    .catch(error => {
+        console.log(error);
+        return false;
+    })
+}
