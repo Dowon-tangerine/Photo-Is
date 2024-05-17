@@ -19,7 +19,7 @@ public class ChatMessage {
     private String message;
     private String role; // "user" or "assistant"
 
-    @Column(updatable = false, insertable = false)
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @ManyToOne
