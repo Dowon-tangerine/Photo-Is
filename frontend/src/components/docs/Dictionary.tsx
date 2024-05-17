@@ -28,7 +28,11 @@ function Model() {
       }
     });
   }, [gltf]);
-  return <primitive object={gltf.scene} />;
+  return (
+    <group position={[-1, -1, 0]}>
+      <primitive object={gltf.scene} />
+    </group>
+  );
 }
 
 function Lights() {
@@ -53,7 +57,7 @@ function Lights() {
 function CameraController() {
   const { camera } = useThree();
   useEffect(() => {
-    camera.position.set(12, 12, 12);
+    camera.position.set(10, 10, 10);
   }, [camera]);
   return null;
 }
@@ -69,13 +73,15 @@ interface AnnotationsProps {
 
 function Annotations({ onAnnotationClick }: AnnotationsProps) {
   const annotations: Annotation[] = [
-    { position: [5, 8, -3.85], label: '다이얼 잠금 해제' },
-    { position: [-5.4, 7.5, -4.4], label: '노출 보정 다이얼' },
-    { position: [0, 2.1, 0], label: 'Hot Shoe' },
-    { position: [0, 1.8, -1.5], label: 'Viewfinder' },
-    { position: [-1.5, 1.8, -1.5], label: 'Flash' },
-    { position: [1.5, 1.8, -1.5], label: 'Exposure Compensation Dial' },
-    { position: [1.5, 1.8, 0], label: 'ISO Dial' },
+    { position: [-6.4, 6.7, -4.4], label: '노출 보정 다이얼' },
+    { position: [-6.5, 6.2, -2.7], label: 'Fn1 버튼' },
+    { position: [-5.1, 6.7, -2.6], label: '셔터 버튼' },
+    { position: [-3.1, 7.2, -3.7], label: '다이얼 잠금 해제' },
+    { position: [-3.5, 4.2, -2], label: 'Fn2 버튼' },
+    { position: [0.3, 7.8, -5], label: '핫 슈' },
+    { position: [4, 7.2, -3.85], label: '다이얼 잠금 해제' },
+    { position: [4.1, 0.7, -2.1], label: '초점 모드 셀렉터' },
+    { position: [-4.7, 5.9, -5.8], label: '후면 커맨드 다이얼' },
   ];
 
   return (
@@ -84,11 +90,11 @@ function Annotations({ onAnnotationClick }: AnnotationsProps) {
         <group key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
           <mesh position={[0, 0.225, 0]}>
             <sphereGeometry args={[0.15, 32, 32]} />
-            <meshStandardMaterial color="red" />
+            <meshStandardMaterial color="#FFFF00" />
           </mesh>
           <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.15, 0]}>
             <coneGeometry args={[0.15, 0.3, 32]} />
-            <meshStandardMaterial color="red" />
+            <meshStandardMaterial color="#FFFF00" />
           </mesh>
         </group>
       ))}
@@ -123,7 +129,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
 
     const userMessage: ChatMessage = { sender: 'user', text: question };
     const loadingMessage: ChatMessage = { sender: 'loading', text: 'Loading...' };
-    
+
     setMessages((prevMessages) => [...prevMessages, userMessage, loadingMessage]);
     setQuestion('');
 
@@ -230,9 +236,44 @@ function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
         <h2 className={styles.annotationTitle}>{annotation.label}</h2>
         <span className={styles.closeButton} onClick={onClose}>&times;</span>
       </div>
+      <div className={styles.modalContent}>
+        {/* Add detailed content for each annotation here */}
+      </div>
     </div>
   );
 }
+
+interface SidebarItem {
+  title: string;
+  content: string[];
+}
+
+const sidebarItems: SidebarItem[] = [
+  {
+    title: '카메라의 기본 구성',
+    content: ['렌즈', '바디', '뷰파인더', '센서'],
+  },
+  {
+    title: '노출의 3요소',
+    content: ['조리개', '셔터 스피드', 'ISO'],
+  },
+  {
+    title: '촬영모드와 설정',
+    content: ['매뉴얼 모드', '자동 모드', '프로그램 모드', '셔터 우선 모드'],
+  },
+  {
+    title: '사진의 구도',
+    content: ['삼분할 법칙', '중심 구도', '대각선 구도', '프레임 안의 프레임'],
+  },
+  {
+    title: '카메라 액세서리',
+    content: ['삼각대', '필터', '플래시', '배터리'],
+  },
+  {
+    title: '조명의 원리',
+    content: ['자연광', '인공광', '조명의 방향', '조명의 색온도'],
+  },
+];
 
 function Dictionary() {
   const navigate = useNavigate();
@@ -240,6 +281,8 @@ function Dictionary() {
   const [isChatBotModalOpen, setChatBotModalOpen] = useState(false);
   const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
   const [annotation, setAnnotation] = useState<Annotation | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [selectedSidebarItem, setSelectedSidebarItem] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -260,6 +303,18 @@ function Dictionary() {
   const closeAnnotationModal = () => {
     setAnnotation(null);
     setAnnotationModalOpen(false);
+  };
+
+  const handleSidebarItemClick = (title: string) => {
+    setOpenDropdown(openDropdown === title ? null : title);
+  };
+
+  const handleContentItemClick = (item: string) => {
+    setSelectedSidebarItem(item);
+  };
+
+  const closeSidebarDetail = () => {
+    setSelectedSidebarItem(null);
   };
 
   useEffect(() => {
@@ -297,14 +352,20 @@ function Dictionary() {
           </div>
         </div>
         <div className={styles.sidebarBottom}>
-          <ol>
-            <button onClick={() => navigate("/docs/product2")}>카메라의 기본 구성</button>
-            <button onClick={() => navigate("/docs/product2")}>노출의 3요소</button>
-            <button onClick={() => navigate("/docs/product2")}>촬영모드와 설정</button>
-            <button onClick={() => navigate("/docs/product2")}>사진의 구도</button>
-            <button onClick={() => navigate("/docs/product2")}>카메라 액세서리</button>
-            <button onClick={() => navigate("/docs/product2")}>조명의 원리</button>
-          </ol>
+          <div>
+            {sidebarItems.map((item) => (
+              <div key={item.title}>
+                <button onClick={() => handleSidebarItemClick(item.title)}>{item.title}</button>
+                {openDropdown === item.title && (
+                  <div className={styles.dropdownContent}>
+                    {item.content.map((subItem) => (
+                      <button key={subItem} onClick={() => handleContentItemClick(subItem)}>{subItem}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div className={styles.content} ref={canvasRef}>
@@ -320,6 +381,17 @@ function Dictionary() {
           </Canvas>
         </div>
       </div>
+      {selectedSidebarItem && (
+        <div className={`${styles.sidebarDetail} ${selectedSidebarItem ? styles.sidebarDetailOpen : ''}`}>
+          <div className={styles.sidebarDetailHeader}>
+            <h2>{selectedSidebarItem}</h2>
+            <span className={styles.closeButton} onClick={closeSidebarDetail}>&times;</span>
+          </div>
+          <div className={styles.sidebarDetailContent}>
+            {/* Add detailed content for each sidebar item here */}
+          </div>
+        </div>
+      )}
       <button onClick={toggleChatBotModal} className={styles.chatButton}><img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" /></button>
       <ChatBotModal isOpen={isChatBotModalOpen} onClose={toggleChatBotModal} />
       {isAnnotationModalOpen && annotation && (
