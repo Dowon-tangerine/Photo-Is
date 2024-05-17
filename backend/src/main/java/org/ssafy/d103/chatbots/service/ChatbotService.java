@@ -12,6 +12,7 @@ import org.ssafy.d103.chatbots.repository.ChatMessageRepository;
 import org.ssafy.d103.chatbots.repository.ChatSessionRepository;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +47,10 @@ public class ChatbotService {
                 .message(question)
                 .role("user")
                 .build();
+
+        // 세션 마지막 질문 업데이트 및 메세지 저장
+        session.setLastMessage(question);
+        session.setUpdatedAt(LocalDateTime.now());
         chatMessageRepository.save(userMessage);
 
         List<ChatMessage> chatHistory = chatMessageRepository.findBySession(session);
@@ -88,6 +93,22 @@ public class ChatbotService {
                 });
     }
 
+    public List<ChatSessionResponseDto> getSessionsByUserId(String userId) {
+        List<ChatSession> sessions = chatSessionRepository.findByUserId(userId);
+        return sessions.stream()
+                .map(session -> new ChatSessionResponseDto(session.getSessionId(), session.getUserId(), session.getLastMessage()))
+                .collect(Collectors.toList());
+    }
+
+
+    public List<ChatMessageDto> getMessagesBySessionId(String sessionId) {
+        ChatSession session = chatSessionRepository.findBySessionId(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid session ID"));
+        List<ChatMessage> messages = chatMessageRepository.findBySession(session);
+        return messages.stream()
+                .map(message -> new ChatMessageDto(message.getRole(), message.getMessage()))
+                .collect(Collectors.toList());
+    }
     public Mono<String> describeImage(String imageUrl) {
         return this.webClient.post()
                 .uri("/api/py/describe-image")
