@@ -9,19 +9,60 @@ interface ChatMessage {
   text: string;
 }
 
+// Session 타입 정의
+interface Session {
+  sessionId: string;
+  lastMessage: string;
+}
+
+// API 응답 타입 정의
+interface ApiMessage {
+  role: 'user' | 'assistant';
+  message: string;
+}
+
 // ChatBotModalProps 타입 정의
 interface ChatBotModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+// SessionModalProps 타입 정의
+interface SessionModalProps {
+  isOpen: boolean;
+  sessions: Session[];
+  onSessionClick: (sessionId: string) => void;
+  toggleModal: () => void; // Add this prop
+}
+
+function SessionModal({ isOpen, sessions, onSessionClick}: SessionModalProps) {
+  return (
+    <div className={`${styles.sessionModal} ${isOpen ? styles.open : ''}`}>
+      <div className={styles.modalHeader}>
+        <span>세션 목록</span>
+      </div>
+      <div className={styles.modalContent}>
+        <ul>
+          {sessions.map((session) => (
+            <li key={session.sessionId} onClick={() => onSessionClick(session.sessionId)}>
+              {session.lastMessage}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 // ChatBotModal 함수 컴포넌트에 props 타입 적용
 function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [sessionId] = useState(() => `session-${Math.random().toString(36).substr(2, 9)}`);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isSessionModalOpen, setSessionModalOpen] = useState(false);
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(e.target.value);
@@ -45,7 +86,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
       const botMessage: ChatMessage = { sender: 'bot', text: res.data.answer };
       setMessages((prevMessages) => {
         const newMessages = [...prevMessages];
-        newMessages[newMessages.length - 1] = botMessage; // Replace loading message with bot message
+        newMessages[newMessages.length - 1] = botMessage;
         return newMessages;
       });
     } catch (error: unknown) {
@@ -58,7 +99,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
       const botMessage: ChatMessage = { sender: 'bot', text: errorMessage };
       setMessages((prevMessages) => {
         const newMessages = [...prevMessages];
-        newMessages[newMessages.length - 1] = botMessage; // Replace loading message with error message
+        newMessages[newMessages.length - 1] = botMessage;
         return newMessages;
       });
     }
@@ -78,6 +119,37 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
     e.currentTarget.scrollTop += e.deltaY;
   };
 
+  const handleSessionClick = async (sessionId: string) => {
+    setSessionId(sessionId);
+    try {
+      const res = await axios.get(`https://k10d103.p.ssafy.io/api/chatbot/messages?sessionId=${sessionId}`);
+      const sessionMessages: ChatMessage[] = res.data.map((message: ApiMessage) => ({
+        sender: message.role === 'user' ? 'user' : 'bot',
+        text: message.message,
+      }));
+      setMessages(sessionMessages);
+    } catch (error) {
+      console.error('Failed to fetch session messages:', error);
+    }
+  };
+
+  const toggleSessionModal = () => {
+    setSessionModalOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const res = await axios.get(`https://k10d103.p.ssafy.io/api/chatbot/sessions?userId=1`);
+        setSessions(res.data);
+      } catch (error) {
+        console.error('Failed to fetch sessions:', error);
+      }
+    };
+
+    fetchSessions();
+  }, []);
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -85,44 +157,52 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   }, [messages]);
 
   return isOpen ? (
-    <div className={styles.chatBotModal} onWheel={preventScroll}>
-      <div className={styles.modalHeader}>
-        <span>Ai 챗봇</span>
-        <span className={styles.closeButton} onClick={onClose}>&times;</span>
-      </div>
-      <div className={styles.modalContent}>
-        <div className={styles.chatContainer} ref={chatContainerRef}>
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={message.sender === 'user' ? styles.userMessage : styles.botMessage}
-              dangerouslySetInnerHTML={{ __html: marked(message.text) }}
-            ></div>
-          ))}
+    <div className={styles.chatBotContainer}>
+      <SessionModal
+        isOpen={isSessionModalOpen}
+        sessions={sessions}
+        onSessionClick={handleSessionClick}
+        toggleModal={toggleSessionModal}
+      />
+      <div className={styles.chatBotModal} onWheel={preventScroll}>
+        <div className={styles.modalHeader}>
+          <span>Ai 챗봇</span>
+          <span className={styles.closeButton} onClick={onClose}>&times;</span>
         </div>
-        <form onSubmit={handleSubmit} className={styles.chatForm}>
-          <input
-            type="text"
-            value={question}
-            onChange={handleQuestionChange}
-            placeholder="질문을 입력하세요."
-            className={styles.questionInput}
-          />
-          <button type="submit" className={styles.submitButton}>보내기</button>
-        </form>
-        <button className={styles.recommendationsToggle} onClick={toggleRecommendations}>
-          {showRecommendations ? '추천 질문 숨기기' : '추천 질문 보기'}
-        </button>
-        {showRecommendations && (
-          <div className={styles.recommendedQuestions}>
-            <p>추천 질문</p>
-            <ul>
-              <li onClick={() => handleRecommendedQuestionClick('셔터 스피드 조절하는 법')}>셔터 스피드 조절하는 법</li>
-              <li onClick={() => handleRecommendedQuestionClick('ISO가 뭐야?')}>ISO가 뭐야?</li>
-              <li onClick={() => handleRecommendedQuestionClick('노출값 어떻게 설정해?')}>노출값 어떻게 설정해?</li>
-            </ul>
+        <div className={styles.modalContent}>
+          <div className={styles.chatContainer} ref={chatContainerRef}>
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={message.sender === 'user' ? styles.userMessage : styles.botMessage}
+                dangerouslySetInnerHTML={{ __html: marked(message.text) }}
+              ></div>
+            ))}
           </div>
-        )}
+          <form onSubmit={handleSubmit} className={styles.chatForm}>
+            <input
+              type="text"
+              value={question}
+              onChange={handleQuestionChange}
+              placeholder="질문을 입력하세요."
+              className={styles.questionInput}
+            />
+            <button type="submit" className={styles.submitButton}>보내기</button>
+          </form>
+          <button className={styles.recommendationsToggle} onClick={toggleRecommendations}>
+            {showRecommendations ? '추천 질문 숨기기' : '추천 질문 보기'}
+          </button>
+          {showRecommendations && (
+            <div className={styles.recommendedQuestions}>
+              <p>추천 질문</p>
+              <ul>
+                <li onClick={() => handleRecommendedQuestionClick('셔터 스피드 조절하는 법')}>셔터 스피드 조절하는 법</li>
+                <li onClick={() => handleRecommendedQuestionClick('ISO가 뭐야?')}>ISO가 뭐야?</li>
+                <li onClick={() => handleRecommendedQuestionClick('노출값 어떻게 설정해?')}>노출값 어떻게 설정해?</li>
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   ) : null;
@@ -133,9 +213,9 @@ const HelloPhoto = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3; // 총 페이지 수
-  
+
   const toggleSubMenu = () => setShowSubMenu(!showSubMenu);
-  const toggleModal = () => setModalOpen(!isModalOpen);
+  const toggleModal = () => setModalOpen((prev) => !prev); // 수정된 toggleModal 함수
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
