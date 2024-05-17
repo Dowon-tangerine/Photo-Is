@@ -105,6 +105,11 @@ public class ExhibitionService {
                 }
             }
         }
+        else{
+            for(Exhibitions ex: exhibitionList) {
+                exhibitionDtoList.add(ExhibitionDto.from(ex, false));
+            }
+        }
 
         return GetSelectMyExhibitionListResponse.from(exhibitionDtoList);
     }
@@ -245,6 +250,16 @@ public class ExhibitionService {
                 }
             }
         }
+        else{
+            // 팔로우 목록 체크
+            for(Exhibitions e: followExhibitionList){
+                followExhibitionDtoList.add(ExhibitionDto.from(e, false));
+            }
+            // 언팔로우 목록 체크
+            for(Exhibitions e: exhibitionList){
+                totalExhibitionDtoList.add(ExhibitionDto.from(e, false));
+            }
+        }
 
         return GetExhibitionListResponse.from(followExhibitionDtoList, totalExhibitionDtoList);
     }
@@ -254,12 +269,14 @@ public class ExhibitionService {
         // 좋아요 리스트 조회
         Members member = commonService.findMemberByAuthentication(authentication);
 
+        // 좋아요 리스트 조회
         List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
                 .orElse(null);
 
         Members target = memberRepository.findById(memberId)
                 .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_MEMBER));
 
+        // 타겟이 개회한 전시회 목록 조회
         List<Exhibitions> exhibitionList = exhibitionRepository.findAllByMemberId(target.getId())
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
 
@@ -273,6 +290,11 @@ public class ExhibitionService {
                     }
                     exhibitionDtoList.add(ExhibitionDto.from(ex, false));
                 }
+            }
+        }
+        else{
+            for(Exhibitions ex: exhibitionList){
+                exhibitionDtoList.add(ExhibitionDto.from(ex, false));
             }
         }
 
