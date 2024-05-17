@@ -66,7 +66,7 @@ const MyPageEdit: React.FC = () =>{
 	}
 
 	return(
-		<div className={styles.main_container} style={{height: '100vh'}}>
+		<div className={styles.main_container}style={{ border: '5px solid red'}}>
 				<div className={styles.mypage_info_container} style={{backgroundImage : `url(${memberInfo.backgroundUrl})`, backgroundSize : 'cover', height : '350px', position : 'relative', backgroundPosition : 'center'}}>
 						<div className={styles.info_container}>
 								<img src={memberInfo.profileUrl} alt='프로필' style={{marginTop: '-40px', width: '200px', height: '200px', margin: 'auto'}}></img>
@@ -101,8 +101,8 @@ const MyPageEdit: React.FC = () =>{
 							</tbody>
 							
 						 </table>
-						 <div className={editStyles.button}>Sumbit</div>
 				</div>
+				<div className={editStyles.button}>Sumbit</div>
 		</div>
 	);
 }
