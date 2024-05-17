@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import tutorialPicture from "/imgs/tutorialBackImg.jpg";
+import tutorialPicture from "/imgs/tutorialBackImg.png";
 import landscapePicture from "/imgs/landScapeBackImg.jpg";
 import portraitPicture from "/imgs/portraitBackImg.jpg";
 import StudioStyle from "./css/Studio.module.css";
