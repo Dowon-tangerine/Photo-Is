@@ -9,7 +9,6 @@ import axios from 'axios';
 import { marked } from 'marked';
 import styles from './css/Dictionary.module.css';
 
-// Extend THREE with Geometry
 extend({ ConeGeometry, SphereGeometry });
 
 const modelUrl = '/imgs/FujiFilm_X_T4.obj.glb';
@@ -81,7 +80,7 @@ function Annotations({ onAnnotationClick }: AnnotationsProps) {
     { position: [0.3, 7.8, -5], label: '핫 슈' },
     { position: [4, 7.2, -3.85], label: '다이얼 잠금 해제' },
     { position: [4.1, 0.7, -2.1], label: '초점 모드 셀렉터' },
-    { position: [-4.7, 5.9, -5.8], label: '후면 커맨드 다이얼' },
+    { position: [-4.7, 5.9, -5.6], label: '후면 커맨드 다이얼' },
   ];
 
   return (
@@ -90,15 +89,57 @@ function Annotations({ onAnnotationClick }: AnnotationsProps) {
         <group key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
           <mesh position={[0, 0.225, 0]}>
             <sphereGeometry args={[0.15, 32, 32]} />
-            <meshStandardMaterial color="#FFFF00" />
+            <meshStandardMaterial color="red" emissive="red" emissiveIntensity={0.5} />
           </mesh>
           <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.15, 0]}>
             <coneGeometry args={[0.15, 0.3, 32]} />
-            <meshStandardMaterial color="#FFFF00" />
+            <meshStandardMaterial color="red" emissive="red" emissiveIntensity={0.5} />
           </mesh>
         </group>
       ))}
     </>
+  );
+}
+
+interface AnnotationModalProps {
+  annotation: Annotation;
+  onClose: () => void;
+}
+
+function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
+  const getAnnotationDetails = (label: string) => {
+    switch (label) {
+      case '노출 보정 다이얼':
+        return '노출 보정 다이얼은 카메라가 자동으로 설정한 노출 값에 대해 사용자가 추가로 보정할 수 있는 기능을 제공하는 다이얼입니다. 이를 통해 밝기를 조절할 수 있습니다.';
+      case 'Fn1 버튼':
+        return 'Fn1 버튼은 사용자가 자주 사용하는 기능을 빠르게 사용할 수 있도록 설정할 수 있는 사용자 정의 버튼입니다.';
+      case '셔터 버튼':
+        return '셔터 버튼은 사진을 촬영하기 위해 카메라의 셔터를 작동시키는 버튼입니다. 반누름으로 초점을 맞출 수 있으며, 완전히 누르면 촬영이 됩니다.';
+      case '다이얼 잠금 해제':
+        return '다이얼 잠금 해제는 사용자가 실수로 다이얼을 돌려 설정이 바뀌지 않도록 잠금을 해제하는 기능입니다.';
+      case 'Fn2 버튼':
+        return 'Fn2 버튼은 Fn1 버튼과 마찬가지로 사용자가 자주 사용하는 기능을 빠르게 사용할 수 있도록 설정할 수 있는 사용자 정의 버튼입니다.';
+      case '핫 슈':
+        return '핫 슈는 카메라 상단에 위치한 액세서리 마운트로, 외장 플래시나 기타 액세서리를 장착할 수 있습니다.';
+      case '초점 모드 셀렉터':
+        return '초점 모드 셀렉터는 카메라의 초점 모드를 변경할 수 있는 다이얼 또는 버튼입니다. 이를 통해 자동 초점(AF)과 수동 초점(MF)을 전환할 수 있습니다.';
+      case '후면 커맨드 다이얼':
+        return '후면 커맨드 다이얼은 카메라의 설정을 빠르게 변경할 수 있도록 도와주는 다이얼로, 메뉴 내비게이션이나 설정 조정에 사용됩니다.';
+      default:
+        return '해당 항목에 대한 설명이 아직 준비되지 않았습니다.';
+    }
+  };
+
+  return (
+    <div className={styles.annotationModal}>
+      <div className={styles.modalHeader}>
+        <h2 className={styles.annotationTitle}>{annotation.label}</h2>
+        <span className={styles.closeButton} onClick={onClose}>&times;</span>
+      </div>
+      <div className={styles.modalContent}>
+        {getAnnotationDetails(annotation.label)}
+      </div>
+    </div>
   );
 }
 
@@ -107,17 +148,56 @@ interface ChatMessage {
   text: string;
 }
 
+interface Session {
+  sessionId: string;
+  lastMessage: string;
+}
+
+interface ApiMessage {
+  role: 'user' | 'assistant';
+  message: string;
+}
+
 interface ChatBotModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface SessionModalProps {
+  isOpen: boolean;
+  sessions: Session[];
+  onSessionClick: (sessionId: string) => void;
+  toggleModal: () => void; // Add this prop
+}
+
+
+function SessionModal({ isOpen, sessions, onSessionClick }: SessionModalProps) {
+  return (
+    <div className={`${styles.sessionModal} ${isOpen ? styles.open : ''}`}>
+      <div className={styles.modalHeader}>
+        <span>세션 목록</span>
+      </div>
+      <div className={styles.modalContent}>
+        <ul>
+          {sessions.map((session) => (
+            <li key={session.sessionId} onClick={() => onSessionClick(session.sessionId)}>
+              {session.lastMessage}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [sessionId] = useState(() => `session-${Math.random().toString(36).substr(2, 9)}`);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(e.target.value);
@@ -141,7 +221,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
       const botMessage: ChatMessage = { sender: 'bot', text: res.data.answer };
       setMessages((prevMessages) => {
         const newMessages = [...prevMessages];
-        newMessages[newMessages.length - 1] = botMessage; // Replace loading message with bot message
+        newMessages[newMessages.length - 1] = botMessage;
         return newMessages;
       });
     } catch (error: unknown) {
@@ -154,7 +234,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
       const botMessage: ChatMessage = { sender: 'bot', text: errorMessage };
       setMessages((prevMessages) => {
         const newMessages = [...prevMessages];
-        newMessages[newMessages.length - 1] = botMessage; // Replace loading message with error message
+        newMessages[newMessages.length - 1] = botMessage;
         return newMessages;
       });
     }
@@ -174,6 +254,37 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
     e.currentTarget.scrollTop += e.deltaY;
   };
 
+  const handleSessionClick = async (sessionId: string) => {
+    setSessionId(sessionId);
+    try {
+      const res = await axios.get(`https://k10d103.p.ssafy.io/api/chatbot/messages?sessionId=${sessionId}`);
+      const sessionMessages: ChatMessage[] = res.data.map((message: ApiMessage) => ({
+        sender: message.role === 'user' ? 'user' : 'bot',
+        text: message.message,
+      }));
+      setMessages(sessionMessages);
+    } catch (error) {
+      console.error('Failed to fetch session messages:', error);
+    }
+  };
+
+  const toggleSessionModal = () => {
+    setIsSessionModalOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/sessions?userId=1');
+        setSessions(res.data);
+      } catch (error) {
+        console.error('Failed to fetch sessions:', error);
+      }
+    };
+
+    fetchSessions();
+  }, []);
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -181,66 +292,55 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   }, [messages]);
 
   return isOpen ? (
-    <div className={styles.chatBotModal} onWheel={preventScroll}>
-      <div className={styles.modalHeader}>
-        <span>Ai 챗봇</span>
-        <span className={styles.closeButton} onClick={onClose}>&times;</span>
-      </div>
-      <div className={styles.modalContent}>
-        <div className={styles.chatContainer} ref={chatContainerRef}>
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={message.sender === 'user' ? styles.userMessage : styles.botMessage}
-              dangerouslySetInnerHTML={{ __html: marked(message.text) }}
-            ></div>
-          ))}
+    <div className={styles.chatBotContainer}>
+      <SessionModal
+        isOpen={isSessionModalOpen}
+        sessions={sessions}
+        onSessionClick={handleSessionClick}
+        toggleModal={toggleSessionModal}
+      />
+      <div className={styles.chatBotModal} onWheel={preventScroll}>
+        <div className={styles.modalHeader}>
+          <span>Ai 챗봇</span>
+          <span className={styles.closeButton} onClick={onClose}>&times;</span>
         </div>
-        <form onSubmit={handleSubmit} className={styles.chatForm}>
-          <input
-            type="text"
-            value={question}
-            onChange={handleQuestionChange}
-            placeholder="질문을 입력하세요."
-            className={styles.questionInput}
-          />
-          <button type="submit" className={styles.submitButton}>보내기</button>
-        </form>
-        <button className={styles.recommendationsToggle} onClick={toggleRecommendations}>
-          {showRecommendations ? '추천 질문 숨기기' : '추천 질문 보기'}
-        </button>
-        {showRecommendations && (
-          <div className={styles.recommendedQuestions}>
-            <p>추천 질문</p>
-            <ul>
-              <li onClick={() => handleRecommendedQuestionClick('셔터 스피드 조절하는 법')}>셔터 스피드 조절하는 법</li>
-              <li onClick={() => handleRecommendedQuestionClick('ISO가 뭐야?')}>ISO가 뭐야?</li>
-              <li onClick={() => handleRecommendedQuestionClick('노출값 어떻게 설정해?')}>노출값 어떻게 설정해?</li>
-            </ul>
+        <div className={styles.modalContent}>
+          <div className={styles.chatContainer} ref={chatContainerRef}>
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={message.sender === 'user' ? styles.userMessage : styles.botMessage}
+                dangerouslySetInnerHTML={{ __html: marked(message.text) }}
+              ></div>
+            ))}
           </div>
-        )}
+          <form onSubmit={handleSubmit} className={styles.chatForm}>
+            <input
+              type="text"
+              value={question}
+              onChange={handleQuestionChange}
+              placeholder="질문을 입력하세요."
+              className={styles.questionInput}
+            />
+            <button type="submit" className={styles.submitButton}>보내기</button>
+          </form>
+          <button className={styles.recommendationsToggle} onClick={toggleRecommendations}>
+            {showRecommendations ? '추천 질문 숨기기' : '추천 질문 보기'}
+          </button>
+          {showRecommendations && (
+            <div className={styles.recommendedQuestions}>
+              <p>추천 질문</p>
+              <ul>
+                <li onClick={() => handleRecommendedQuestionClick('셔터 스피드 조절하는 법')}>셔터 스피드 조절하는 법</li>
+                <li onClick={() => handleRecommendedQuestionClick('ISO가 뭐야?')}>ISO가 뭐야?</li>
+                <li onClick={() => handleRecommendedQuestionClick('노출값 어떻게 설정해?')}>노출값 어떻게 설정해?</li>
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   ) : null;
-}
-
-interface AnnotationModalProps {
-  annotation: Annotation;
-  onClose: () => void;
-}
-
-function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
-  return (
-    <div className={styles.annotationModal}>
-      <div className={styles.modalHeader}>
-        <h2 className={styles.annotationTitle}>{annotation.label}</h2>
-        <span className={styles.closeButton} onClick={onClose}>&times;</span>
-      </div>
-      <div className={styles.modalContent}>
-        {/* Add detailed content for each annotation here */}
-      </div>
-    </div>
-  );
 }
 
 interface SidebarItem {
@@ -293,7 +393,7 @@ function Dictionary() {
     navigate(`/search/${searchTerm}`);
   };
 
-  const toggleChatBotModal = () => setChatBotModalOpen(!isChatBotModalOpen);
+  const toggleChatBotModal = () => setChatBotModalOpen((prev) => !prev);
 
   const handleAnnotationClick = (annotation: Annotation) => {
     setAnnotation(annotation);
