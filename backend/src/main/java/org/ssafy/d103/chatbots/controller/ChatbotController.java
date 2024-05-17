@@ -4,15 +4,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.ssafy.d103.chatbots.dto.ChatRequestDto;
-import org.ssafy.d103.chatbots.dto.ImageRequestDto;
-import org.ssafy.d103.chatbots.dto.TagRequestDto;
-import org.ssafy.d103.chatbots.dto.TagResponseDto;
+import org.ssafy.d103.chatbots.dto.*;
 import org.ssafy.d103.chatbots.service.ChatbotService;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,6 +28,16 @@ public class ChatbotController {
     @PostMapping("/chat")
     public Mono<String> askQuestion(@RequestParam String sessionId, @RequestParam String userId, @RequestParam String question) {
         return chatbotService.getChatbotResponse(sessionId, userId, question);
+    }
+
+    @GetMapping("/sessions")
+    public List<ChatSessionResponseDto> getSessionsByUserId(@RequestParam String userId) {
+        return chatbotService.getSessionsByUserId(userId);
+    }
+
+    @GetMapping("/messages")
+    public List<ChatMessageDto> getMessagesBySessionId(@RequestParam String sessionId) {
+        return chatbotService.getMessagesBySessionId(sessionId);
     }
 
     @Operation(summary = "사진 분석",
