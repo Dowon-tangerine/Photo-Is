@@ -319,8 +319,28 @@ public class PhotoService {
             throw new CustomException(ErrorType.NOT_FOUND_GALLERY_PHOTO_PAGE);
         }
 
-        // 결과 생성 및 반환
-        return createBasicPhotoInfoResponse(photoPage, accessType);
+        // 내 좋아요 목록 가져옴
+        List<Long> likedPhotoIds = getLikedPhotoIds(authentication);
+
+        // 각 사진을 DTO로 변환하여 좋아요 여부 확인
+        List<PhotoDto> photoDtoList = photoPage.getContent().stream()
+                .map(photo -> {
+                    PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                            .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                    boolean isLiked = likedPhotoIds.contains(photo.getId());
+                    return PhotoDto.from(photo, photoDetail.getLikeCnt(), isLiked);
+                })
+                .collect(Collectors.toList());
+
+        // 페이지네이션 정보 구성
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                photoPage.getNumber() + 1,
+                photoPage.getTotalPages(),
+                (int) photoPage.getTotalElements(),
+                photoPage.getSize());
+
+        // 전체 사진 수 및 갤러리 사진 리스트 응답 생성
+        return GetMyPhotoResponse.of(accessType, (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
     }
 
     public GetOthersPhotoResponse getOthersPhoto(Authentication authentication, Long memberId, int page, int size) {
@@ -375,7 +395,21 @@ public class PhotoService {
         }
 
         // 결과 생성 및 반환
-        return createBasicPhotoInfoResponse(photoPage, "all");
+        List<MyPhotoDto> photoDtoList = photoPage.getContent().stream()
+                .map(photo -> {
+                    PhotoDetail photoDetail = photoDetailRepository.findPhotoDetailByPhoto(photo)
+                            .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
+                    return MyPhotoDto.from(photo, photoDetail.getLikeCnt());
+                })
+                .collect(Collectors.toList());
+
+        PaginationDataDto paginationDataDto = PaginationDataDto.of(
+                photoPage.getNumber() + 1,
+                photoPage.getTotalPages(),
+                (int) photoPage.getTotalElements(),
+                photoPage.getSize());
+
+        return GetMyPhotoResponse.of("all", (int) photoPage.getTotalElements(), photoDtoList, paginationDataDto);
     }
 
     // *** 갤러리 페이지 사진 가져오는 메소드 ***
@@ -539,7 +573,7 @@ public class PhotoService {
 
                     boolean isFollow = authentication != null && followedMemberIds.contains(member.getId());
 
-                    return AuthorProfileDto.of(member.getNickname(), member.getProfileUrl(), member.getCity(), member.getCountry(), uploadedPhotoCount, followingCount, followerCount, isFollow);
+                    return AuthorProfileDto.of(member.getId(), member.getNickname(), member.getProfileUrl(), member.getUseYear(), member.getCity(), member.getCountry(), uploadedPhotoCount, followingCount, followerCount, isFollow);
                 })
                 .collect(Collectors.toList());
 
@@ -757,7 +791,7 @@ public class PhotoService {
                     .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_DETAIL));
             boolean isLiked = authentication != null && likedPhotoIds.contains(photo.getId());
 
-            return PhotoRankingDto.of(photo.getId(), rank, photo.getThumbnailUrl(), photo.getTitle(), photoDetail.getLikeCnt(), isLiked);
+            return PhotoRankingDto.of(photo.getId(), rank, photo.getThumbnailUrl(), photo.getMember().getProfileUrl(), photo.getMember().getNickname(), photoDetail.getLikeCnt(), isLiked);
         }).collect(Collectors.toList());
 
         return GetPhotoRankingResponse.of(rankingType.getRankingTypeName(), rankingList);
