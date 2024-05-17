@@ -116,7 +116,7 @@ public class BatchConfig {
     public Step dailyRankingStep() {
         log.info("=================* dailyRankingStep *=================");
         return new StepBuilder("dailyRankingStep", jobRepository)
-                .<PhotoDetail, DailyPhotoRanking>chunk(10, transactionManager)
+                .<PhotoDetail, DailyPhotoRanking>chunk(100, transactionManager)
                 .reader(dailyPhotoDetailItemReader())
                 .processor(dailyRankingProcessor())
                 .writer(dailyPhotoRankingItemWriter(dailyRankingProcessor()))
@@ -127,7 +127,7 @@ public class BatchConfig {
     public Step weeklyRankingStep() {
         log.info("=================* weeklyRankingStep *=================");
         return new StepBuilder("weeklyRankingStep", jobRepository)
-                .<PhotoDetail, WeeklyPhotoRanking>chunk(10, transactionManager)
+                .<PhotoDetail, WeeklyPhotoRanking>chunk(100, transactionManager)
                 .reader(weeklyPhotoDetailItemReader())
                 .processor(weeklyRankingProcessor())
                 .writer(weeklyPhotoRankingItemWriter(weeklyRankingProcessor()))
@@ -138,7 +138,7 @@ public class BatchConfig {
     public Step monthlyRankingStep() {
         log.info("=================* monthlyRankingStep *=================");
         return new StepBuilder("monthlyRankingStep", jobRepository)
-                .<PhotoDetail, MonthlyPhotoRanking>chunk(10, transactionManager)
+                .<PhotoDetail, MonthlyPhotoRanking>chunk(100, transactionManager)
                 .reader(monthlyPhotoDetailItemReader())
                 .processor(monthlyRankingProcessor())
                 .writer(monthlyPhotoRankingItemWriter(monthlyRankingProcessor()))
@@ -149,7 +149,7 @@ public class BatchConfig {
     public Step dailyResetStep() {
         log.info("=================* dailyResetStep *=================");
         return new StepBuilder("dailyResetStep", jobRepository)
-                .<PhotoDetail, PhotoDetail>chunk(10, transactionManager)
+                .<PhotoDetail, PhotoDetail>chunk(100, transactionManager)
                 .reader(dailyPhotoDetailItemReader())
                 .processor(dailyResetProcessor())
                 .writer(photoDetailItemWriter())
@@ -161,7 +161,7 @@ public class BatchConfig {
     public Step weeklyResetStep() {
         log.info("=================* weeklyResetStep *=================");
         return new StepBuilder("weeklyResetStep", jobRepository)
-                .<PhotoDetail, PhotoDetail>chunk(10, transactionManager)
+                .<PhotoDetail, PhotoDetail>chunk(100, transactionManager)
                 .reader(weeklyPhotoDetailItemReader())
                 .processor(weeklyResetProcessor())
                 .writer(photoDetailItemWriter())
@@ -173,7 +173,7 @@ public class BatchConfig {
     public Step monthlyResetStep() {
         log.info("=================* monthlyResetStep *=================");
         return new StepBuilder("monthlyResetStep", jobRepository)
-                .<PhotoDetail, PhotoDetail>chunk(10, transactionManager)
+                .<PhotoDetail, PhotoDetail>chunk(100, transactionManager)
                 .reader(monthlyPhotoDetailItemReader())
                 .processor(monthlyResetProcessor())
                 .writer(photoDetailItemWriter())
