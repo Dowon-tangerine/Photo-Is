@@ -153,6 +153,11 @@ public class MemberService {
     public PutUpdateMemberResponse updateMember(Authentication authentication, MultipartFile multipartFile, PutUpdateMemberRequest request) throws IOException {
 
         Members member = commonService.findMemberByAuthentication(authentication);
+
+        if(memberRepository.findMembersByNicknameAndDeletedAtIsNull(request.getNickname()).isPresent()){
+            throw new CustomException(ErrorType.DUPLICATED_NICKNAME);
+        }
+
         String photoUrl = null;
         if(multipartFile != null) {
             photoUrl = s3Uploader.upload(multipartFile, "profile");
