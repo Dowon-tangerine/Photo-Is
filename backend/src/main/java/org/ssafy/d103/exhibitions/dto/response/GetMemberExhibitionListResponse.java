@@ -21,10 +21,10 @@ public class GetMemberExhibitionListResponse {
         this.exhibition = exhibition;
     }
 
-    public static GetMemberExhibitionListResponse from(List<Exhibitions> exhibitionList) {
+    public static GetMemberExhibitionListResponse from(List<ExhibitionDto> exhibitionDtoList) {
         return builder()
-                .totalCnt(exhibitionList.size())
-                .exhibition(exhibitionList.stream().map(ExhibitionDto::from).collect(Collectors.toList()))
+                .totalCnt(exhibitionDtoList.size())
+                .exhibition(exhibitionDtoList)
                 .build();
     }
 }

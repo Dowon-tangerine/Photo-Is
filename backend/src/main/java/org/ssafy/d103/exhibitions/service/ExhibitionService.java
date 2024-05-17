@@ -10,6 +10,7 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.repository.photo.PhotoRepository;
 import org.ssafy.d103.exhibitions.dto.ExhibitionCommentDto;
+import org.ssafy.d103.exhibitions.dto.ExhibitionDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 import org.ssafy.d103.exhibitions.dto.request.PostExhibitionCommentRequest;
@@ -31,6 +32,7 @@ import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -83,16 +85,39 @@ public class ExhibitionService {
     public GetSelectMyExhibitionListResponse selectMyExhibitionList(Authentication authentication) {
 
         Members member = commonService.findMemberByAuthentication(authentication);
+
+        List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
+                .orElse(null);
+
         List<Exhibitions> exhibitionList = exhibitionRepository.findExhibitionsByMemberId(member)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
-        return GetSelectMyExhibitionListResponse.from(exhibitionList);
+
+        List<ExhibitionDto> exhibitionDtoList = new ArrayList<>();
+
+        if(exhibitionLikeList != null) {
+            for(ExhibitionLike e: exhibitionLikeList) {
+                for(Exhibitions ex: exhibitionList) {
+                    if(Objects.equals(e.getExhibitionId().getId(), ex.getId())) {
+                        exhibitionDtoList.add(ExhibitionDto.from(ex, true));
+                        continue;
+                    }
+                    exhibitionDtoList.add(ExhibitionDto.from(ex, false));
+                }
+            }
+        }
+
+        return GetSelectMyExhibitionListResponse.from(exhibitionDtoList);
     }
 
-    public GetSelectExhibitionResponse selectExhibition(Long exhibitionId) {
+    public GetSelectExhibitionResponse selectExhibition(Authentication authentication, Long exhibitionId) {
 
+        Members member = commonService.findMemberByAuthentication(authentication);
         Exhibitions exhibition = exhibitionRepository.findById(exhibitionId)
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
-        return GetSelectExhibitionResponse.from(exhibition);
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        boolean isLiked = exhibitionLikeRepository.findAllByMemberIdAndExhibitionId(member, exhibition).isPresent();
+
+        return GetSelectExhibitionResponse.from(exhibition, isLiked);
     }
 
     public List<ExhibitionCommentDto> selectExhibitionCommentList(Long exhibitionId) {
@@ -179,9 +204,12 @@ public class ExhibitionService {
 
         Members member = commonService.findMemberByAuthentication(authentication);
 
+        // 좋아요 리스트 조회
+        List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
+                .orElse(null);
+
         List<Follows> followList = followRepository.findFollowsByFollowerId(member)
                 .orElse(null);
-        log.warn("{}", followList.size());
 
         List<Exhibitions> exhibitionList = exhibitionRepository.findAll();
 
@@ -189,24 +217,65 @@ public class ExhibitionService {
 
         for (Exhibitions e : exhibitionList) {
             for (Follows f : followList) {
-                log.warn("{} vs {}", e.getMemberId().getId(), f.getFollowingId().getId());
                 if (e.getMemberId().getId() == f.getFollowingId().getId()) {
                     followExhibitionList.add(e);
                 }
             }
         }
+        List<ExhibitionDto> totalExhibitionDtoList = new ArrayList<>();
+        List<ExhibitionDto> followExhibitionDtoList = new ArrayList<>();
 
-        return GetExhibitionListResponse.from(followExhibitionList, exhibitionList);
+        if(exhibitionLikeList != null){
+            for(ExhibitionLike el: exhibitionLikeList){
+                // 팔로우 목록 체크
+                for(Exhibitions e: followExhibitionList){
+                    if(el.getExhibitionId().getId() == e.getId()){
+                        followExhibitionDtoList.add(ExhibitionDto.from(e, true));
+                        continue;
+                    }
+                    followExhibitionDtoList.add(ExhibitionDto.from(e, false));
+                }
+                // 언팔로우 목록 체크
+                for(Exhibitions e: exhibitionList){
+                    if(el.getExhibitionId().getId() == e.getId()){
+                        totalExhibitionDtoList.add(ExhibitionDto.from(e, true));
+                        continue;
+                    }
+                    totalExhibitionDtoList.add(ExhibitionDto.from(e, false));
+                }
+            }
+        }
+
+        return GetExhibitionListResponse.from(followExhibitionDtoList, totalExhibitionDtoList);
     }
 
     public GetMemberExhibitionListResponse selectMemberExhibitionList(Authentication authentication, Long memberId) {
+
+        // 좋아요 리스트 조회
         Members member = commonService.findMemberByAuthentication(authentication);
+
+        List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
+                .orElse(null);
+
         Members target = memberRepository.findById(memberId)
                 .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_MEMBER));
 
         List<Exhibitions> exhibitionList = exhibitionRepository.findAllByMemberId(target.getId())
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
 
-        return GetMemberExhibitionListResponse.from(exhibitionList);
+        List<ExhibitionDto> exhibitionDtoList = new ArrayList<>();
+
+        if(exhibitionLikeList != null){
+            for(ExhibitionLike e: exhibitionLikeList){
+                for(Exhibitions ex: exhibitionList){
+                    if(e.getExhibitionId().getId() == ex.getId()) {
+                        exhibitionDtoList.add(ExhibitionDto.from(ex, true));
+                    }
+                    exhibitionDtoList.add(ExhibitionDto.from(ex, false));
+                }
+            }
+        }
+
+        return GetMemberExhibitionListResponse.from(exhibitionDtoList);
     }
 }

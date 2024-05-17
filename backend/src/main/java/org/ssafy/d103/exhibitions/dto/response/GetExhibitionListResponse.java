@@ -24,11 +24,11 @@ public class GetExhibitionListResponse {
         this.exhibition = exhibition;
     }
 
-    public static GetExhibitionListResponse from(List<Exhibitions> followExhibitionList, List<Exhibitions> exhibitionList) {
+    public static GetExhibitionListResponse from(List<ExhibitionDto> followExhibitionDtoList, List<ExhibitionDto> exhibitionDtoList) {
         return builder()
-                .totalCnt(exhibitionList.size())
-                .followExhibition(followExhibitionList.stream().map(ExhibitionDto::from).collect(Collectors.toList()))
-                .exhibition(exhibitionList.stream().map(ExhibitionDto::from).collect(Collectors.toList()))
+                .totalCnt(exhibitionDtoList.size())
+                .followExhibition(followExhibitionDtoList)
+                .exhibition(exhibitionDtoList)
                 .build();
     }
 
