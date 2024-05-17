@@ -15,8 +15,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Component
 @Slf4j
+@Component
 public class RankingScheduler {
 
     private final JobLauncher jobLauncher;
@@ -57,7 +57,7 @@ public class RankingScheduler {
     public void runDailyRankingJob() {
         log.info("*************** runDailyRankingJob ***************");
         dailyRankingProcessor.initializeSortedItems();
-        runJob(dailyRankingJob, "daily_ranking");
+        runJobWithTime(dailyRankingJob, "daily_ranking", LocalDateTime.now());
     }
 
     //    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 주간 랭킹 집계
@@ -65,7 +65,7 @@ public class RankingScheduler {
     public void runWeeklyRankingJob() {
         log.info("*************** runWeeklyRankingJob ***************");
         weeklyRankingProcessor.initializeSortedItems();
-        runJob(weeklyRankingJob, "weekly_ranking");
+        runJobWithTime(weeklyRankingJob, "weekly_ranking", LocalDateTime.now());
     }
 
     //    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 월간 랭킹 집계
@@ -73,49 +73,51 @@ public class RankingScheduler {
     public void runMonthlyRankingJob() {
         log.info("*************** runMonthlyRankingJob ***************");
         monthlyRankingProcessor.initializeSortedItems();
-        runJob(monthlyRankingJob, "monthly_ranking");
+        runJobWithTime(monthlyRankingJob, "monthly_ranking", LocalDateTime.now());
     }
 
-    @Scheduled(cron = "0 */1 * * * *") // 매일 자정에 일간 랭킹 집계 및 초기화
+    @Scheduled(cron = "0 0 0 * * *")
     public void runDailyRankingAndResetJob() {
+        // 매일 자정에 일간 랭킹 집계 및 초기화
         log.info("*************** runDailyRankingAndResetJob ***************");
         dailyRankingProcessor.initializeSortedItems();
-        runJob(dailyRankingAndResetJob, "daily_ranking_reset");
+        runJobWithTime(dailyRankingAndResetJob, "daily_ranking_reset", LocalDateTime.now());
     }
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void runWeeklyRankingAndResetJob() {
+        weeklyRankingProcessor.initializeSortedItems();
+
         // 매주 월요일 자정에 주간 랭킹 집계 및 초기화
         if (isMonday()) {
             log.info("*************** runWeeklyRankingAndResetJob ***************");
-            runJob(weeklyRankingAndResetJob, "weekly_ranking_reset");
+            runJobWithTime(weeklyRankingAndResetJob, "weekly_ranking_reset", LocalDateTime.now());
         }
         // 매일 자정에 주간 랭킹 집계
         else {
             log.info("*************** runWeeklyRankingJob ***************");
-            weeklyRankingProcessor.initializeSortedItems();
-            runJob(weeklyRankingJob, "weekly_ranking");
+            runJobWithTime(weeklyRankingJob, "weekly_ranking", LocalDateTime.now());
         }
     }
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void runMonthlyRankingAndResetJob() {
+        monthlyRankingProcessor.initializeSortedItems();
+
         // 매월 1일 자정에 월간 랭킹 집계 및 초기화
         if (isFirstDayOfMonth()) {
             log.info("*************** runMonthlyRankingAndResetJob ***************");
-            runJob(monthlyRankingAndResetJob, "monthly_ranking_reset");
+            runJobWithTime(monthlyRankingAndResetJob, "monthly_ranking_reset", LocalDateTime.now());
         }
         // 매일 자정에 월간 랭킹 집계
         else {
             log.info("*************** runMonthlyRankingJob ***************");
-            monthlyRankingProcessor.initializeSortedItems();
-            runJob(monthlyRankingJob, "monthly_ranking");
+            runJobWithTime(monthlyRankingJob, "monthly_ranking", LocalDateTime.now());
         }
     }
 
-    private void runJob(Job job, String jobName) {
+    private void runJobWithTime(Job job, String jobName, LocalDateTime now) {
         try {
-            LocalDateTime now = LocalDateTime.now();
             String formattedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
             log.info("Running {} job", jobName);

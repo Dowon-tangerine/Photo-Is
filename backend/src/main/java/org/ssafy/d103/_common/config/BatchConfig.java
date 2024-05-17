@@ -10,6 +10,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -17,6 +18,7 @@ import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.ssafy.d103._common.batch.JobParameterListener;
 import org.ssafy.d103._common.batch.RankingFactories;
 import org.ssafy.d103._common.batch.RankingProcessor;
 import org.ssafy.d103._common.batch.ResetProcessor;
@@ -39,6 +41,13 @@ public class BatchConfig {
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManagerFactory;
     private final PhotoRankingService photoRankingService;
+
+    @Bean
+    public JobParameterListener jobParametersListener() {
+        return new JobParameterListener();
+    }
+
+    // --------------------------------------/ JOB /------------------------------------------- //
 
     @Bean
     public Job dailyRankingJob() {
@@ -70,8 +79,10 @@ public class BatchConfig {
     @Bean
     public Job dailyRankingAndResetJob() {
         log.info("-----------------[ dailyRankingAndResetJob ]-----------------");
+        LocalDateTime localDateTime = LocalDateTime.now();
         return new JobBuilder("dailyRankingAndResetJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
+                .listener(jobParametersListener())
                 .start(dailyRankingStep())
                 .next(dailyResetStep())
                 .build();
@@ -82,6 +93,7 @@ public class BatchConfig {
         log.info("-----------------[ weeklyRankingAndResetJob ]-----------------");
         return new JobBuilder("weeklyRankingAndResetJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
+                .listener(jobParametersListener())
                 .start(weeklyRankingStep())
                 .next(weeklyResetStep())
                 .build();
@@ -92,10 +104,13 @@ public class BatchConfig {
         log.info("-----------------[ monthlyRankingAndResetJob ]-----------------");
         return new JobBuilder("monthlyRankingAndResetJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
+                .listener(jobParametersListener())
                 .start(monthlyRankingStep())
                 .next(monthlyResetStep())
                 .build();
     }
+
+    // --------------------------------------/ STEP /------------------------------------------- //
 
     @Bean
     public Step dailyRankingStep() {
@@ -136,8 +151,9 @@ public class BatchConfig {
         return new StepBuilder("dailyResetStep", jobRepository)
                 .<PhotoDetail, PhotoDetail>chunk(10, transactionManager)
                 .reader(dailyPhotoDetailItemReader())
-                .processor(new ResetProcessor(LocalDateTime.now(), ResetProcessor.ResetType.DAILY))
+                .processor(dailyResetProcessor())
                 .writer(photoDetailItemWriter())
+                .listener(jobParametersListener())
                 .build();
     }
 
@@ -147,8 +163,9 @@ public class BatchConfig {
         return new StepBuilder("weeklyResetStep", jobRepository)
                 .<PhotoDetail, PhotoDetail>chunk(10, transactionManager)
                 .reader(weeklyPhotoDetailItemReader())
-                .processor(new ResetProcessor(LocalDateTime.now(), ResetProcessor.ResetType.WEEKLY))
+                .processor(weeklyResetProcessor())
                 .writer(photoDetailItemWriter())
+                .listener(jobParametersListener())
                 .build();
     }
 
@@ -158,10 +175,13 @@ public class BatchConfig {
         return new StepBuilder("monthlyResetStep", jobRepository)
                 .<PhotoDetail, PhotoDetail>chunk(10, transactionManager)
                 .reader(monthlyPhotoDetailItemReader())
-                .processor(new ResetProcessor(LocalDateTime.now(), ResetProcessor.ResetType.MONTHLY))
+                .processor(monthlyResetProcessor())
                 .writer(photoDetailItemWriter())
+                .listener(jobParametersListener())
                 .build();
     }
+
+    // --------------------------------------/ ITEM READER /------------------------------------------- //
 
     @Bean
     public JpaPagingItemReader<PhotoDetail> dailyPhotoDetailItemReader() {
@@ -193,6 +213,55 @@ public class BatchConfig {
                 .build();
     }
 
+    // --------------------------------------/ PROCESSOR /------------------------------------------- //
+
+    @Bean
+    public RankingProcessor<DailyPhotoRanking> dailyRankingProcessor() {
+        return new RankingProcessor<>(photoRankingService, RankingFactories.dailyPhotoRankingFactory(), "daily");
+    }
+
+    @Bean
+    public RankingProcessor<WeeklyPhotoRanking> weeklyRankingProcessor() {
+        return new RankingProcessor<>(photoRankingService, RankingFactories.weeklyPhotoRankingFactory(), "weekly");
+    }
+
+    @Bean
+    public RankingProcessor<MonthlyPhotoRanking> monthlyRankingProcessor() {
+        return new RankingProcessor<>(photoRankingService, RankingFactories.monthlyPhotoRankingFactory(), "monthly");
+    }
+
+    @Bean
+    public ItemProcessor<PhotoDetail, PhotoDetail> dailyResetProcessor() {
+        return item -> {
+            String nowString = jobParametersListener().getStepExecution().getJobParameters().getString("now");
+            assert nowString != null;
+            LocalDateTime now = LocalDateTime.parse(nowString);
+            return new ResetProcessor(now, ResetProcessor.ResetType.DAILY).process(item);
+        };
+    }
+
+    @Bean
+    public ItemProcessor<PhotoDetail, PhotoDetail> weeklyResetProcessor() {
+        return item -> {
+            String nowString = jobParametersListener().getStepExecution().getJobParameters().getString("now");
+            assert nowString != null;
+            LocalDateTime now = LocalDateTime.parse(nowString);
+            return new ResetProcessor(now, ResetProcessor.ResetType.WEEKLY).process(item);
+        };
+    }
+
+    @Bean
+    public ItemProcessor<PhotoDetail, PhotoDetail> monthlyResetProcessor() {
+        return item -> {
+            String nowString = jobParametersListener().getStepExecution().getJobParameters().getString("now");
+            assert nowString != null;
+            LocalDateTime now = LocalDateTime.parse(nowString);
+            return new ResetProcessor(now, ResetProcessor.ResetType.MONTHLY).process(item);
+        };
+    }
+
+    // --------------------------------------/ ITEM WRITER /------------------------------------------- //
+
     @Bean
     public ItemWriter<PhotoDetail> photoDetailItemWriter() {
         JpaItemWriter<PhotoDetail> writer = new JpaItemWriter<>();
@@ -222,21 +291,6 @@ public class BatchConfig {
             List<MonthlyPhotoRanking> rankings = processor.getRankings();
             photoRankingService.saveMonthlyPhotoRankings(rankings);
         };
-    }
-
-    @Bean
-    public RankingProcessor<DailyPhotoRanking> dailyRankingProcessor() {
-        return new RankingProcessor<>(photoRankingService, RankingFactories.dailyPhotoRankingFactory(), "daily");
-    }
-
-    @Bean
-    public RankingProcessor<WeeklyPhotoRanking> weeklyRankingProcessor() {
-        return new RankingProcessor<>(photoRankingService, RankingFactories.weeklyPhotoRankingFactory(), "weekly");
-    }
-
-    @Bean
-    public RankingProcessor<MonthlyPhotoRanking> monthlyRankingProcessor() {
-        return new RankingProcessor<>(photoRankingService, RankingFactories.monthlyPhotoRankingFactory(), "monthly");
     }
 
 }
