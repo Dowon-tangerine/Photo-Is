@@ -830,7 +830,7 @@ const fetchData = async () => {
         )}
 
         <div className={styles.main_container}>
-            <div className={styles.search_container}>
+            <div className={styles.search_container} style={{marginTop: '90px'}}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
                         <p className={styles.dropdown_txt}>{type}</p>

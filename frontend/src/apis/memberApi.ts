@@ -103,3 +103,40 @@ export const searchProfile = async (memberId: number) => {
 		console.log(err)
 	})
 }
+
+// 프로필 수정
+// 수정해야함
+export const editProfile = async (memberInfo: FormData) => {
+	const url = `/members/`;
+
+	return await instance.put(url, memberInfo)
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return res.data.data;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
+
+// 배경화면 사진 수정
+export const editBackgroundImg = async (background: FormData) => {
+	const url = `/members/change-background`;
+
+	return await instance.put(url, background, {
+		headers: {
+			'Content-Type': 'multipart/form-data'
+		}
+	})
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return true;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
