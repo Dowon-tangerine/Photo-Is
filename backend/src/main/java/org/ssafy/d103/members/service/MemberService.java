@@ -165,6 +165,7 @@ public class MemberService {
 
         member.updateAllInfo(
                 request.getNickname(),
+                request.getIntroduction(),
                 request.getBirthYear(),
                 request.getUseYear(),
                 request.getCamera(),
