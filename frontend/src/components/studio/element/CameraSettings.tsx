@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCameraStore } from "../store/useCameraStore";
 
 const CameraSettings: React.FC = () => {
     const apertureValues = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
     const shutterSpeedValues = [4000, 2000, 1000, 500, 250, 125, 60, 30, 15, 8, 4, 2, 1];
     const isoValues = [100, 200, 400, 800, 1600, 3200, 6400, 12800];
+    const options = ["Av", "Tv", "M"];
+    const [selectedOption, setSelectedOption] = useState<string>(options[0]);
+
+    const handleClick = (option: string) => {
+        setSelectedOption(option);
+    };
     const { aperture, iso, shutterSpeed, exposure, setIso, setShutterSpeed, setAperture, setExposure } =
         useCameraStore();
 
@@ -53,7 +59,28 @@ const CameraSettings: React.FC = () => {
     };
 
     return (
-        <div className="font-bookkGothic w-[100%]">
+        <div className="font-bookkGothic w-[100%] flex flex-col">
+            <div className="py-6 px-6">
+                <div className="text-white flex justify-between">
+                    <div className="flex items-center pb-3">
+                        <label>모드 / Mode</label>
+                        <img src="/imgs/question.png" alt="" className="ml-3 w-[18px] h-[18px]" />
+                    </div>
+                </div>
+                <div className="mode flex justify-center w-full rounded-sm overflow-hidden font-bookkGothicBold">
+                    {options.map((option) => (
+                        <button
+                            key={option}
+                            onClick={() => handleClick(option)}
+                            className={`flex-grow px-4 py-2  ${
+                                selectedOption === option ? "bg-blue-500 text-black" : "bg-white text-black"
+                            } focus:outline-none`}
+                        >
+                            {option}
+                        </button>
+                    ))}
+                </div>
+            </div>
             <div className="py-6 px-6">
                 <div className="text-white flex justify-between">
                     <div className="flex items-center pb-3">
