@@ -33,7 +33,7 @@ public class ChatbotService {
         this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io").build();
     }
 
-    public Mono<String> getChatbotResponse(Long sessionId, String memberId, String question) {
+    public Mono<ChatResponseDto> getChatbotResponse(Long sessionId, String memberId, String question) {
         ChatSession session;
 
         if (sessionId == null) {
@@ -51,6 +51,9 @@ public class ChatbotService {
 
             session = sessionOptional.get();  // Optional에서 세션 추출
         }
+
+        final ChatSession finalSession = session;
+        final Long finalSessionId = sessionId;
 
         ChatMessage userMessage = ChatMessage.builder()
                 .session(session)
@@ -83,20 +86,21 @@ public class ChatbotService {
                         })
                 )
                 .bodyToMono(ChatResponseDto.class)
-                .<String>handle((response, sink) -> {
+                .flatMap(response -> {
                     if (response == null || response.getAnswer() == null) {
-                        sink.error(new NullPointerException("Received null response from server"));
-                        return;
+                        return Mono.error(new NullPointerException("Received null response from server"));
                     }
 
                     ChatMessage assistantMessage = ChatMessage.builder()
-                            .session(session)
+                            .session(finalSession)
                             .message(response.getAnswer())
                             .role("assistant")
                             .build();
                     chatMessageRepository.save(assistantMessage);
 
-                    sink.next(response.getAnswer());
+                    // sessionId를 설정한 ChatResponseDto 반환
+                    response.setSessionId(finalSessionId);
+                    return Mono.just(response);
                 })
                 .onErrorResume(WebClientResponseException.class, e -> {
                     return Mono.error(new RuntimeException("Failed to call external API", e));
