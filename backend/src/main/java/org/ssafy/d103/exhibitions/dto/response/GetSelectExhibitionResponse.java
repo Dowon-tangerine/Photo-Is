@@ -21,9 +21,10 @@ public class GetSelectExhibitionResponse {
     private int likeCnt;
     private boolean isLiked;
     private String profileUrl;
+    private String description;
 
     @Builder
-    private GetSelectExhibitionResponse(Long exhibitionId, String title, Long memberId, String nickname, String posterUrl, LocalDateTime startDate, LocalDateTime endDate, int likeCnt, boolean isLiked, String profileUrl) {
+    private GetSelectExhibitionResponse(Long exhibitionId, String title, Long memberId, String nickname, String posterUrl, LocalDateTime startDate, LocalDateTime endDate, int likeCnt, boolean isLiked, String profileUrl, String description) {
         this.exhibitionId = exhibitionId;
         this.title = title;
         this.memberId = memberId;
@@ -34,6 +35,7 @@ public class GetSelectExhibitionResponse {
         this.likeCnt = likeCnt;
         this.isLiked = isLiked;
         this.profileUrl = profileUrl;
+        this.description = description;
     }
 
     public static GetSelectExhibitionResponse from(Exhibitions exhibition, boolean isLiked) {
@@ -48,6 +50,7 @@ public class GetSelectExhibitionResponse {
                 .likeCnt(exhibition.getLikeCnt())
                 .isLiked(isLiked)
                 .profileUrl(exhibition.getMemberId().getProfileUrl())
+                .description(exhibition.getDescription())
                 .build();
     }
 }
