@@ -639,6 +639,11 @@ const fetchData = async () => {
             moveToSearch();
         }
     }
+    const onCommentKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>, id : number | undefined) => {
+        if(e.key === 'Enter'){
+            sendClick(id);
+        }
+    }
 
     return (
         <>
@@ -727,7 +732,7 @@ const fetchData = async () => {
                         </div>
                         <div className={styles.send_comment_container}>
                             <div className={styles.send_box}>
-                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment}></input>
+                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment} onKeyDown={(e)=>onCommentKeyDownHandler(e, photoDetails?.photoId)}></input>
                                 <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기' onClick={() => {sendClick(photoDetails?.photoId);}}></img>
                             </div>
                         </div>  

@@ -234,12 +234,24 @@ const MyPage: React.FC = () => {
     const [exhibitionDetail, setExhibitionDetail] = useState<boolean>(false);
 
     const openExhibitionDetails = function(){
+        if(!exhibitionDetail){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setExhibitionDetail(!exhibitionDetail);
     }
 
     const [finExhibitionDetail, setFinExhibitionDetail] = useState<boolean>(false);
 
     const openFinExhibitionDetails = function(){
+        if(!finExhibitionDetail){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setFinExhibitionDetail(!finExhibitionDetail);
     }
 
@@ -630,6 +642,12 @@ const MyPage: React.FC = () => {
     },]
 
     const openPhotoDetails = function(){
+        if(!imgDetail){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setImgDetail(!imgDetail);
     }
 
@@ -642,12 +660,24 @@ const MyPage: React.FC = () => {
     const [uploadPhoto, setUploadPhoto] = useState<boolean>(false);
 
     const openUploadModal = function(){
+        if(!uploadPhoto){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setUploadPhoto(!uploadPhoto);
     }
 
     const [uploadPhotoDetail, setUploadPhotoDetail] = useState<boolean>(false);
 
     const openUploadDetailModal = function(){
+        if(!uploadPhotoDetail){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setUploadPhotoDetail(!uploadPhotoDetail);
     }
 
@@ -753,6 +783,12 @@ const MyPage: React.FC = () => {
     const [isExhibition, setIsExhibition] = useState<boolean>(false);
 
     const openExhibitionModal = function(){
+        if(!isExhibition){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setIsExhibition(!isExhibition);
     }
 
@@ -790,6 +826,12 @@ const MyPage: React.FC = () => {
     const [isFollowList, setIsFollowList] = useState<boolean>(false);
 
     const openFollowList = function(){
+        if(!isFollowList){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setIsFollowList(!isFollowList);
     }
 
@@ -1072,7 +1114,7 @@ const MyPage: React.FC = () => {
 
         {imgDetail && (
             <>
-                <div className={styles.modal_background}></div>
+                <div className={styles.modal_background} style={{paddingTop: '80px', zIndex: '11'}}></div>
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails();}}></img>
                 <div className={styles.photo_modal_container}>
                     <div className={styles.img_container}>
