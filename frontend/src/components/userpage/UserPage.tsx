@@ -122,10 +122,6 @@ const UserPage: React.FC = () => {
     const [detailedExhibition, setDetailedExhibition] = useState<exhibitionWithoutLikedInterface>();
     // const [profileArr, setProfileArr] = useState<profileInterface[]>([]);
 
-    // 에러 방지를 위해 무의미하게 써놓은 변수들(꼭 지우시오)
-    exhibitionArr
-    setExhibitionArr
-
      // Intersection Observer 설정
 
   const handleObserver = (entries: IntersectionObserverEntry[]) => {
