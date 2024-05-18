@@ -31,25 +31,41 @@ public class CameraPartService {
         return cameraPartRepository.findById(id);
     }
 
-    public CameraPart createCameraPart(String name, String description) {
-        CameraPart cameraPart = new CameraPart(name, description, LocalDateTime.now(), LocalDateTime.now());
-        return cameraPartRepository.save(cameraPart);
+    public List<CameraPartNameDto> findByName(String name) {
+        List<CameraPart> cameraParts = cameraPartRepository.findByNameContaining(name);
+        return cameraParts.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public CameraPart updateCameraPart(Long id, String name, String description) {
-        Optional<CameraPart> optionalCameraPart = cameraPartRepository.findById(id);
-        if (optionalCameraPart.isPresent()) {
-            CameraPart cameraPart = optionalCameraPart.get();
-            cameraPart.setName(name);
-            cameraPart.setDescription(description);
-            cameraPart.setUpdatedAt(LocalDateTime.now());
-            return cameraPartRepository.save(cameraPart);
-        } else {
-            throw new RuntimeException("Camera part not found");
-        }
+    private CameraPartNameDto convertToDto(CameraPart cameraPart) {
+        CameraPartNameDto dto = new CameraPartNameDto();
+        dto.setId(cameraPart.getId());
+        dto.setName(cameraPart.getName());
+        dto.setCreatedAt(cameraPart.getCreatedAt());
+        dto.setUpdatedAt(cameraPart.getUpdatedAt());
+        return dto;
     }
 
-    public void deleteCameraPart(Long id) {
-        cameraPartRepository.deleteById(id);
-    }
+//    public CameraPart createCameraPart(String name, String description) {
+//        CameraPart cameraPart = new CameraPart(name, description, LocalDateTime.now(), LocalDateTime.now());
+//        return cameraPartRepository.save(cameraPart);
+//    }
+//
+//    public CameraPart updateCameraPart(Long id, String name, String description) {
+//        Optional<CameraPart> optionalCameraPart = cameraPartRepository.findById(id);
+//        if (optionalCameraPart.isPresent()) {
+//            CameraPart cameraPart = optionalCameraPart.get();
+//            cameraPart.setName(name);
+//            cameraPart.setDescription(description);
+//            cameraPart.setUpdatedAt(LocalDateTime.now());
+//            return cameraPartRepository.save(cameraPart);
+//        } else {
+//            throw new RuntimeException("Camera part not found");
+//        }
+//    }
+//
+//    public void deleteCameraPart(Long id) {
+//        cameraPartRepository.deleteById(id);
+//    }
 }

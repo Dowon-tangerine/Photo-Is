@@ -35,27 +35,32 @@ public class CameraPartController {
         return part.orElse(null);
     }
 
-    @Operation(summary = "카메라 부위 생성",
-            description = "카메라 부위를 생성합니다."
-    )
-    @PostMapping
-    public CameraPart createCameraPart(@RequestBody CameraPart cameraPart) {
-        return cameraPartService.createCameraPart(cameraPart.getName(), cameraPart.getDescription());
+    @GetMapping("/search")
+    public List<CameraPartNameDto> searchCameraPartsByName(@RequestParam String name) {
+        return cameraPartService.findByName(name);
     }
 
-    @Operation(summary = "카메라 부위 업데이트",
-            description = "카메라 부위를 업데이트합니다."
-    )
-    @PutMapping("/{id}")
-    public CameraPart updateCameraPart(@PathVariable Long id, @RequestBody CameraPart cameraPart) {
-        return cameraPartService.updateCameraPart(id, cameraPart.getName(), cameraPart.getDescription());
-    }
-
-    @Operation(summary = "카메라 부위 삭제",
-            description = "카메라 부위를 삭제합니다."
-    )
-    @DeleteMapping("/{id}")
-    public void deleteCameraPart(@PathVariable Long id) {
-        cameraPartService.deleteCameraPart(id);
-    }
+//    @Operation(summary = "카메라 부위 생성",
+//            description = "카메라 부위를 생성합니다."
+//    )
+//    @PostMapping
+//    public CameraPart createCameraPart(@RequestBody CameraPart cameraPart) {
+//        return cameraPartService.createCameraPart(cameraPart.getName(), cameraPart.getDescription());
+//    }
+//
+//    @Operation(summary = "카메라 부위 업데이트",
+//            description = "카메라 부위를 업데이트합니다."
+//    )
+//    @PutMapping("/{id}")
+//    public CameraPart updateCameraPart(@PathVariable Long id, @RequestBody CameraPart cameraPart) {
+//        return cameraPartService.updateCameraPart(id, cameraPart.getName(), cameraPart.getDescription());
+//    }
+//
+//    @Operation(summary = "카메라 부위 삭제",
+//            description = "카메라 부위를 삭제합니다."
+//    )
+//    @DeleteMapping("/{id}")
+//    public void deleteCameraPart(@PathVariable Long id) {
+//        cameraPartService.deleteCameraPart(id);
+//    }
 }
