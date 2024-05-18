@@ -1,4 +1,5 @@
 // api.ts
+import { instance } from "./axiosModule";
 
 export interface PhotoInfo {
     title: string;
