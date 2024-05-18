@@ -28,6 +28,12 @@ const Exhibition: React.FC = () => {
     const [isExhibition, setIsExhibition] = useState<boolean>(false);
 
     const openExhibitionModal = function(){
+        if(!isExhibition){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setIsExhibition(!isExhibition);
     }
 
@@ -58,6 +64,12 @@ const Exhibition: React.FC = () => {
     const [exhibitionDetail, setExhibitionDetail] = useState<boolean>(false);
 
     const openExhibitionDetails = function(){
+        if(!exhibitionDetail){
+            document.body.style.overflow = 'hidden';
+        }
+        else{
+            document.body.style.overflow = 'auto';
+        }
         setExhibitionDetail(!exhibitionDetail);
     }
 
@@ -165,7 +177,7 @@ const Exhibition: React.FC = () => {
         <>
             {isExhibition && (
             <>
-            <div className={styles.modal_background}> </div>
+            <div className={styles.modal_background} style={{paddingTop: '80px'}}> </div>
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionModal();}}></img>
             <div className={styles.open_exhibition_modal_container}>
                 <p className={styles.open_exhibition_title}>Exhibition Info</p>
@@ -221,7 +233,7 @@ const Exhibition: React.FC = () => {
 
         {exhibitionDetail && (
             <>
-            <div className={styles.modal_background}> </div>
+            <div className={styles.modal_background} style={{paddingTop: '80px'}}> </div>
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionDetails();}}></img>
             <div className={styles.open_exhibition_modal_container}>
             <img src={`/imgs/${photoLiked3 ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3();}}></img>
@@ -254,7 +266,7 @@ const Exhibition: React.FC = () => {
         )}
         
 
-        <div className={styles.main_container}>
+        <div className={styles.main_container} style={{paddingTop: '80px'}}>
             {/* <div className={styles.search_container}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>

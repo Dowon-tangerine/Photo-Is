@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./css/SearchName.module.css";
 import { FaAngleDown } from 'react-icons/fa';
-import axios from 'axios';
 import { useLocation, useNavigate } from "react-router-dom";
+import { getSearching, postFollow, deleteUnFollow } from '../../apis/galleryApi';
 
 interface imgInterface {
-    id: number;
-    url: string;
-    likeCnt: number,
-    liked: boolean,
-    title: string,
-  }
+    nickname: string,
+    profileUrl: string,
+    city: null | string,
+    country: null | string,
+    uploadedPhotoCnt: number,
+    followingCnt: number,
+    followerCnt: number,
+    follow: boolean,
+    useYear: number,
+    memberId : number,
+}
   
 const SearchName: React.FC = () => {
 
@@ -28,15 +33,20 @@ const SearchName: React.FC = () => {
         navigate("/community/gallery")
     }  
     
-    const moveToMyPage = function(){
-        navigate("/myPage")
+    const moveToUserPage = function(id : number){
+        navigate("/userPage", { state: { userId :  id} })
     }    
     
-    const [word2, setWord2] = useState<String>("");
+    const [word, setWord] = useState<string>(location.state ? location.state.searchWord : "")
+    const [word2, setWord2] = useState<string>("");
 
     const moveToSearch = function(){
         if(type === "작가"){
-            navigate("/community/gallery/searchName", { state: { searchWord :  word2 + "1"} })
+            getSearching("author", word2, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
+            setWord(word2)
         }
         else if(type === "제목"){
             navigate("/community/gallery/searchTitle", { state: { searchWord :  word2} })
@@ -44,9 +54,10 @@ const SearchName: React.FC = () => {
         else if(type === "태그"){
             navigate("/community/gallery/searchTag", { state: { searchWord :  word2} })
         }
+        else{
+            alert("검색 카테고리를 선택해주세요!")
+        }
     } 
-
-    const word = location.state ? location.state.searchWord : "";
 
     const toggleRotation = () => {
         setIsRotated(!isRotated);
@@ -62,27 +73,6 @@ const SearchName: React.FC = () => {
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
-
-    useEffect(() => {
-      console.log("로드");
-  
-      // key가 없으면 응답은 10개씩
-      const API_URL =
-        "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
-      axios.get(API_URL).then((res) => {
-        console.log(res);
-        
-        // id값과 url만 저장
-        const gotData = res.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-          id: imgs.photoId,
-          url: imgs.thumbnailUrl,
-          likeCnt: imgs.likeCnt,
-          liked: imgs.liked,
-          title: imgs.title,
-        }));
-        setImgArr(gotData);
-      });
-    }, []);
 
      // Intersection Observer 설정
 
@@ -119,41 +109,56 @@ const SearchName: React.FC = () => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        try {
-            const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
-            const response = await axios.get(API_URL);
-            const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-                id: imgs.photoId,
-                url: imgs.thumbnailUrl,
-                likeCnt: imgs.likeCnt,
-                liked: imgs.liked,
-                title: imgs.title,
-            }));
-            setImgArr((prevData) => [...prevData, ...newData]);
-        } catch (error) {
-            console.log(error);
-        }
+
+        getSearching("author", word, page)
+        .then((res) => {
+            if(res){
+                setImgArr([...imgArr, ...res]);
+            }
+        })
+
         setIsLoading(false);
     };
 
+    const clickFollow = function(id : number, idx : number){
+        postFollow(id)
+        .then((res) => {
+            const tmp = [ ...imgArr];
+            tmp[idx].follow = res;
+            setImgArr(tmp);
+            getSearching("author", word, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
+        })
+    }
 
+    const clickunFollow = function(id : number, idx : number){
+        deleteUnFollow(id)
+        .then((res) => {
+            const tmp = [ ...imgArr];
+            tmp[idx].follow = res;
+            setImgArr(tmp);
+            getSearching("author", word, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
+        })
+    }
     
     const openPhotoDetails = function(){
         setImgDetail(!imgDetail);
     }
 
-    const following = function(idx : number, follow : boolean){
-
-        let newArr = [...imgArr];
-
-        newArr[idx].liked = !follow;
-
-        setImgArr(newArr);
+    const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === 'Enter'){
+            moveToSearch();
+        }
     }
-
+    
     return (
         <>
-        <div className={styles.main_container}>
+        <div className={styles.main_container} style={{marginTop: '77px'}}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
@@ -172,7 +177,7 @@ const SearchName: React.FC = () => {
                     )}
                 </div>
                 <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}}></input>
+                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}} onKeyDown={onKeyDownHandler}></input>
                 <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
             </div>
 
@@ -197,19 +202,19 @@ const SearchName: React.FC = () => {
                 {imgArr &&
                     imgArr.map((Imgs: imgInterface, idx) => (
                         <div key={idx + 'g'} className={styles.card} onClick={() => {openPhotoDetails();}}>
-                            <img src={Imgs.url} alt='프로필' className={styles.card_profile} onClick={moveToMyPage}/>
-                            <p className={styles.profile_name}>김짱구잠옷</p>
+                            <img src={Imgs.profileUrl} alt='프로필' className={styles.card_profile} onClick={() => {moveToUserPage(Imgs.memberId);}}/>
+                            <p className={styles.profile_name}>{Imgs.nickname}</p>
                             <div className={styles.profile_info}>
-                                <p>Cameara use 1 years</p>
+                                <p>Cameara use {Imgs.useYear} years</p>
                                 <div className={styles.imgs_cnt}>
                                     <img src='/imgs/photo_icon.png' alt='사진 아이콘' className={styles.photo_icon}></img>
-                                    <p style={{marginLeft : '10px'}}>180</p>
+                                    <p style={{marginLeft : '10px'}}>{Imgs.uploadedPhotoCnt}</p>
                                 </div>
-                                <p>following 170 / follower 230</p>
+                                <p>follower {Imgs.followerCnt} / following {Imgs.followingCnt} </p>
                             </div>
-                            <div className={Imgs.liked ? styles.follow_btn_container : styles.no_follow_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
-                                <p className={styles.plus_txt}>{Imgs.liked ? `Follower` : `Follow`}</p>
-                                <img src={Imgs.liked ? `` : `/imgs/white_plus.png`} className={Imgs.liked ? `` : styles.plus_icon}></img>
+                            <div className={Imgs.follow ? styles.follow_btn_container : styles.no_follow_btn_container} onClick={() => {Imgs.follow ? clickunFollow(Imgs.memberId, idx) : clickFollow(Imgs.memberId, idx);}}>
+                                <p className={styles.plus_txt}>{Imgs.follow ? `Follower` : `Follow`}</p>
+                                <img src={Imgs.follow ? `` : `/imgs/white_plus.png`} className={Imgs.follow ? `` : styles.plus_icon}></img>
                             </div>
                         </div>
                 ))}
