@@ -8,11 +8,7 @@ import org.ssafy.d103.chatbots.dto.*;
 import org.ssafy.d103.chatbots.service.ChatbotService;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Tag(name = "chatbots", description = "챗봇 관련 API")
 @RestController
@@ -26,13 +22,13 @@ public class ChatbotController {
             description = "챗봇 질문에 대한 답을 받습니다."
     )
     @PostMapping("/chat")
-    public Mono<String> askQuestion(@RequestParam String sessionId, @RequestParam String userId, @RequestParam String question) {
-        return chatbotService.getChatbotResponse(sessionId, userId, question);
+    public Mono<String> askQuestion(@RequestParam String sessionId, @RequestParam String memberId, @RequestParam String question) {
+        return chatbotService.getChatbotResponse(sessionId, memberId, question);
     }
 
     @GetMapping("/sessions")
-    public List<ChatSessionResponseDto> getSessionsByUserId(@RequestParam String userId) {
-        return chatbotService.getSessionsByUserId(userId);
+    public List<ChatSessionResponseDto> getSessionsByMemberId(@RequestParam String memberId) {
+        return chatbotService.getSessionsByMemberId(memberId);
     }
 
     @GetMapping("/messages")
