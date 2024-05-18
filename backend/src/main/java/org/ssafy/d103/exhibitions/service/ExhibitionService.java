@@ -82,15 +82,22 @@ public class ExhibitionService {
         return true;
     }
 
-    public GetSelectMyExhibitionListResponse selectMyExhibitionList(Authentication authentication) {
+    public GetSelectMyExhibitionListResponse selectMyExhibitionList(Authentication authentication, String type) {
 
         Members member = commonService.findMemberByAuthentication(authentication);
 
         List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
                 .orElse(new ArrayList<>());
 
-        List<Exhibitions> exhibitionList = exhibitionRepository.findExhibitionsByMemberId(member)
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+        List<Exhibitions> exhibitionList = new ArrayList<>();
+        if(type.equals("current")){
+            exhibitionList = exhibitionRepository.findCurrentExhibitionsByMemberId(member.getId())
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+        }
+        else{
+            exhibitionList = exhibitionRepository.findClosedExhibitionsByMemberId(member.getId())
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+        }
 
         List<ExhibitionDto> exhibitionDtoList = new ArrayList<>();
 
