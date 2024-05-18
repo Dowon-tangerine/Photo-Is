@@ -7,7 +7,6 @@ import Capture from "./element/Capture";
 import { EffectComposer, Noise } from "@react-three/postprocessing";
 import { useCameraStore } from "./store/useCameraStore";
 import CameraController from "./element/CameraController";
-import ExposureControl from "./element/ExposureControl";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { EffectComposer as EffectComposerImpl } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -15,15 +14,17 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { createMotionBlurMaterial } from "./element/MotionBlurShader";
 import { createGrainMaterial } from "./element/GrainShader";
+import { ApertureShaderMaterial } from "./element/apertureShader";
+import { DepthOfField } from "@react-three/postprocessing";
 import { createExposureMaterial } from "./element/ExposureShader"; // Import the ExposureShader
 import Modal from "./element/Modal";
 
 extend({ EffectComposer: EffectComposerImpl, RenderPass, ShaderPass });
 
-function Effects({ shutterSpeed, iso }: { shutterSpeed: number; iso: number }) {
+function Effects({ shutterSpeed, iso, aperture }: { shutterSpeed: number; iso: number; aperture: number }) {
     const { gl, scene, camera } = useThree();
     const composer = useRef<EffectComposerImpl>();
-    const { exposure } = useCameraStore((state) => ({ exposure: state.exposure }));
+    const { exposure } = useCameraStore((state) => ({ aperture: state.aperture, exposure: state.exposure }));
 
     useEffect(() => {
         const composerInstance = new EffectComposerImpl(gl);
@@ -35,6 +36,11 @@ function Effects({ shutterSpeed, iso }: { shutterSpeed: number; iso: number }) {
         const velocityFactor = baseSpeed / Math.pow(shutterSpeed, 0.2); // 여기서 지수를 조정하여 효과 조절
         motionBlurMaterial.uniforms["velocityFactor"].value = velocityFactor;
         const shutterPass = new ShaderPass(motionBlurMaterial);
+
+        // BokehShader 설정
+        // const apertureMaterial = new ApertureShaderMaterial();
+        // apertureMaterial.uniforms.aperture.value = aperture;
+        // const aperturePass = new ShaderPass(apertureMaterial);
 
         // ExposureShader 설정
         const exposureMaterial = createExposureMaterial();
@@ -50,15 +56,16 @@ function Effects({ shutterSpeed, iso }: { shutterSpeed: number; iso: number }) {
         //composer에 추가
         composerInstance.addPass(renderPass);
         composerInstance.addPass(shutterPass);
-        composerInstance.addPass(exposurePass);
+        // composerInstance.addPass(exposurePass);
         composerInstance.addPass(grainPass);
+        // composerInstance.addPass(aperturePass);
 
         composer.current = composerInstance;
 
         return () => {
             composerInstance.dispose();
         };
-    }, [gl, scene, camera, shutterSpeed, exposure, iso]);
+    }, [gl, scene, camera, shutterSpeed, exposure, iso, aperture]);
 
     useFrame((_, delta) => {
         if (composer.current) {
@@ -81,17 +88,24 @@ const TutorialPage = () => {
                 <div className={StudioStyle.canvasContainer}>
                     <Canvas gl={{ alpha: true }} shadows camera={{ position: [0, 0, 5], fov: 50 }}>
                         <ambientLight intensity={1} />
-                        <directionalLight position={[10, 10, 10]} intensity={1} />
+                        <directionalLight position={[10, 10, 10]} intensity={2} />
                         <Capture
                             setTakeScreenshot={setTakeScreenshot}
                             setImgUrl={setImgUrl}
                             setModalIsOpen={setModalIsOpen}
                         />
+                        <EffectComposer>
+                            <DepthOfField
+                                focusDistance={0} // focus distance in world units
+                                focalLength={0.02} // focal length in world units
+                                bokehScale={aperture} // bokeh size
+                                height={480} // render height
+                            />
+                        </EffectComposer>
                         <CameraController />
-                        <ExposureControl />
                         <Spinner />
 
-                        <Effects shutterSpeed={shutterSpeed} iso={iso} />
+                        <Effects shutterSpeed={shutterSpeed} iso={iso} aperture={aperture} />
                     </Canvas>
                     {modalIsOpen && ImgUrl ? <Modal setModalIsOpen={setModalIsOpen} ImgUrl={ImgUrl}></Modal> : null}
                     <div className={StudioStyle.imageOverlay}>
