@@ -22,7 +22,8 @@ public class ChatbotController {
             description = "챗봇 질문에 대한 답을 받습니다."
     )
     @PostMapping("/chat")
-    public Mono<String> askQuestion(@RequestParam String sessionId, @RequestParam String memberId, @RequestParam String question) {
+
+    public Mono<ChatResponseDto> askQuestion(@RequestParam(required = false) Long sessionId, @RequestParam String memberId, @RequestParam String question) {
         return chatbotService.getChatbotResponse(sessionId, memberId, question);
     }
 
@@ -32,7 +33,7 @@ public class ChatbotController {
     }
 
     @GetMapping("/messages")
-    public List<ChatMessageDto> getMessagesBySessionId(@RequestParam String sessionId) {
+    public List<ChatMessageDto> getMessagesBySessionId(@RequestParam Long sessionId) {
         return chatbotService.getMessagesBySessionId(sessionId);
     }
 

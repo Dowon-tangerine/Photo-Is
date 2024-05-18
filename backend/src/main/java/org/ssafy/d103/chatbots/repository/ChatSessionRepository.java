@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChatSessionRepository extends JpaRepository<ChatSession, Long> {
-    Optional<ChatSession> findBySessionId(String sessionId);
+    Optional<ChatSession> findById(long id);
     List<ChatSession> findByMemberId(String memberId);
 }
