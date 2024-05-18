@@ -111,8 +111,8 @@ public class ChatbotService {
     }
 
 
-    public List<ChatMessageDto> getMessagesBySessionId(String sessionId) {
-        ChatSession session = chatSessionRepository.findBySessionId(sessionId)
+    public List<ChatMessageDto> getMessagesBySessionId(long sessionId) {
+        ChatSession session = chatSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid session ID"));
         List<ChatMessage> messages = chatMessageRepository.findBySession(session);
         return messages.stream()

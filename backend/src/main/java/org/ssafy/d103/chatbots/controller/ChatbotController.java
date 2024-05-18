@@ -32,7 +32,7 @@ public class ChatbotController {
     }
 
     @GetMapping("/messages")
-    public List<ChatMessageDto> getMessagesBySessionId(@RequestParam String sessionId) {
+    public List<ChatMessageDto> getMessagesBySessionId(@RequestParam Long sessionId) {
         return chatbotService.getMessagesBySessionId(sessionId);
     }
 
