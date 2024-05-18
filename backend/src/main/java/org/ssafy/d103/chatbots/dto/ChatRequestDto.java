@@ -1,18 +1,16 @@
 package org.ssafy.d103.chatbots.dto;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Data
 public class ChatRequestDto {
     private String message;
-    private String userId;
+    private String memberId;
     private String sessionId;
 
-    public ChatRequestDto(String message, String userId, String sessionId) {
+    public ChatRequestDto(String message, String memberId, String sessionId) {
         this.message = message;
-        this.userId = userId;
+        this.memberId = memberId;
         this.sessionId = sessionId;
     }
 
