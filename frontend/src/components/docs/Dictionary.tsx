@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Canvas, useThree, useLoader, extend } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { ConeGeometry, SphereGeometry } from 'three';
+import { ConeGeometry, SphereGeometry, Vector3 } from 'three';
 import * as THREE from 'three';
 import axios from 'axios';
 import { marked } from 'marked';
@@ -13,7 +13,7 @@ extend({ ConeGeometry, SphereGeometry });
 
 const modelUrl = '/imgs/FujiFilm_X_T4.obj.glb';
 
-function Model() {
+function Model({ setLoading }: { setLoading: (isLoading: boolean) => void }) {
   const gltf = useLoader(GLTFLoader, modelUrl);
   useEffect(() => {
     gltf.scene.traverse((child: THREE.Object3D) => {
@@ -26,7 +26,8 @@ function Model() {
         }
       }
     });
-  }, [gltf]);
+    setLoading(false); // Set loading to false when the model is fully loaded
+  }, [gltf, setLoading]);
   return (
     <group position={[-1, -1, 0]}>
       <primitive object={gltf.scene} />
@@ -53,34 +54,66 @@ function Lights() {
   return null;
 }
 
-function CameraController() {
+interface CameraControllerProps {
+  targetPosition: Vector3 | null;
+  lookAtPosition: Vector3 | null;
+}
+
+function CameraController({ targetPosition, lookAtPosition }: CameraControllerProps) {
   const { camera } = useThree();
+  const initialPosition = useRef(new Vector3(9, 9, 9));
+
   useEffect(() => {
-    camera.position.set(10, 10, 10);
+    camera.position.copy(initialPosition.current);
+    camera.lookAt(new Vector3(0, 0, 0));
   }, [camera]);
+
+  useEffect(() => {
+    if (targetPosition && lookAtPosition) {
+      const duration = 1000; // 이동 시간 (밀리초)
+      const start = Date.now();
+      const initialPos = camera.position.clone();
+      const animate = () => {
+        const elapsed = Date.now() - start;
+        if (elapsed < duration) {
+          const t = elapsed / duration;
+          camera.position.lerpVectors(initialPos, targetPosition, t);
+          camera.lookAt(lookAtPosition);
+          requestAnimationFrame(animate);
+        } else {
+          camera.position.copy(targetPosition);
+          camera.lookAt(lookAtPosition);
+        }
+      };
+      animate();
+    }
+  }, [targetPosition, lookAtPosition, camera]);
+
   return null;
 }
 
 interface Annotation {
+  id: number;
   position: [number, number, number];
   label: string;
 }
 
 interface AnnotationsProps {
   onAnnotationClick: (annotation: Annotation) => void;
+  selectedAnnotationId: number | null; // 추가
 }
 
-function Annotations({ onAnnotationClick }: AnnotationsProps) {
+function Annotations({ onAnnotationClick, selectedAnnotationId }: AnnotationsProps) {
   const annotations: Annotation[] = [
-    { position: [-6.4, 6.7, -4.4], label: '노출 보정 다이얼' },
-    { position: [-6.5, 6.2, -2.7], label: 'Fn1 버튼' },
-    { position: [-5.1, 6.7, -2.6], label: '셔터 버튼' },
-    { position: [-3.1, 7.2, -3.7], label: '다이얼 잠금 해제' },
-    { position: [-3.5, 4.2, -2], label: 'Fn2 버튼' },
-    { position: [0.3, 7.8, -5], label: '핫 슈' },
-    { position: [4, 7.2, -3.85], label: '다이얼 잠금 해제' },
-    { position: [4.1, 0.7, -2.1], label: '초점 모드 셀렉터' },
-    { position: [-4.7, 5.9, -5.6], label: '후면 커맨드 다이얼' },
+    { id: 1, position: [-6.5, 6.2, -2.7], label: 'Fn1 버튼' },
+    { id: 2, position: [-6.4, 6.7, -4.4], label: '노출 보정 다이얼' },
+    { id: 3, position: [-5.1, 6.7, -2.6], label: '셔터 버튼' },
+    { id: 5, position: [-3.1, 7.2, -3.7], label: '다이얼 잠금 해제' },
+    { id: 5, position: [4, 7.2, -3.85], label: '다이얼 잠금 해제' },
+    { id: 6, position: [0.3, 7.8, -5], label: '핫 슈' },
+    { id: 14, position: [4.1, 0.7, -2.1], label: '초점 모드 셀렉터' },
+    { id: 17, position: [-3.5, 4.2, -2], label: 'Fn2 버튼' },
+    { id: 35, position: [-4.7, 5.9, -5.6], label: '후면 커맨드 다이얼' },
   ];
 
   return (
@@ -88,12 +121,20 @@ function Annotations({ onAnnotationClick }: AnnotationsProps) {
       {annotations.map((annotation, index) => (
         <group key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
           <mesh position={[0, 0.225, 0]}>
-            <sphereGeometry args={[0.15, 32, 32]} />
-            <meshStandardMaterial color="red" emissive="red" emissiveIntensity={0.5} />
+            <sphereGeometry args={[0.17, 32, 32]} />
+            <meshStandardMaterial
+              color={selectedAnnotationId === annotation.id ? 'red' : 'yellow'} // 클릭된 핀의 색을 변경합니다.
+              emissive={selectedAnnotationId === annotation.id ? 'red' : 'yellow'}
+              emissiveIntensity={0.5}
+            />
           </mesh>
           <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.15, 0]}>
             <coneGeometry args={[0.15, 0.3, 32]} />
-            <meshStandardMaterial color="red" emissive="red" emissiveIntensity={0.5} />
+            <meshStandardMaterial
+              color={selectedAnnotationId === annotation.id ? 'red' : 'yellow'} // 클릭된 핀의 색을 변경합니다.
+              emissive={selectedAnnotationId === annotation.id ? 'red' : 'yellow'}
+              emissiveIntensity={0.5}
+            />
           </mesh>
         </group>
       ))}
@@ -107,28 +148,20 @@ interface AnnotationModalProps {
 }
 
 function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
-  const getAnnotationDetails = (label: string) => {
-    switch (label) {
-      case '노출 보정 다이얼':
-        return '노출 보정 다이얼은 카메라가 자동으로 설정한 노출 값에 대해 사용자가 추가로 보정할 수 있는 기능을 제공하는 다이얼입니다. 이를 통해 밝기를 조절할 수 있습니다.';
-      case 'Fn1 버튼':
-        return 'Fn1 버튼은 사용자가 자주 사용하는 기능을 빠르게 사용할 수 있도록 설정할 수 있는 사용자 정의 버튼입니다.';
-      case '셔터 버튼':
-        return '셔터 버튼은 사진을 촬영하기 위해 카메라의 셔터를 작동시키는 버튼입니다. 반누름으로 초점을 맞출 수 있으며, 완전히 누르면 촬영이 됩니다.';
-      case '다이얼 잠금 해제':
-        return '다이얼 잠금 해제는 사용자가 실수로 다이얼을 돌려 설정이 바뀌지 않도록 잠금을 해제하는 기능입니다.';
-      case 'Fn2 버튼':
-        return 'Fn2 버튼은 Fn1 버튼과 마찬가지로 사용자가 자주 사용하는 기능을 빠르게 사용할 수 있도록 설정할 수 있는 사용자 정의 버튼입니다.';
-      case '핫 슈':
-        return '핫 슈는 카메라 상단에 위치한 액세서리 마운트로, 외장 플래시나 기타 액세서리를 장착할 수 있습니다.';
-      case '초점 모드 셀렉터':
-        return '초점 모드 셀렉터는 카메라의 초점 모드를 변경할 수 있는 다이얼 또는 버튼입니다. 이를 통해 자동 초점(AF)과 수동 초점(MF)을 전환할 수 있습니다.';
-      case '후면 커맨드 다이얼':
-        return '후면 커맨드 다이얼은 카메라의 설정을 빠르게 변경할 수 있도록 도와주는 다이얼로, 메뉴 내비게이션이나 설정 조정에 사용됩니다.';
-      default:
-        return '해당 항목에 대한 설명이 아직 준비되지 않았습니다.';
-    }
-  };
+  const [details, setDetails] = useState('');
+
+  useEffect(() => {
+    const fetchAnnotationDetails = async () => {
+      try {
+        const response = await axios.get(`https://k10d103.p.ssafy.io/api/camera-parts/${annotation.id}`);
+        setDetails(response.data.description);
+      } catch (error) {
+        console.error('Failed to fetch annotation details:', error);
+      }
+    };
+
+    fetchAnnotationDetails();
+  }, [annotation.id]);
 
   return (
     <div className={styles.annotationModal}>
@@ -137,7 +170,7 @@ function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
         <span className={styles.closeButton} onClick={onClose}>&times;</span>
       </div>
       <div className={styles.modalContent}>
-        {getAnnotationDetails(annotation.label)}
+        {details || 'Loading...'}
       </div>
     </div>
   );
@@ -170,7 +203,6 @@ interface SessionModalProps {
   toggleModal: () => void; // Add this prop
 }
 
-
 function SessionModal({ isOpen, sessions, onSessionClick }: SessionModalProps) {
   return (
     <div className={`${styles.sessionModal} ${isOpen ? styles.open : ''}`}>
@@ -198,6 +230,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   const [showRecommendations, setShowRecommendations] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
+  const memberId = 'someMemberId'; // Replace this with the actual memberId
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(e.target.value);
@@ -275,7 +308,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/sessions?userId=1');
+        const res = await axios.get(`https://k10d103.p.ssafy.io/api/chatbot/sessions?memberId=${memberId}`);
         setSessions(res.data);
       } catch (error) {
         console.error('Failed to fetch sessions:', error);
@@ -283,7 +316,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
     };
 
     fetchSessions();
-  }, []);
+  }, [memberId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -383,6 +416,10 @@ function Dictionary() {
   const [annotation, setAnnotation] = useState<Annotation | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [selectedSidebarItem, setSelectedSidebarItem] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [targetPosition, setTargetPosition] = useState<Vector3 | null>(null); // Add target position state
+  const [lookAtPosition, setLookAtPosition] = useState<Vector3 | null>(null); // Add lookAt position state
+  const [selectedAnnotationId, setSelectedAnnotationId] = useState<number | null>(null); // 클릭된 핀의 ID를 저장하는 상태 추가
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -398,6 +435,43 @@ function Dictionary() {
   const handleAnnotationClick = (annotation: Annotation) => {
     setAnnotation(annotation);
     setAnnotationModalOpen(true);
+
+    const lookAtPos = new Vector3(annotation.position[0], annotation.position[1], annotation.position[2]);
+
+    // 카메라 위치를 설정합니다 (핀 위치에서 약간 떨어진 곳에 위치하게 설정).
+    let cameraPos;
+    switch (annotation.id) {
+      case 1:
+        cameraPos = new Vector3(lookAtPos.x -3, lookAtPos.y + 3, lookAtPos.z + 1);
+        break;
+      case 2:
+        cameraPos = new Vector3(lookAtPos.x -7, lookAtPos.y + 3, lookAtPos.z -1);
+        break;
+      case 3:
+        cameraPos = new Vector3(lookAtPos.x - 5, lookAtPos.y + 5, lookAtPos.z + 4);
+        break;
+      case 5:
+        cameraPos = new Vector3(lookAtPos.x -5, lookAtPos.y + 3, lookAtPos.z -8);
+        break;
+      case 6:
+        cameraPos = new Vector3(lookAtPos.x + 4, lookAtPos.y + 4, lookAtPos.z -6);
+        break;
+      case 14:
+        cameraPos = new Vector3(lookAtPos.x + 6, lookAtPos.y + 3, lookAtPos.z + 6);
+        break;
+      case 17:
+        cameraPos = new Vector3(lookAtPos.x -5, lookAtPos.y + 3, lookAtPos.z +5);
+        break;
+      case 35:
+        cameraPos = new Vector3(lookAtPos.x -5, lookAtPos.y + 3, lookAtPos.z -6);
+        break;
+      default:
+        cameraPos = new Vector3(lookAtPos.x + 5, lookAtPos.y + 5, lookAtPos.z + 5);
+    }
+
+    setTargetPosition(cameraPos);
+    setLookAtPosition(lookAtPos);
+    setSelectedAnnotationId(annotation.id); // 클릭된 핀의 ID를 저장합니다.
   };
 
   const closeAnnotationModal = () => {
@@ -434,7 +508,7 @@ function Dictionary() {
     <div className={styles.container}>
       <div className={styles.sidebar}>
         <div className={styles.sidebarTop}>
-          <h1>Dictionary</h1>
+          <h1 className="font-bookkMyungjoBold">Dictionary</h1>
           <div className={styles.searchContainer}>
             <div className={styles.inputGroup}>
               <input
@@ -452,9 +526,9 @@ function Dictionary() {
           </div>
         </div>
         <div className={styles.sidebarBottom}>
-          <div>
+          <div className='font-bookkGothic'>
             {sidebarItems.map((item) => (
-              <div key={item.title}>
+              <div key={item.title} className='font-bookkGothic'>
                 <button onClick={() => handleSidebarItemClick(item.title)}>{item.title}</button>
                 {openDropdown === item.title && (
                   <div className={styles.dropdownContent}>
@@ -471,12 +545,12 @@ function Dictionary() {
       <div className={styles.content} ref={canvasRef}>
         <div className={styles.canvasContainer}>
           <Canvas>
-            <CameraController />
+            <CameraController targetPosition={targetPosition} lookAtPosition={lookAtPosition} />
             <Lights />
             <Suspense fallback={<Html><div>Loading Model...</div></Html>}>
-              <Model />
+              <Model setLoading={setLoading} />
             </Suspense>
-            <Annotations onAnnotationClick={handleAnnotationClick} />
+            {!loading && <Annotations onAnnotationClick={handleAnnotationClick} selectedAnnotationId={selectedAnnotationId} />}
             <OrbitControls />
           </Canvas>
         </div>
