@@ -32,12 +32,12 @@ public class ExhibitionController {
     }
 
     /**
-     * 내 전시회 전체 목록 조회 API
+     * (진행중 or 끝난) 내 전시회 전체 목록 조회 API
      */
     @Operation(summary = "내 전시회 전체 목록 조회 요청")
-    @GetMapping("/my")
-    public ApiResponseDto<?> selectMyExhibitionList(Authentication authentication) {
-        return ResponseUtils.ok(exhibitionService.selectMyExhibitionList(authentication), MsgType.SELECT_MY_EXHIBITION_LIST_SUCCESSFULLY);
+    @GetMapping("/my/{type}")
+    public ApiResponseDto<?> selectMyExhibitionList(Authentication authentication, @PathVariable String type) {
+        return ResponseUtils.ok(exhibitionService.selectMyExhibitionList(authentication, type), MsgType.SELECT_MY_EXHIBITION_LIST_SUCCESSFULLY);
     }
 
     /**
