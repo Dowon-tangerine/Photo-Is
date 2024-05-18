@@ -22,7 +22,7 @@ public class ChatbotController {
             description = "챗봇 질문에 대한 답을 받습니다."
     )
     @PostMapping("/chat")
-    public Mono<String> askQuestion(@RequestParam String sessionId, @RequestParam String memberId, @RequestParam String question) {
+    public Mono<String> askQuestion(@RequestParam(required = false) String sessionId, @RequestParam String memberId, @RequestParam String question) {
         return chatbotService.getChatbotResponse(sessionId, memberId, question);
     }
 
