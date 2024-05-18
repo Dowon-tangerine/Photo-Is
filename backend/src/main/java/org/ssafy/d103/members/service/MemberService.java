@@ -15,6 +15,8 @@ import org.ssafy.d103._common.exception.CustomException;
 import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103._common.service.S3Uploader;
+import org.ssafy.d103.follows.entity.Follows;
+import org.ssafy.d103.follows.repository.FollowRepository;
 import org.ssafy.d103.members.dto.request.PostAddMemberRequest;
 import org.ssafy.d103.members.dto.request.PostCheckPasswordRequest;
 import org.ssafy.d103.members.dto.request.PostValidateMemberRequest;
@@ -28,6 +30,7 @@ import org.ssafy.d103.members.repository.MemberRepository;
 import org.ssafy.d103.members.service.jwt.JwtUtil;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -35,6 +38,7 @@ import java.io.IOException;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final FollowRepository followRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final CommonService commonService;
@@ -125,7 +129,16 @@ public class MemberService {
         Members member = commonService.findMemberByAuthentication(authentication);
         Members target = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_MEMBER));
-        return GetSelectMemberResponse.from(target);
+        List<Follows> followList = followRepository.findFollowsByFollowerId(member)
+                .orElse(null);
+        boolean isFollow = false;
+        for(Follows f :followList){
+            if(f.getFollowingId().getId() == target.getId()){
+                isFollow = true;
+            }
+        }
+
+        return GetSelectMemberResponse.from(target, isFollow);
     }
 
     public Page<MemberRepository.MemberDtoMapping> selectMemberList(Authentication authentication, String nickname, Pageable pageable) {
@@ -140,6 +153,11 @@ public class MemberService {
     public PutUpdateMemberResponse updateMember(Authentication authentication, MultipartFile multipartFile, PutUpdateMemberRequest request) throws IOException {
 
         Members member = commonService.findMemberByAuthentication(authentication);
+
+        if(!member.getNickname().equals(request.getNickname()) && memberRepository.findMembersByNicknameAndDeletedAtIsNull(request.getNickname()).isPresent()){
+            throw new CustomException(ErrorType.DUPLICATED_NICKNAME);
+        }
+
         String photoUrl = null;
         if(multipartFile != null) {
             photoUrl = s3Uploader.upload(multipartFile, "profile");
@@ -147,6 +165,7 @@ public class MemberService {
 
         member.updateAllInfo(
                 request.getNickname(),
+                request.getIntroduction(),
                 request.getBirthYear(),
                 request.getUseYear(),
                 request.getCamera(),

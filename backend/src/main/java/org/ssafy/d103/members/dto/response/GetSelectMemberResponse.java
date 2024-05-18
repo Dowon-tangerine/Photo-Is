@@ -22,9 +22,10 @@ public class GetSelectMemberResponse {
     private Members.Camera camera;
     private String city;
     private String country;
+    private boolean isFollow;
 
     @Builder
-    private GetSelectMemberResponse(Long memberId, String nickname, String profileUrl, String backgroundUrl, String introduction, int followingCnt, int followerCnt, int photoCnt, int useYear, int birthYear, Members.Camera camera, String city, String country) {
+    private GetSelectMemberResponse(Long memberId, String nickname, String profileUrl, String backgroundUrl, String introduction, int followingCnt, int followerCnt, int photoCnt, int useYear, int birthYear, Members.Camera camera, String city, String country, boolean isFollow) {
         this.memberId = memberId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
@@ -38,9 +39,10 @@ public class GetSelectMemberResponse {
         this.camera = camera;
         this.city = city;
         this.country = country;
+        this.isFollow = isFollow;
     }
 
-    public static GetSelectMemberResponse from(Members member) {
+    public static GetSelectMemberResponse from(Members member, boolean isFollow) {
         return builder()
                 .memberId(member.getId())
                 .nickname(member.getNickname())
@@ -55,6 +57,7 @@ public class GetSelectMemberResponse {
                 .camera(member.getCamera())
                 .city(member.getCity())
                 .country(member.getCountry())
+                .isFollow(isFollow)
                 .build();
     }
 }

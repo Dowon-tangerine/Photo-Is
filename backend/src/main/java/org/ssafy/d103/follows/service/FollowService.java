@@ -26,7 +26,7 @@ public class FollowService {
     private final CommonService commonService;
 
     @Transactional
-    public Long followMember(Authentication authentication, Long memberId) {
+    public boolean followMember(Authentication authentication, Long memberId) {
 
         Members member = commonService.findMemberByAuthentication(authentication);
         Members target = memberRepository.findById(memberId)
@@ -45,11 +45,16 @@ public class FollowService {
                     .build();
         followRepository.save(follow);
 
-        return memberId;
+        member.updateFollowCnt(member.getFollowerCnt(), member.getFollowingCnt()+1);
+        target.updateFollowCnt(target.getFollowerCnt()+1, target.getFollowingCnt());
+        memberRepository.save(member);
+        memberRepository.save(target);
+
+        return true;
     }
 
     @Transactional
-    public Long unfollowMember(Authentication authentication, Long memberId) {
+    public boolean unfollowMember(Authentication authentication, Long memberId) {
 
         Members member = commonService.findMemberByAuthentication(authentication);
         Members target = memberRepository.findById(memberId)
@@ -60,7 +65,12 @@ public class FollowService {
 
         followRepository.delete(follow);
 
-        return memberId;
+        member.updateFollowCnt(member.getFollowerCnt(), member.getFollowingCnt()-1);
+        target.updateFollowCnt(target.getFollowerCnt()-1, target.getFollowingCnt());
+        memberRepository.save(member);
+        memberRepository.save(target);
+
+        return false;
     }
 
     public List<FollowingDto> selectFollowList(Authentication authentication) {
