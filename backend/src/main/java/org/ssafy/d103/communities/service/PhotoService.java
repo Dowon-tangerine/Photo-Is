@@ -30,10 +30,7 @@ import org.ssafy.d103.communities.dto.photo.AuthorProfileDto;
 import org.ssafy.d103.communities.dto.photo.MyPhotoDto;
 import org.ssafy.d103.communities.dto.photo.PhotoDto;
 import org.ssafy.d103.communities.dto.photo.PhotoRankingDto;
-import org.ssafy.d103.communities.dto.photo.request.DeletePhotoCommentRequest;
-import org.ssafy.d103.communities.dto.photo.request.PostUploadPhotoRequest;
-import org.ssafy.d103.communities.dto.photo.request.PostWritePhotoCommentRequest;
-import org.ssafy.d103.communities.dto.photo.request.PutModifyPhotoRequest;
+import org.ssafy.d103.communities.dto.photo.request.*;
 import org.ssafy.d103.communities.dto.photo.response.*;
 import org.ssafy.d103.communities.entity.photo.*;
 import org.ssafy.d103.communities.repository.photo.*;
@@ -45,6 +42,8 @@ import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,7 +102,7 @@ public class PhotoService {
         saveHashtag(postUploadPhotoRequest.getHashtagList(), savedPhoto);
         photoDetailRepository.save(PhotoDetail.init(savedPhoto));
 
-        return PostUploadPhotoResponse.of(true);
+        return PostUploadPhotoResponse.of(photo.getId(), true);
     }
 
     private Photo uploadImageFile(MultipartFile imageFile, Photo photo) {
@@ -176,6 +175,7 @@ public class PhotoService {
             String iso = null;
             Double latitude = null;
             Double longitude = null;
+            String exposure = null;
 
             if (directory != null) {
                 time = exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
@@ -184,8 +184,9 @@ public class PhotoService {
                 lensModel = extractLensModel(metadata);
                 aperture = exifDirectory.getDescription(ExifSubIFDDirectory.TAG_APERTURE);
                 focusDistance = exifDirectory.getDescription(ExifSubIFDDirectory.TAG_FOCAL_LENGTH);
-                shutterSpeed = exifDirectory.getDescription(ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
+                shutterSpeed = exifDirectory.getDescription(ExifSubIFDDirectory.TAG_SHUTTER_SPEED);
                 iso = exifDirectory.getDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT);
+                exposure = exifDirectory.getDescription(ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
             }
 
             if (gpsDirectory != null && gpsDirectory.getGeoLocation() != null) {
@@ -194,10 +195,31 @@ public class PhotoService {
 
             }
 
-            photoMetadataRepository.save(PhotoMetadata.of(time, cameraType, cameraModel, lensModel, aperture, focusDistance, shutterSpeed, iso, latitude, longitude, photo));
+            photoMetadataRepository.save(PhotoMetadata.of(time, cameraType, cameraModel, lensModel, aperture, focusDistance, shutterSpeed, iso, exposure, latitude, longitude, photo));
 
         } catch (IOException | ImageProcessingException e) {
             e.getStackTrace();
+        }
+    }
+
+    @Transactional
+    public PutSaveStudioMetadataResponse saveStudioMetadata(Authentication authentication, Long photoId, PutSaveStudioMetadataRequest putSaveStudioMetadataRequest) {
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        Photo photo = photoRepository.findPhotoByIdAndMember(photoId, member)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
+
+        PhotoMetadata photoMetadata = photoMetadataRepository.findPhotoMetadataByPhoto(photo)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO_METADATA));
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Date date = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        try {
+            photoMetadata.updateStudioPhotoMetadata(date, putSaveStudioMetadataRequest.getIso(), putSaveStudioMetadataRequest.getShutterSpeed(), putSaveStudioMetadataRequest.getAperture(), putSaveStudioMetadataRequest.getExposure());
+            return PutSaveStudioMetadataResponse.of(true);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.DB_SAVE_ERROR);
         }
     }
 
