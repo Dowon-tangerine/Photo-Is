@@ -217,7 +217,17 @@ const SearchTag: React.FC = () => {
             })
         })
     }
+    const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === 'Enter'){
+            moveToSearch();
+        }
+    }
 
+    const onCommentKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>, id : number | undefined) => {
+        if(e.key === 'Enter'){
+            sendClick(id);
+        }
+    }
 
     return (
         <>
@@ -306,7 +316,7 @@ const SearchTag: React.FC = () => {
                         </div>
                         <div className={styles.send_comment_container}>
                             <div className={styles.send_box}>
-                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment}></input>
+                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment} onKeyDown={(e)=>onCommentKeyDownHandler(e, photoDetails?.photoId)}></input>
                                 <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기' onClick={() => {sendClick(photoDetails?.photoId);}}></img>
                             </div>
                         </div>  
@@ -335,7 +345,7 @@ const SearchTag: React.FC = () => {
                     )}
                 </div>
                 <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}}></input>
+                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)} } onKeyDown={onKeyDownHandler}></input>
                 <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
             </div>
 
