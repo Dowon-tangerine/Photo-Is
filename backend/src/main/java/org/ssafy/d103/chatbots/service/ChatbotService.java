@@ -58,6 +58,7 @@ public class ChatbotService {
         ChatMessage userMessage = ChatMessage.builder()
                 .session(session)
                 .message(question)
+                .createdAt(LocalDateTime.now())
                 .role("user")
                 .build();
 
@@ -69,7 +70,7 @@ public class ChatbotService {
         List<ChatMessage> chatHistory = chatMessageRepository.findBySession(session);
 
         List<ChatMessageDto> messageDTOs = chatHistory.stream()
-                .map(message -> new ChatMessageDto(message.getRole(), message.getMessage()))
+                .map(message -> new ChatMessageDto(message.getRole(), message.getMessage(),message.getCreatedAt()))
                 .filter(dto -> dto.getMessage() != null && !dto.getMessage().isEmpty()) // null 또는 빈 메시지 필터링
                 .collect(Collectors.toList());
 
@@ -94,6 +95,7 @@ public class ChatbotService {
                     ChatMessage assistantMessage = ChatMessage.builder()
                             .session(finalSession)
                             .message(response.getAnswer())
+                            .createdAt(LocalDateTime.now())
                             .role("assistant")
                             .build();
                     chatMessageRepository.save(assistantMessage);
@@ -120,7 +122,7 @@ public class ChatbotService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid session ID"));
         List<ChatMessage> messages = chatMessageRepository.findBySession(session);
         return messages.stream()
-                .map(message -> new ChatMessageDto(message.getRole(), message.getMessage()))
+                .map(message -> new ChatMessageDto(message.getRole(), message.getMessage(),message.getCreatedAt()))
                 .collect(Collectors.toList());
     }
     public Mono<String> describeImage(String imageUrl) {
