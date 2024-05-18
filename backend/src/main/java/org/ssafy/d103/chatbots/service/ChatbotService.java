@@ -33,20 +33,27 @@ public class ChatbotService {
         this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io").build();
     }
 
-    public Mono<String> getChatbotResponse(String sessionId, String memberId, String question) {
-        if (sessionId == null || sessionId.isEmpty()) {
-            sessionId = UUID.randomUUID().toString();
-        }
-
-        Optional<ChatSession> sessionOptional = chatSessionRepository.findBySessionId(sessionId);
+    public Mono<ChatResponseDto> getChatbotResponse(Long sessionId, String memberId, String question) {
         ChatSession session;
 
-        if (sessionOptional.isEmpty()) {
-            session = ChatSession.builder().sessionId(sessionId).memberId(memberId).build();
+        if (sessionId == null) {
+            session = ChatSession.builder()
+                    .memberId(memberId)
+                    .build();
             chatSessionRepository.save(session);
+            sessionId = session.getId(); // 생성된 세션의 ID를 가져옴
         } else {
+            Optional<ChatSession> sessionOptional = chatSessionRepository.findById(sessionId);
+
+            if (sessionOptional.isEmpty()) {
+                return Mono.error(new RuntimeException("Session not found"));
+            }
+
             session = sessionOptional.get();  // Optional에서 세션 추출
         }
+
+        final ChatSession finalSession = session;
+        final Long finalSessionId = sessionId;
 
         ChatMessage userMessage = ChatMessage.builder()
                 .session(session)
@@ -79,20 +86,21 @@ public class ChatbotService {
                         })
                 )
                 .bodyToMono(ChatResponseDto.class)
-                .<String>handle((response, sink) -> {
+                .flatMap(response -> {
                     if (response == null || response.getAnswer() == null) {
-                        sink.error(new NullPointerException("Received null response from server"));
-                        return;
+                        return Mono.error(new NullPointerException("Received null response from server"));
                     }
 
                     ChatMessage assistantMessage = ChatMessage.builder()
-                            .session(session)
+                            .session(finalSession)
                             .message(response.getAnswer())
                             .role("assistant")
                             .build();
                     chatMessageRepository.save(assistantMessage);
 
-                    sink.next(response.getAnswer());
+                    // sessionId를 설정한 ChatResponseDto 반환
+                    response.setSessionId(finalSessionId);
+                    return Mono.just(response);
                 })
                 .onErrorResume(WebClientResponseException.class, e -> {
                     return Mono.error(new RuntimeException("Failed to call external API", e));
@@ -102,13 +110,13 @@ public class ChatbotService {
     public List<ChatSessionResponseDto> getSessionsByMemberId(String memberId) {
         List<ChatSession> sessions = chatSessionRepository.findByMemberId(memberId);
         return sessions.stream()
-                .map(session -> new ChatSessionResponseDto(session.getSessionId(), session.getMemberId(), session.getLastMessage()))
+                .map(session -> new ChatSessionResponseDto(session.getId(),session.getMemberId(), session.getLastMessage()))
                 .collect(Collectors.toList());
     }
 
 
-    public List<ChatMessageDto> getMessagesBySessionId(String sessionId) {
-        ChatSession session = chatSessionRepository.findBySessionId(sessionId)
+    public List<ChatMessageDto> getMessagesBySessionId(long sessionId) {
+        ChatSession session = chatSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid session ID"));
         List<ChatMessage> messages = chatMessageRepository.findBySession(session);
         return messages.stream()
