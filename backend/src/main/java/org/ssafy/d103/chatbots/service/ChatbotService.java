@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,14 +33,22 @@ public class ChatbotService {
         this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io").build();
     }
 
-    public Mono<String> getChatbotResponse(String sessionId, String memberId, String question) {
-        Optional<ChatSession> sessionOptional = chatSessionRepository.findBySessionId(sessionId);
+    public Mono<String> getChatbotResponse(Long sessionId, String memberId, String question) {
         ChatSession session;
 
-        if (sessionOptional.isEmpty()) {
-            session = ChatSession.builder().sessionId(sessionId).memberId(memberId).build();
+        if (sessionId == null) {
+            session = ChatSession.builder()
+                    .memberId(memberId)
+                    .build();
             chatSessionRepository.save(session);
+            sessionId = session.getId(); // 생성된 세션의 ID를 가져옴
         } else {
+            Optional<ChatSession> sessionOptional = chatSessionRepository.findById(sessionId);
+
+            if (sessionOptional.isEmpty()) {
+                return Mono.error(new RuntimeException("Session not found"));
+            }
+
             session = sessionOptional.get();  // Optional에서 세션 추출
         }
 
@@ -97,7 +106,7 @@ public class ChatbotService {
     public List<ChatSessionResponseDto> getSessionsByMemberId(String memberId) {
         List<ChatSession> sessions = chatSessionRepository.findByMemberId(memberId);
         return sessions.stream()
-                .map(session -> new ChatSessionResponseDto(session.getSessionId(), session.getMemberId(), session.getLastMessage()))
+                .map(session -> new ChatSessionResponseDto(session.getId(),session.getMemberId(), session.getLastMessage()))
                 .collect(Collectors.toList());
     }
 

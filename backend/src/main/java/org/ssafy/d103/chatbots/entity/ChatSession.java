@@ -16,7 +16,6 @@ public class ChatSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String sessionId;
     private String memberId;
     private String lastMessage;
 
