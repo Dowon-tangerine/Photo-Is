@@ -35,6 +35,7 @@ public enum MsgType {
 
     //********************************[ Photos ]********************************
     PHOTO_UPLOAD_SUCCESSFULLY("사진 업로드에 성공하였습니다."),
+    PHOTO_STUDIO_METADATA_SAVE_SUCCESSFULLY("스튜디오 사진 메타데이터 저장에 성공하였습니다."),
     PHOTO_MODIFY_SUCCESSFULLY("사진 정보 변경에 성공하였습니다."),
     PHOTO_DELETE_SUCCESSFULLY("사진 삭제에 성공하였습니다."),
     PHOTO_GET_SUCCESSFULLY("사진 조회에 성공하였습니다."),
