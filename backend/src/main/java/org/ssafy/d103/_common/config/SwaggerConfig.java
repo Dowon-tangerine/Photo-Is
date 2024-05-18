@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
                 version = "v1"
         ),
         servers = {
-                //@Server(url = "http://localhost:8081", description = "Local Server")
-                @Server(url = "https://k10d103.p.ssafy.io", description = "Deployed Server")
+                @Server(url = "http://localhost:8081", description = "Local Server")
+                //@Server(url = "https://k10d103.p.ssafy.io", description = "Deployed Server")
         }
 )
 @Configuration

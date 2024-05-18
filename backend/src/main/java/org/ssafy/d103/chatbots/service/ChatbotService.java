@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +34,10 @@ public class ChatbotService {
     }
 
     public Mono<String> getChatbotResponse(String sessionId, String memberId, String question) {
+        if (sessionId == null || sessionId.isEmpty()) {
+            sessionId = UUID.randomUUID().toString();
+        }
+
         Optional<ChatSession> sessionOptional = chatSessionRepository.findBySessionId(sessionId);
         ChatSession session;
 
