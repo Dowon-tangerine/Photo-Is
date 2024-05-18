@@ -3,10 +3,7 @@ package org.ssafy.d103.communities.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.ssafy.d103.communities.entity.photo.DailyPhotoRanking;
-import org.ssafy.d103.communities.entity.photo.MonthlyPhotoRanking;
-import org.ssafy.d103.communities.entity.photo.PhotoDetail;
-import org.ssafy.d103.communities.entity.photo.WeeklyPhotoRanking;
+import org.ssafy.d103.communities.entity.photo.*;
 import org.ssafy.d103.communities.repository.photo.DailyPhotoRankingRepository;
 import org.ssafy.d103.communities.repository.photo.MonthlyPhotoRankingRepository;
 import org.ssafy.d103.communities.repository.photo.PhotoDetailRepository;
@@ -25,7 +22,7 @@ public class PhotoRankingService {
 
     @Transactional
     public List<PhotoDetail> calculateDailyRankings() {
-        List<PhotoDetail> photoDetails = photoDetailRepository.findAll();
+        List<PhotoDetail> photoDetails = getPhotoDetailsByPublicAccess();
 
         return photoDetails.stream()
                 .filter(p -> p.getDailyLikeUpdatedAt() != null)
@@ -45,7 +42,7 @@ public class PhotoRankingService {
 
     @Transactional
     public List<PhotoDetail> calculateWeeklyRankings() {
-        List<PhotoDetail> photoDetails = photoDetailRepository.findAll();
+        List<PhotoDetail> photoDetails = getPhotoDetailsByPublicAccess();
 
         return photoDetails.stream()
                 .filter(p -> p.getWeeklyLikeUpdatedAt() != null)
@@ -65,7 +62,7 @@ public class PhotoRankingService {
 
     @Transactional
     public List<PhotoDetail> calculateMonthlyRankings() {
-        List<PhotoDetail> photoDetails = photoDetailRepository.findAll();
+        List<PhotoDetail> photoDetails = getPhotoDetailsByPublicAccess();
 
         return photoDetails.stream()
                 .filter(p -> p.getMonthlyLikeUpdatedAt() != null)
@@ -102,6 +99,11 @@ public class PhotoRankingService {
         monthlyPhotoRankingRepository.deleteAll();
         monthlyPhotoRankingRepository.flush();
         monthlyPhotoRankingRepository.saveAll(rankings);
+    }
+
+    @Transactional
+    public List<PhotoDetail> getPhotoDetailsByPublicAccess() {
+        return photoDetailRepository.findAllByPhotoAccessType(AccessType.PUBLIC);
     }
 
 }
