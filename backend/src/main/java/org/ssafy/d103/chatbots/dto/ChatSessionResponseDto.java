@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ChatSessionResponseDto {
-    private String sessionId;
+    private long id;
     private String memberId;
     private String lastMessage;
 }
