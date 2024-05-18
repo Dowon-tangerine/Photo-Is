@@ -11,25 +11,20 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class GetExhibitionListResponse {
-
+public class GetMemberExhibitionListResponse {
     private int totalCnt;
-    private List<ExhibitionDto> followExhibition;
     private List<ExhibitionDto> exhibition;
 
     @Builder
-    private GetExhibitionListResponse(int totalCnt, List<ExhibitionDto> followExhibition, List<ExhibitionDto> exhibition) {
+    private GetMemberExhibitionListResponse(int totalCnt, List<ExhibitionDto> exhibition) {
         this.totalCnt = totalCnt;
-        this.followExhibition = followExhibition;
         this.exhibition = exhibition;
     }
 
-    public static GetExhibitionListResponse from(List<ExhibitionDto> followExhibitionDtoList, List<ExhibitionDto> exhibitionDtoList) {
+    public static GetMemberExhibitionListResponse from(List<ExhibitionDto> exhibitionDtoList) {
         return builder()
                 .totalCnt(exhibitionDtoList.size())
-                .followExhibition(followExhibitionDtoList)
                 .exhibition(exhibitionDtoList)
                 .build();
     }
-
 }

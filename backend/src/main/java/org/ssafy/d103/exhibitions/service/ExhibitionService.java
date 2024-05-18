@@ -10,6 +10,7 @@ import org.ssafy.d103._common.exception.ErrorType;
 import org.ssafy.d103._common.service.CommonService;
 import org.ssafy.d103.communities.repository.photo.PhotoRepository;
 import org.ssafy.d103.exhibitions.dto.ExhibitionCommentDto;
+import org.ssafy.d103.exhibitions.dto.ExhibitionDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoDto;
 import org.ssafy.d103.exhibitions.dto.ExhibitionPhotoIdDto;
 import org.ssafy.d103.exhibitions.dto.request.PostExhibitionCommentRequest;
@@ -27,9 +28,11 @@ import org.ssafy.d103.exhibitions.repository.ExhibitionRepository;
 import org.ssafy.d103.follows.entity.Follows;
 import org.ssafy.d103.follows.repository.FollowRepository;
 import org.ssafy.d103.members.entity.Members;
+import org.ssafy.d103.members.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -44,6 +47,7 @@ public class ExhibitionService {
     private final ExhibitionLikeRepository exhibitionLikeRepository;
     private final FollowRepository followRepository;
     private final PhotoRepository photoRepository;
+    private final MemberRepository memberRepository;
     private final CommonService commonService;
 
     @Transactional
@@ -81,16 +85,38 @@ public class ExhibitionService {
     public GetSelectMyExhibitionListResponse selectMyExhibitionList(Authentication authentication) {
 
         Members member = commonService.findMemberByAuthentication(authentication);
+
+        List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
+                .orElse(new ArrayList<>());
+
         List<Exhibitions> exhibitionList = exhibitionRepository.findExhibitionsByMemberId(member)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
-        return GetSelectMyExhibitionListResponse.from(exhibitionList);
+
+        List<ExhibitionDto> exhibitionDtoList = new ArrayList<>();
+
+        // 좋아요 상태를 미리 확인하여 매핑
+        Set<Long> likedExhibitionIds = exhibitionLikeList.stream()
+                .map(e -> e.getExhibitionId().getId())
+                .collect(Collectors.toSet());
+
+        for (Exhibitions ex : exhibitionList) {
+            boolean isLiked = likedExhibitionIds.contains(ex.getId());
+            exhibitionDtoList.add(ExhibitionDto.from(ex, isLiked));
+        }
+
+        return GetSelectMyExhibitionListResponse.from(exhibitionDtoList);
     }
 
-    public GetSelectExhibitionResponse selectExhibition(Long exhibitionId) {
 
+    public GetSelectExhibitionResponse selectExhibition(Authentication authentication, Long exhibitionId) {
+
+        Members member = commonService.findMemberByAuthentication(authentication);
         Exhibitions exhibition = exhibitionRepository.findById(exhibitionId)
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
-        return GetSelectExhibitionResponse.from(exhibition);
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        boolean isLiked = exhibitionLikeRepository.findAllByMemberIdAndExhibitionId(member, exhibition).isPresent();
+
+        return GetSelectExhibitionResponse.from(exhibition, isLiked);
     }
 
     public List<ExhibitionCommentDto> selectExhibitionCommentList(Long exhibitionId) {
@@ -177,24 +203,82 @@ public class ExhibitionService {
 
         Members member = commonService.findMemberByAuthentication(authentication);
 
+        // 좋아요 리스트 조회
+        List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
+                .orElse(new ArrayList<>());
+
+        // 팔로우 리스트 조회
         List<Follows> followList = followRepository.findFollowsByFollowerId(member)
-                .orElse(null);
-        log.warn("{}", followList.size());
+                .orElse(new ArrayList<>());
 
-        List<Exhibitions> exhibitionList = exhibitionRepository.findAllExhibitions()
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+        // 모든 전시회 목록 조회
+        List<Exhibitions> exhibitionList = exhibitionRepository.findAll();
 
+        // 팔로우한 사용자의 전시회 목록 생성
         List<Exhibitions> followExhibitionList = new ArrayList<>();
-
         for (Exhibitions e : exhibitionList) {
             for (Follows f : followList) {
-                log.warn("{} vs {}", e.getMemberId().getId(), f.getFollowingId().getId());
-                if (e.getMemberId().getId() == f.getFollowingId().getId()) {
+                if (e.getMemberId().getId().equals(f.getFollowingId().getId())) {
                     followExhibitionList.add(e);
+                    break;
                 }
             }
         }
 
-        return GetExhibitionListResponse.from(followExhibitionList, exhibitionList);
+        List<ExhibitionDto> totalExhibitionDtoList = new ArrayList<>();
+        List<ExhibitionDto> followExhibitionDtoList = new ArrayList<>();
+
+        for (Exhibitions e : followExhibitionList) {
+            boolean isLiked = exhibitionLikeList.stream()
+                    .anyMatch(el -> el.getExhibitionId().getId().equals(e.getId()));
+            followExhibitionDtoList.add(ExhibitionDto.from(e, isLiked));
+        }
+
+        for (Exhibitions e : exhibitionList) {
+            if (followExhibitionList.contains(e)) {
+                continue; // 이미 followExhibitionDtoList에 추가된 전시회는 건너뜀
+            }
+            boolean isLiked = exhibitionLikeList.stream()
+                    .anyMatch(el -> el.getExhibitionId().getId().equals(e.getId()));
+            totalExhibitionDtoList.add(ExhibitionDto.from(e, isLiked));
+        }
+
+        return GetExhibitionListResponse.from(followExhibitionDtoList, totalExhibitionDtoList);
     }
+
+
+    public GetMemberExhibitionListResponse selectMemberExhibitionList(Authentication authentication, Long memberId) {
+
+        // 좋아요 리스트 조회
+        Members member = commonService.findMemberByAuthentication(authentication);
+
+        // 좋아요 리스트 조회
+        List<ExhibitionLike> exhibitionLikeList = exhibitionLikeRepository.findAllByMemberId(member)
+                .orElse(new ArrayList<>());
+
+        Members target = memberRepository.findById(memberId)
+                .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_MEMBER));
+
+        // 타겟이 개회한 전시회 목록 조회
+        List<Exhibitions> exhibitionList = exhibitionRepository.findAllByMemberId(target.getId())
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION));
+
+        List<ExhibitionDto> exhibitionDtoList = new ArrayList<>();
+
+        // 좋아요가 없는 경우 false로 전부 추가
+        if (exhibitionLikeList.isEmpty()) {
+            for (Exhibitions ex : exhibitionList) {
+                exhibitionDtoList.add(ExhibitionDto.from(ex, false));
+            }
+        } else {
+            for (Exhibitions ex : exhibitionList) {
+                boolean isLiked = exhibitionLikeList.stream()
+                        .anyMatch(e -> e.getExhibitionId().getId().equals(ex.getId()));
+                exhibitionDtoList.add(ExhibitionDto.from(ex, isLiked));
+            }
+        }
+
+        return GetMemberExhibitionListResponse.from(exhibitionDtoList);
+    }
+
 }

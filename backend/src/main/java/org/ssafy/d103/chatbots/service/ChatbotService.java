@@ -32,12 +32,12 @@ public class ChatbotService {
         this.webClient = webClientBuilder.baseUrl("https://k10d103.p.ssafy.io").build();
     }
 
-    public Mono<String> getChatbotResponse(String sessionId, String userId, String question) {
+    public Mono<String> getChatbotResponse(String sessionId, String memberId, String question) {
         Optional<ChatSession> sessionOptional = chatSessionRepository.findBySessionId(sessionId);
         ChatSession session;
 
         if (sessionOptional.isEmpty()) {
-            session = ChatSession.builder().sessionId(sessionId).userId(userId).build();
+            session = ChatSession.builder().sessionId(sessionId).memberId(memberId).build();
             chatSessionRepository.save(session);
         } else {
             session = sessionOptional.get();  // Optional에서 세션 추출
@@ -94,10 +94,10 @@ public class ChatbotService {
                 });
     }
 
-    public List<ChatSessionResponseDto> getSessionsByUserId(String userId) {
-        List<ChatSession> sessions = chatSessionRepository.findByUserId(userId);
+    public List<ChatSessionResponseDto> getSessionsByMemberId(String memberId) {
+        List<ChatSession> sessions = chatSessionRepository.findByMemberId(memberId);
         return sessions.stream()
-                .map(session -> new ChatSessionResponseDto(session.getSessionId(), session.getUserId(), session.getLastMessage()))
+                .map(session -> new ChatSessionResponseDto(session.getSessionId(), session.getMemberId(), session.getLastMessage()))
                 .collect(Collectors.toList());
     }
 

@@ -132,8 +132,9 @@ public class Members extends CreatedAndDeletedTime {
                 .build();
     }
 
-    public void updateAllInfo(String nickname, int birthYear, int useYear, Camera camera, String profileUrl, String country, String city){
+    public void updateAllInfo(String nickname, String introduction, int birthYear, int useYear, Camera camera, String profileUrl, String country, String city){
         this.nickname = nickname;
+        this.introduction = introduction;
         this.birthYear = birthYear;
         this.useYear = useYear;
         this.camera = camera;
