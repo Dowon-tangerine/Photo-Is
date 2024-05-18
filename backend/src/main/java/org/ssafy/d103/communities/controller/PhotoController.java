@@ -9,10 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.ssafy.d103._common.response.ApiResponseDto;
 import org.ssafy.d103._common.response.MsgType;
 import org.ssafy.d103._common.response.ResponseUtils;
-import org.ssafy.d103.communities.dto.photo.request.DeletePhotoCommentRequest;
-import org.ssafy.d103.communities.dto.photo.request.PostUploadPhotoRequest;
-import org.ssafy.d103.communities.dto.photo.request.PostWritePhotoCommentRequest;
-import org.ssafy.d103.communities.dto.photo.request.PutModifyPhotoRequest;
+import org.ssafy.d103.communities.dto.photo.request.*;
 import org.ssafy.d103.communities.service.PhotoService;
 
 @Tag(name = "Communities - Photo", description = "Communities Photo API")
@@ -27,6 +24,11 @@ public class PhotoController {
     @PostMapping("/upload")
     public ApiResponseDto<?> postUploadPhoto(Authentication authentication, @RequestPart(value = "photoInfo") PostUploadPhotoRequest postUploadPhotoRequest, @RequestPart(value = "photo", required = false) MultipartFile multipartFile) {
         return ResponseUtils.ok(photoService.uploadPhoto(authentication, multipartFile, postUploadPhotoRequest), MsgType.PHOTO_UPLOAD_SUCCESSFULLY);
+    }
+
+    @PutMapping("/{photo-id}/save-metadata")
+    public ApiResponseDto<?> postSaveStudioMetadata(Authentication authentication, @PathVariable("photo-id") Long photoId, @RequestBody PutSaveStudioMetadataRequest putSaveStudioMetadataRequest) {
+        return ResponseUtils.ok(photoService.saveStudioMetadata(authentication, photoId, putSaveStudioMetadataRequest), MsgType.PHOTO_STUDIO_METADATA_SAVE_SUCCESSFULLY);
     }
 
     @PutMapping("/{photo-id}")
