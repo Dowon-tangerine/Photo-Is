@@ -1,11 +1,31 @@
 import { Suspense, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Canvas, useThree, useLoader } from "@react-three/fiber";
+import { Canvas, useThree, useLoader, extend } from "@react-three/fiber";
 import { Html, OrbitControls } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { SphereGeometry } from "three";
 import * as THREE from "three";
 import axios from "axios";
+import { marked } from "marked";
 import styles from "./css/Dictionary.module.css";
+
+// 타입 정의
+interface Annotation {
+    position: [number, number, number];
+    label: string;
+}
+
+interface AnnotationsProps {
+    onAnnotationClick: (annotation: Annotation) => void;
+}
+
+interface AnnotationModalProps {
+    annotation: Annotation;
+    onClose: () => void;
+}
+
+// Extend THREE with SphereGeometry
+extend({ SphereGeometry });
 
 const modelUrl = "/imgs/FujiFilm_X_T4.obj.glb";
 
@@ -56,6 +76,34 @@ function CameraController() {
     return null;
 }
 
+function Annotations({ onAnnotationClick }: AnnotationsProps) {
+    const annotations: Annotation[] = [
+        { position: [1.5, 1.8, 1.5], label: "Shutter Button" }, // Top right
+        { position: [-1.5, 1.8, 1.5], label: "Mode Dial" }, // Top left
+        { position: [0, 2.1, 0], label: "Hot Shoe" }, // Center top
+        { position: [0, 1.8, -1.5], label: "Viewfinder" }, // Back top center
+        { position: [-1.5, 1.8, -1.5], label: "Flash" }, // Top left back
+        { position: [1.5, 1.8, -1.5], label: "Exposure Compensation Dial" }, // Top right back
+        { position: [1.5, 1.8, 0], label: "ISO Dial" }, // Top right center
+    ];
+
+    return (
+        <>
+            {annotations.map((annotation, index) => (
+                <mesh key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
+                    <sphereGeometry args={[0.1, 32, 32]} />
+                    <meshStandardMaterial color="red" />
+                </mesh>
+            ))}
+        </>
+    );
+}
+
+interface ChatMessage {
+    sender: "user" | "bot" | "loading";
+    text: string;
+}
+
 interface ChatBotModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -63,8 +111,10 @@ interface ChatBotModalProps {
 
 function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
     const [question, setQuestion] = useState("");
-    const [response, setResponse] = useState("");
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [sessionId] = useState(() => `session-${Math.random().toString(36).substr(2, 9)}`);
+    const [showRecommendations, setShowRecommendations] = useState(false);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
 
     const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuestion(e.target.value);
@@ -72,51 +122,132 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!question.trim()) return;
+
+        const userMessage: ChatMessage = { sender: "user", text: question };
+        const loadingMessage: ChatMessage = { sender: "loading", text: "Loading..." };
+
+        setMessages((prevMessages) => [...prevMessages, userMessage, loadingMessage]);
+        setQuestion("");
+
         try {
             const res = await axios.post("https://k10d103.p.ssafy.io/api/chatbot/chat", {
                 question,
                 sessionId,
             });
-            setResponse(JSON.stringify(res.data, null, 2));
+            const botMessage: ChatMessage = { sender: "bot", text: res.data.answer };
+            setMessages((prevMessages) => {
+                const newMessages = [...prevMessages];
+                newMessages[newMessages.length - 1] = botMessage; // Replace loading message with bot message
+                return newMessages;
+            });
         } catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
-                setResponse(`Error: ${error.response?.data?.message || error.message}`);
-            } else if (error instanceof Error) {
-                setResponse(`Error: ${error.message}`);
-            } else {
-                setResponse("An unexpected error occurred");
-            }
+            const errorMessage = axios.isAxiosError(error)
+                ? `Error: ${error.response?.data?.message || error.message}`
+                : error instanceof Error
+                ? `Error: ${error.message}`
+                : "An unexpected error occurred";
+
+            const botMessage: ChatMessage = { sender: "bot", text: errorMessage };
+            setMessages((prevMessages) => {
+                const newMessages = [...prevMessages];
+                newMessages[newMessages.length - 1] = botMessage; // Replace loading message with error message
+                return newMessages;
+            });
         }
     };
 
+    const handleRecommendedQuestionClick = (question: string) => {
+        setQuestion(question);
+    };
+
+    const toggleRecommendations = () => {
+        setShowRecommendations((prev) => !prev);
+    };
+
+    const preventScroll = (e: React.WheelEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+        e.preventDefault();
+        e.currentTarget.scrollTop += e.deltaY;
+    };
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
+
     return isOpen ? (
-        <div className={styles.chatBotModal}>
-            <div className={styles.modalContent}>
+        <div className={styles.chatBotModal} onWheel={preventScroll}>
+            <div className={styles.modalHeader}>
+                <span>Ai 챗봇</span>
                 <span className={styles.closeButton} onClick={onClose}>
                     &times;
                 </span>
-                <form onSubmit={handleSubmit}>
+            </div>
+            <div className={styles.modalContent}>
+                <div className={styles.chatContainer} ref={chatContainerRef}>
+                    {messages.map((message, index) => (
+                        <div
+                            key={index}
+                            className={message.sender === "user" ? styles.userMessage : styles.botMessage}
+                            dangerouslySetInnerHTML={{ __html: marked(message.text) }}
+                        ></div>
+                    ))}
+                </div>
+                <form onSubmit={handleSubmit} className={styles.chatForm}>
                     <input
                         type="text"
                         value={question}
                         onChange={handleQuestionChange}
-                        placeholder="Ask a question"
+                        placeholder="질문을 입력하세요."
                         className={styles.questionInput}
                     />
                     <button type="submit" className={styles.submitButton}>
-                        Submit
+                        보내기
                     </button>
                 </form>
-                {response && <pre className={styles.response}>{response}</pre>}
+                <button className={styles.recommendationsToggle} onClick={toggleRecommendations}>
+                    {showRecommendations ? "추천 질문 숨기기" : "추천 질문 보기"}
+                </button>
+                {showRecommendations && (
+                    <div className={styles.recommendedQuestions}>
+                        <p>추천 질문</p>
+                        <ul>
+                            <li onClick={() => handleRecommendedQuestionClick("셔터 스피드 조절하는 법")}>
+                                셔터 스피드 조절하는 법
+                            </li>
+                            <li onClick={() => handleRecommendedQuestionClick("ISO가 뭐야?")}>ISO가 뭐야?</li>
+                            <li onClick={() => handleRecommendedQuestionClick("노출값 어떻게 설정해?")}>
+                                노출값 어떻게 설정해?
+                            </li>
+                        </ul>
+                    </div>
+                )}
             </div>
         </div>
     ) : null;
 }
 
-const Dictionary = () => {
+function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
+    return (
+        <div className={styles.annotationModal}>
+            <div className={styles.modalHeader}>
+                <h2>{annotation.label}</h2>
+                <span className={styles.closeButton} onClick={onClose}>
+                    &times;
+                </span>
+            </div>
+        </div>
+    );
+}
+
+function Dictionary() {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isChatBotModalOpen, setChatBotModalOpen] = useState(false);
+    const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
+    const [annotation, setAnnotation] = useState<Annotation | null>(null);
     const canvasRef = useRef<HTMLDivElement>(null);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +258,17 @@ const Dictionary = () => {
         navigate(`/search/${searchTerm}`);
     };
 
-    const toggleModal = () => setModalOpen(!isModalOpen);
+    const toggleChatBotModal = () => setChatBotModalOpen(!isChatBotModalOpen);
+
+    const handleAnnotationClick = (annotation: Annotation) => {
+        setAnnotation(annotation);
+        setAnnotationModalOpen(true);
+    };
+
+    const closeAnnotationModal = () => {
+        setAnnotation(null);
+        setAnnotationModalOpen(false);
+    };
 
     useEffect(() => {
         const canvasElement = canvasRef.current;
@@ -175,27 +316,33 @@ const Dictionary = () => {
                 </div>
             </div>
             <div className={styles.content} ref={canvasRef}>
-                <Canvas>
-                    <CameraController />
-                    <Lights />
-                    <Suspense
-                        fallback={
-                            <Html>
-                                <div>Loading Model...</div>
-                            </Html>
-                        }
-                    >
-                        <Model />
-                    </Suspense>
-                    <OrbitControls />
-                </Canvas>
+                <div className={styles.canvasContainer}>
+                    <Canvas>
+                        <CameraController />
+                        <Lights />
+                        <Suspense
+                            fallback={
+                                <Html>
+                                    <div>Loading Model...</div>
+                                </Html>
+                            }
+                        >
+                            <Model />
+                        </Suspense>
+                        <Annotations onAnnotationClick={handleAnnotationClick} />
+                        <OrbitControls />
+                    </Canvas>
+                </div>
             </div>
-            <button onClick={toggleModal} className={styles.chatButton}>
+            <button onClick={toggleChatBotModal} className={styles.chatButton}>
                 <img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" />
             </button>
-            <ChatBotModal isOpen={isModalOpen} onClose={toggleModal} />
+            <ChatBotModal isOpen={isChatBotModalOpen} onClose={toggleChatBotModal} />
+            {isAnnotationModalOpen && annotation && (
+                <AnnotationModal annotation={annotation} onClose={closeAnnotationModal} />
+            )}
         </div>
     );
-};
+}
 
 export default Dictionary;

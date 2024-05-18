@@ -105,11 +105,34 @@
     position: relative;
 }
 
-.edit_btn{
-    height: 35px;
+.follow_btn_container{
+    height: 40px;
+    width: 120px;
+    background: white;
+    border: 1px solid black;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 5px;
+    right: 10px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    filter: brightness(100%);
+    transition: 0.5s all;
+}
+
+.follow_btn_container:hover{
+    filter: brightness(80%);
+    transition: 0.5s all;
+}
+
+.no_follow_btn_container{
+    height: 40px;
     width: 120px;
     background: black;
-    font-family:  "부크크명조bold" ;
+    right: 10px;
     color: white;
     position: absolute;
     display: flex;
@@ -123,9 +146,20 @@
     transition: 0.5s all;
 }
 
-.edit_btn:hover{
-    background: rgb(87, 87, 87);
+.no_follow_btn_container:hover{
+    background: rgb(86, 86, 86);
     transition: 0.5s all;
+}
+
+.plus_txt{
+    font-family: "부크크고딕bold";
+    font-size: 18px;
+}
+
+.plus_icon{
+    margin-left: 10px;
+    height: 15px;
+    width: auto;
 }
 
 .photo_mode_container{
@@ -580,44 +614,6 @@ cursor: pointer;
     width: auto;
 }
 
-.follow_btn_container{
-    width: 140px;
-    height: 55px;
-    border-radius: 10px;
-    background: white;
-    border: 1px solid black;
-    cursor: pointer;
-    transition: 0.3s all;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.no_follow_btn_container{
-    width: 140px;
-    height: 55px;
-    border-radius: 10px;
-    background: black;
-    cursor: pointer;
-    transition: 0.3s all;
-    display: flex;
-    color: white;
-    align-items: center;
-    justify-content: center;
-}
-
-.plus_txt{
-    font-family: "부크크고딕bold";
-    font-size: 22px;
-}
-
-.plus_icon{
-    margin-left: 10px;
-    height: 20px;
-    width: auto;
-}
-
-
 .img_card{
     height: auto;
     width: 100%;
@@ -773,14 +769,13 @@ cursor: pointer;
     z-index: 10;
     top: 0;
     left: 0;
-    overflow: hidden;
 }
 
 
 .modal_x{
     width: 60px;
     height: auto;
-    position: absolute;
+    position: fixed;
     z-index: 11;
     top: 10px;
     left: 10px;
@@ -1010,7 +1005,7 @@ cursor: pointer;
     top: 50%;
     left: 50%;
     z-index: 11;
-    position: absolute;
+    position: fixed;
     transform: translate(-50%, -50%);
     overflow-y: hidden;
     display: flex;
@@ -1388,13 +1383,6 @@ cursor: pointer;
     margin-bottom: 10%;
 }
 
-.toggle{
-    width: 260px;
-    height: 40px;
-    border-radius: 10px;
-    background: white;
-}
-
 .upload_tag_container{
     width: 260px;
     height: fit-content;
@@ -1441,50 +1429,6 @@ cursor: pointer;
     cursor: pointer;
 }
 
-.upload_tags_container{
-    width: 260px;
-    height: 140px;
-    overflow-y: auto;
-    font-family: "부크크고딕";
-    font-size: 14px;
-    color: black;
-    margin-bottom: 10%;
-}
-
-.upload_tag{
-    height: 30px;
-    width: 48%;
-    background: rgb(130, 130, 130);
-    color: white;
-    border-radius: 10px;
-    margin: 2px;
-    padding: 7px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    float: left;
-}
-
-.upload_btn_container{
-    width: 260px;
-    height: 60px;
-    background: white;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.5s all;
-}
-
-.upload_txt3{
-    font-size: 28px;
-    color: black;
-}
-
-.upload_btn_container:hover{
-    background: rgb(197, 197, 197);
-}
 
 .float{
     float: right;
@@ -1506,49 +1450,6 @@ cursor: pointer;
     margin-bottom: 7%;
 }
 
-.go_all_btn_container{
-    width: 600px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.go_gallery_btn_container{
-    width: 280px;
-    height: 60px;
-    background: white;
-    border: 1px solid black;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 2%;
-    margin-right: 2%;
-    cursor: pointer;
-    transition: filter 0.3s; /* 호버 효과를 부드럽게 하기 위한 transition */
-    filter: brightness(100%); /* 기본값은 원래 밝기로 설정 */
-}
-
-.go_gallery_btn_container:hover{
-    filter: brightness(80%);
-}
-
-.go_mypage_btn_container{
-    width: 280px;
-    height: 60px;
-    background: black;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    margin-left: 2%;
-    margin-right: 2%;
-    cursor: pointer;
-    transition: 0.5s all;
-}
-
 .go_txt{
     font-family: "부크크고딕bold";
     font-size: 24px;
@@ -1560,7 +1461,7 @@ cursor: pointer;
     top: 50%;
     left: 50%;
     z-index: 11;
-    position: absolute;
+    position: fixed;
     transform: translate(-50%, -50%);
     overflow-y: hidden;
     background: white;
@@ -1688,7 +1589,7 @@ cursor: pointer;
     position: absolute;
     top: 10px;
     right: 10px;
-    height: 35px;
+    height: 30px;
     width: auto;
     cursor: pointer;
 }
@@ -1751,75 +1652,5 @@ cursor: pointer;
     overflow-x: hidden;
 }
 
-
-.upload_photos_list_container{
-    width: 750px;
-    height: 500px;
-    display: grid;
-    padding: 20px;
-    grid-template-columns: 1fr 1fr 1fr;
-    overflow-y: auto;
-}
-
-.upload_photos_list{
-    height: 170px;
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-.upload_photos_list_overlay{
-    position: absolute;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    transition: 0.3s all;
-    cursor: pointer;
-}
-
-.upload_photos_list_overlay:hover{
-    background: rgba(0, 0, 0, 0.7);
-}
-
-.upload_photos_list_overlay_clicked{
-    background: rgba(0, 0, 0, 0.7);
-}
-
-.upload_photos_list_overlay img{
-    width: 50px;
-    height: 50px;
-}
-
-.photos_list_upimg{
-    height: 100%;
-    width: 100%;
-    cursor: pointer;
-    object-fit: cover;
-    transition: 0.5s all;
-}
-
-.selected_img_ok{
-    height: 70px;
-    width: 300px;
-    border-radius: 10px;
-    margin-top: 10px;
-    background: black;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "부크크명조bold";
-    font-size: 32px;
-    cursor: pointer;
-    transition: 0.5s all;
-}
-
-.selected_img_ok:hover{
-    background: rgb(87, 87, 87);
-    transition: 0.5s all;
-}
 
 
