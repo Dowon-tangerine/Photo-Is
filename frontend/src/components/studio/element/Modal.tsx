@@ -1,5 +1,6 @@
 import React from "react";
 import { useCameraStore } from "../store/useCameraStore";
+import { uploadPhoto, PhotoInfo, UploadPhotoPayload } from "../../../apis/studioApi";
 
 interface ModalProps {
     setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

@@ -80,7 +80,7 @@ function Spinner() {
         if (modelLoaded) {
             bladesRefs.current.forEach((blade) => {
                 if (blade) {
-                    const rotationSpeed = 5; // 회전 속도 조절
+                    const rotationSpeed = 0; // 회전 속도 조절
                     const angle = rotationSpeed * delta; // 프레임 속도에 따른 회전 각도 계산
                     blade.rotation.x += angle; // X축을 기준으로 회전
                 }
