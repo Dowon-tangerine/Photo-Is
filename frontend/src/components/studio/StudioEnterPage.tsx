@@ -1,14 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import tutorialPicture from "/imgs/tutorialBackImg.png";
 import landscapePicture from "/imgs/landScapeBackImg.png";
-import portraitPicture from "/imgs/portraitBackImg.jpg";
 import StudioStyle from "./css/Studio.module.css";
 
 function StudioEnterPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="flex h-[693px] top-0 ">
+        <div className="flex h-screen top-0 ">
             <div
                 onClick={() => navigate("/tutorial")}
                 className="tutorial  w-1/2 h-full flex flex-col items-center justify-center"
