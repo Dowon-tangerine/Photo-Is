@@ -1,5 +1,6 @@
 package org.ssafy.d103.communities.entity.photo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -43,6 +44,7 @@ public class PhotoMetadata {
     private Double longitude;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "photo_id")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Photo photo;
