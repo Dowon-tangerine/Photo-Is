@@ -67,14 +67,13 @@ public class ExhibitionService {
         exhibitionRepository.save(exhibition);
 
         List<ExhibitionPhoto> exhibitionPhotoList = new ArrayList<>();
-        int cnt = 0;
         for (ExhibitionPhotoIdDto e : request.getPhotoList()) {
             exhibitionPhotoList.add(
                     ExhibitionPhoto.builder()
                             .exhibitionId(exhibition)
                             .photoId(photoRepository.findById(e.getPhotoId())
                                     .orElseThrow(() -> new CustomException(ErrorType.ANOTHER_ERROR)))
-                            .number(cnt++)
+                            .number(e.getNumber())
                             .build());
         }
         exhibitionPhotoRepository.saveAll(exhibitionPhotoList);
