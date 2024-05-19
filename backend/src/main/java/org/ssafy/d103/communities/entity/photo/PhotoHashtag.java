@@ -1,5 +1,6 @@
 package org.ssafy.d103.communities.entity.photo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,10 +17,12 @@ public class PhotoHashtag {
     @Column(name = "photo_hashtag_id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "hashtag_id")
     private Hashtag hashtag;

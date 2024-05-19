@@ -10,8 +10,10 @@ import lombok.Setter;
 public class ExhibitionPhotoIdDto {
 
     private long photoId;
+    private int number;
 
-    public ExhibitionPhotoIdDto(int photoId) {
+    public ExhibitionPhotoIdDto(long photoId, int number) {
         this.photoId = photoId;
+        this.number = number;
     }
 }
