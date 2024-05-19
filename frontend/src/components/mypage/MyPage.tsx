@@ -168,13 +168,6 @@ const MyPage: React.FC = () => {
     setExhibitionArr
     setProfileArr
 
-    useEffect(() => {
-        selectEachPhotoList('PUBLIC', 1)
-        .then(res=>{
-            setImgArr(res);
-        })
-    }, []);
-
      // Intersection Observer 설정
 
   const handleObserver = (entries: IntersectionObserverEntry[]) => {
@@ -211,6 +204,10 @@ const MyPage: React.FC = () => {
         else{
             console.log("예기치 못한 에러가 발생했습니다.");
         }
+    })
+    selectEachPhotoList('PUBLIC', 1)
+    .then(res=>{
+        setImgArr(res);
     })
 
   }, []);
