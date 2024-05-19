@@ -1040,7 +1040,7 @@
 .main_photos{
     width: 100%;
     height: 25%;
-    border: 1px solid red;
+    border: 3px solid gray;
 }
 
 .main_photo{
@@ -1049,9 +1049,11 @@
     margin-left: 40px;
     margin-right: 40px;
     margin-top: 8px;
-    border: 1px solid yellow;
+    border: 7px solid white;
     background-repeat : no-repeat;
     background-size : cover;
+    transition: 0.5s all;
+    cursor: pointer;
 }
 
 .sub_photos{
@@ -1067,17 +1069,29 @@
 .sub_photo{
     width: 100%;
     height: 100%;
-    border: 1px solid red;
+    border: 3px solid gray;
 }
 .photo{
     width: 40%;
     height: 80%;
     margin-top: 10px;
-    border: 1px solid yellow;
+    border: 7px solid white;
     margin-left: auto;
     margin-right: auto;
     background-repeat : no-repeat;
     background-size : cover;
+    transition: 0.5s all;
+    cursor: pointer;
+}
+.main_photo:hover{
+    background-color: rgb(194, 194, 194);
+    color: black;
+    transition: 0.5s all;
+}
+.photo:hover{
+    background-color: rgb(194, 194, 194);
+    color: black;
+    transition: 0.5s all;
 }
 .finished{
     background: rgba(0,0,0,0.7);
