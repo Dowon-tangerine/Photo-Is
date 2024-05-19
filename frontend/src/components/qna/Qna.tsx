@@ -34,6 +34,10 @@ const Qna: React.FC = () => {
         navigate("/community/qna/writeqna")
     }
 
+    const moveToQnaDetail = function(id: number){
+        navigate("/community/qna/detail", { state: { id :  id} })
+    }
+
     const openSortTypeList = function(){
         setSortTypeList(!sortTypeList);
         setIsRotated2(!isRotated2);
@@ -122,8 +126,57 @@ const Qna: React.FC = () => {
         setListNum(listNum);
     })
 
-    // const [totalPage, setTotalPage] = useState<number>(1);
-    // const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPage, setTotalPage] = useState<number>(15);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
+    setTotalPage
+      // 페이지네이션 버튼을 생성하는 함수
+    const renderPageButtons = () => {
+        let pages = [];
+        if (totalPage <= 10) {
+        for (let i = 1; i <= totalPage; i++) {
+            pages.push(
+            <button
+                key={i}
+                onClick={() => setCurrentPage(i)}
+                className={currentPage === i ? styles.active : ''}
+            >
+                {i}
+            </button>
+            );
+        }
+        } else {
+        // 현재 페이지가 10 이상일 때의 페이지네이션 로직
+        const startPage = Math.min(currentPage, totalPage - 9);
+        for (let i = startPage; i < startPage + 10; i++) {
+            pages.push(
+            <button
+                key={i}
+                onClick={() => setCurrentPage(i)}
+                className={currentPage === i ? styles.active : ''}
+            >
+                {i}
+            </button>
+            );
+        }
+        }
+        return pages;
+    };
+
+    // 현재 페이지가 총 페이지 수를 넘지 않게 오른쪽 화살표 클릭 핸들러
+    const nextPage = () => {
+        if (currentPage < totalPage) {
+        setCurrentPage(currentPage + 1);
+        }
+    };
+
+    // 현재 페이지가 1보다 작지 않게 왼쪽 화살표 클릭 핸들러
+    const prevPage = () => {
+        if (currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+        }
+    };
+
 
     const articleList = [
         {
@@ -288,7 +341,7 @@ const Qna: React.FC = () => {
                             </div>
                         </div>
                         <div className={styles.article_title}>
-                            <p className={styles.click_title}>{item.title}</p>
+                            <p className={styles.click_title} onClick={() => {moveToQnaDetail(item.id);}}>{item.title}</p>
                         </div>
                         <div className={styles.article_author}>
                             <p style={{cursor: 'pointer'}}>{item.author}</p>
@@ -305,7 +358,15 @@ const Qna: React.FC = () => {
             </div>
 
             <div className={styles.pages_container}>
-
+                <div className={styles.pagination}>
+                <button onClick={prevPage} disabled={currentPage === 1}>
+                        <img src='/imgs/page_icon.png' style={{height: '17px', width: 'auto'}}></img>
+                    </button>
+                    {renderPageButtons()}
+                    <button onClick={nextPage} disabled={currentPage === totalPage}>
+                        <img src='/imgs/right_page_icon.png' style={{height: '17px', width: 'auto'}}></img>
+                    </button> 
+                </div>
             </div>
         </div>
         </>

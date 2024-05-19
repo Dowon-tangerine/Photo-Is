@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from "./css/QnaDetail.module.css";
-import { FaAngleDown } from 'react-icons/fa';
+import MapComponent from '../gallery/MapComponent';
 // import axios from 'axios';
 
 
@@ -13,6 +13,31 @@ import { FaAngleDown } from 'react-icons/fa';
 //     title: string,
 //   }
 
+// interface metadataInterface {
+//     time: string,
+//     cameraType : string,
+//     cameraModel : string,
+//     lensModel : string,
+//     aperture : string,
+//     focusDistance : string,
+//     shutterSpeed : string,
+//     iso : string,
+//     latitude : number,
+//     longtitude : number,
+// }
+
+// interface photoDetailInterface {
+//     photoId: number,
+//     memberId : number,
+//     nickname : string,
+//     profileUrl : string,
+//     title : string,
+//     imageUrl : string,
+//     createdAt : string,
+//     accessType : string,
+//     metadata: metadataInterface,
+//     category: string,
+// }
   
 const QnaDetail: React.FC = () => {
 
@@ -22,7 +47,59 @@ const QnaDetail: React.FC = () => {
         navigate("/community/qna")
     }
 
+    const article = {
+        category: "일반",
+        title: "흐규흐규 언제 끝나",
+        content: "안녕하세요 안녕하세요 안녕하세요 안녕하세요",
+        photoUrl: '/imgs/photo1.jpg',
+        metadata: {
+            cameraModel: "몰라",
+            lensModel: "몰라",
+            aperture: "몰라",
+            focusDistance: "몰라",
+            shutterSpeed: "a멀ㄹㄹ",
+            iso: "ahffk",
+        }
+    }
 
+    const comment = [
+        {
+            profileUrl: '/imgs/profile1.jpg',
+            nickname: '하이',
+            content: 'gkgkgkgkgkgkgkgggkgkgkk',
+            date: '2222:@2222',
+        },
+        {
+            profileUrl: '/imgs/profile1.jpg',
+            nickname: '하sssss이',
+            content: 'gkgkgkgkgkgkgkgggkgkgkk',
+            date: '2222:@2222',
+        },
+        {
+            profileUrl: '/imgs/profile1.jpg',
+            nickname: '하ddddd이',
+            content: '하하ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ하ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ',
+            date: '2222:@2222',
+        },
+        {
+            profileUrl: '/imgs/profile1.jpg',
+            nickname: '하ddssssdasdasdasdasdddd이',
+            content: '하하ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ하ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ',
+            date: '2022/11/22',
+        }, 
+        {
+            profileUrl: '/imgs/profile1.jpg',
+            nickname: '하ddssssdasdasdasdasdddd이',
+            content: '하하ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ하ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏsdfsdffffffffff아ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ닝ㄹ;ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ',
+            date: '2022/11/22',
+        },
+        {
+            profileUrl: '/imgs/profile1.jpg',
+            nickname: '하이',
+            content: 'gkgkgkgkgkgkgkgggkgkgkk',
+            date: '2222:@2222',
+        },
+    ]
     // const [page, setPage] = useState(1);
     // const [isLoading, setIsLoading] = useState(false);
 //     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
@@ -101,45 +178,11 @@ const QnaDetail: React.FC = () => {
 //     };
 
 
-    const [uploadPhoto, setUploadPhoto] = useState<boolean>(false);
-
-    const openUploadModal = function(){
-        setUploadPhoto(!uploadPhoto);
-    }
-
     const [listNum, setListNum] = useState<number>(1231);
 
     useEffect(() => {
         setListNum(listNum);
     })
-
-    const [sortType, setSortType] = useState<String>("일반");
-    const [sortTypeList, setSortTypeList] = useState<boolean>(false);
-    const [isRotated2, setIsRotated2] = useState<boolean>(false);
-
-    const openSortTypeList = function(){
-        setSortTypeList(!sortTypeList);
-        setIsRotated2(!isRotated2);
-    }
-
-    const [mainImg, setMainImg] = useState<string>("");
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-    const setPreviewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files && event.target.files[0];
-
-        if (file) {
-            setSelectedFile(file);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                if (e.target && e.target.result) {
-                    setMainImg(e.target.result as string);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-        // 이걸로 사진 올려야 함
-    };
 
 
     return (
@@ -153,85 +196,87 @@ const QnaDetail: React.FC = () => {
             </div>
 
             <div className={styles.article_title_container}>
-                <p style={{fontSize : '32px'}}>글쓰기</p>
+                <p style={{fontSize : '32px'}}>{article.category}</p>
 
-                <div className={styles.btn_container}>
+                {/* <div className={styles.btn_container}>
                     <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
                         <p>등록</p>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
 
             <div className={styles.writing_container}>
                 <div className={styles.write_content_container}>
-                    <div className={styles.choose_category_container}>
-                        <div className={styles.sort_btn}>
-                            <div className={styles.dropdown_container} onClick={() => {openSortTypeList();}}>
-                                <p className={styles.dropdown_txt2}>{sortType}</p>
-                                <FaAngleDown  className={`${styles.dropdown_icon2} ${isRotated2 ? styles.rotated : ''}`}/>
-                            </div>
-
-                            {sortTypeList && (
+                    <div className={styles.qna_content}>
+                        <div className={styles.title_container}>
+                            <p>Q. {article.title}</p>
+                        </div>
+                        <div className={styles.content_container}>
+                            <p>{article.content}</p>
+                        </div>
+                        <div className={styles.photo_container}>
+                            <img src={article.photoUrl} alt='질문 사진' className={styles.qna_photo}></img>
+                        </div>
+                    </div>
+                    <div className={styles.qna_comment_container}>
+                        <p style={{fontFamily: '부크크고딕bold', fontSize: '28px'}}>Comments</p>
+                        <div className={styles.comment_list_container}>
+                            {comment.map((item) => (
                                 <>
-                                    <div className={styles.typeList_container2}>
-                                        <p className={styles.type_txt2_1} onClick={() => {setSortType("일반"); openSortTypeList();}}>일반</p>
-                                        <p className={styles.type_txt2_3} onClick={() => {setSortType("스튜디오"); openSortTypeList();}}>스튜디오</p>
+                                    <div className={styles.one_comment_container}>
+                                        <img src={item.profileUrl} alt='프로필 사진' className={styles.comment_profile_img}></img>
+                                        <div className={styles.comment_content_container}>
+                                            <p style={{fontFamily: "부크크고딕bold"}}>{item.nickname}</p>
+                                            <p style={{marginTop: '-15px'}}>{item.content}</p>
+                                            <p style={{marginTop: '-10px', fontSize: '12px', color: 'gray'}}>{item.date}</p>
+                                        </div>
                                     </div>
                                 </>
-                            )}
+                            ))
+                            }
                         </div>
-                        <input className={styles.write_title} placeholder='제목을 입력하세요.'></input>
-                    </div>
-                    <textarea className={styles.writing} placeholder='내용'></textarea>
-                    <div className={styles.photo_upload_container}>
-                        <div className={styles.upload_txt_container}>
-                            <p>사진 첨부</p>
-                        </div>
-                        <div className={styles.upload_btn_container}>
-                            {selectedFile && (
-                                <p className={styles.input_name}>사진 이름 : {selectedFile.name}</p>
-                            )}
-                            <label className={styles.input_file_btn} htmlFor="image">
-                                <p className={styles.input_txt}>사진 업로드</p>
-                                <img src='/imgs/photo_icon.png' style={{height : '18px', width : 'auto', marginLeft : '10px'}}></img>
-                            </label>
-                            <input type="file" id="image" accept="image/*" style = {{display : 'none'}} onChange={setPreviewImg} />
-                        </div>
-                        {mainImg == ''
-                        ? <>
-                            <div className={styles.intro_img}>
-                                <p className={styles.input_t}>이미지<br></br>미리보기</p>
+                        <div className={styles.comment_send_container}>
+                            <p style={{fontFamily: "부크크고딕bold"}}>짱짱ㅇ아아아</p>
+                            <textarea className={styles.send}></textarea>
+                            <div className={styles.send_btn}>
+                                <p>등록</p>
                             </div>
-                        </>
-                        :<>
-                            <img src={mainImg} className={styles.intro_img}/>
-                        </>}
+                        </div>
                     </div>
                 </div>
                 <div className={styles.write_rule_container}>
-                    <div className={styles.rule_background}>
-                        <div className={styles.rule_title_container}>
-                            <img src='/imgs/speak_icon.PNG' alt='확성기' style={{height: '30px', width: 'auto', marginRight: '5px', marginLeft: '-5px'}}></img>
-                            <p>주의사항</p>
+                    <div className={styles.detail_background}>
+                        <div style={{width : '100%', height : 'fit-content', display : 'flex', justifyContent : 'center', alignItems: 'center', background : 'white', borderRadius: '10px'}}>
+                            <p className={styles.camera_info_title}>Information</p>
                         </div>
-                        <div style={{width: '90%', background: 'white', height: '1px'}}></div>
-                        <div className={styles.rule_content_container}>
-                            <img src='/imgs/pin_icon.PNG' alt='핀' style={{height: '30px', width: 'auto', marginRight: '5px', marginLeft: '-5px'}}></img>
-                            <p style={{fontSize: '16px', textAlign: 'center'}}>남을 비방하거나 욕설을 포함한 글 금지</p>
-                        </div>
-                        <div className={styles.rule_content_container}>
-                            <img src='/imgs/pin_icon.PNG' alt='핀' style={{height: '30px', width: 'auto', marginRight: '5px', marginLeft: '-5px'}}></img>
-                            <p style={{fontSize: '16px', textAlign: 'center'}}>사진과 관련없는 부적절한 내용의 글 금지</p>
-                        </div>
-                        <div className={styles.rule_content_container}>
-                            <img src='/imgs/pin_icon.PNG' alt='핀' style={{height: '30px', width: 'auto', marginRight: '5px', marginLeft: '-5px'}}></img>
-                            <p style={{fontSize: '16px', marginLeft: '9px'}}>지나친 친목 도모 금지</p>
-                        </div>
-                        <div className={styles.rule_content_container}>
-                            <img src='/imgs/pin_icon.PNG' alt='핀' style={{height: '30px', width: 'auto', marginRight: '5px', marginLeft: '-5px'}}></img>
-                            <p style={{fontSize: '16px', textAlign: 'center'}}>지나치게 상세한 개인정보 누출 주의</p>
+                        <div className={styles.camera_info}>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>카메라 모델 : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{article.metadata.cameraModel}</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>렌즈 모델 : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{article.metadata.lensModel}</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>조리개 / F : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{article.metadata.aperture}</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>초점 거리 : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{article.metadata.focusDistance}</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>셔터 스피드 / SS : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{article.metadata.shutterSpeed}</p>
+                            </div>
+                            <div style={{width : '100%'}}>
+                                <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>심도 / ISO : </p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{article.metadata.iso}</p>
+                            </div>
+                            <div style={{zIndex: 8}}><MapComponent/></div>
                         </div>
                     </div>
                 </div>
