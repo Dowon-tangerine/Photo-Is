@@ -4,11 +4,13 @@ import { OrbitControls } from "@react-three/drei";
 import { DirectionalLight } from "three";
 import StudioStyle from "./css/Studio.module.css";
 import AmusementPark from "./3Delement/AmusementPark";
+import ModeChooseModal from "./element/ModeChooseModal";
 
 function LandScapePage() {
     const lightRef = useRef<DirectionalLight>(null);
 
     const [showSettings, setShowSettings] = useState(false);
+    const [mode, setMode] = useState(null); // Manage mode state
 
     useEffect(() => {
         if (lightRef.current) {

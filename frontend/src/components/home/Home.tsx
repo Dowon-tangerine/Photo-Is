@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import backgroundImage from "/imgs/homeMainPic.png";
+import backgroundImage from "/imgs/homeMainPic.webp";
 
 const Home: React.FC = () => {
     const [sectionHeight, setSectionHeight] = useState("45vh"); // 초기 섹션 높이 설정
