@@ -1,18 +1,3 @@
-@font-face {
-  font-family: "부크크고딕bold";
-  src: url(/fonts/부크크고딕_굵은글씨.ttf);
-}
-
-@font-face {
-  font-family: "부크크명조";
-  src: url(/fonts/부크크명조_얇은글씨.ttf);
-}
-
-@font-face {
-  font-family: "부크크명조bold";
-  src: url(/fonts/부크크명조_굵은글씨.ttf);
-}
-
 .main_container{
   width: 100vw;
   height: 100vh;
@@ -41,7 +26,7 @@ body[data-mode='game'] .target_marker {
   display: block;
 }
 .loading{
-  font-family: "부크크명조bold";
+  font-family: "부크크명조";
   position: absolute;
   z-index: 5004;
   width: 100%;
@@ -51,6 +36,9 @@ body[data-mode='game'] .target_marker {
   text-align: center;
   justify-content: center;
   align-items: center;
+}
+.loading h1{
+  font-family: "부크크명조bold";
 }
 .photo_info{
   font-family: "부크크명조bold";
@@ -63,7 +51,7 @@ body[data-mode='game'] .target_marker {
   z-index: 10;
   transition: 0.5s all;
   opacity: 0;
-  padding: 20px;
+  padding: 60px;
   border-radius: 20px;
   margin: 20px;
 }
@@ -71,10 +59,11 @@ body[data-mode='game'] .target_marker {
   opacity: 1;
   transition: 2s all;
 }
-.photo_info h1{
-  margin: 20px;
+.photo_info span{
+  font-family: "부크크고딕bold";
+  width: 100%;
+  text-align: left;
 }
-
 .btn_exit{
   position: absolute;
   font-family: "부크크명조bold";
@@ -92,6 +81,7 @@ body[data-mode='game'] .target_marker {
 }
 
 .tutorial{
+  font-family: "부크크고딕bold";
   position: absolute;
   width: 100%;
   height: 100%;
