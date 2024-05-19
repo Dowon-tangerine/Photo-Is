@@ -87,3 +87,23 @@ export const postExhibition = async (exhibitionInfo: exhibitionDetailInterface) 
 			return false;
 	})
 }
+
+// 전시회 사진목록 조회
+export const getExhibitionPhotos = async (exhibitionId: number) => {
+	const url = `/exhibitions/photos/${exhibitionId}`;
+
+	return await instance.get(url)
+	.then(res => {
+		console.log(res)
+		if(res.data.data){
+			res.data.data.content.forEach((data: any) => {
+				data.photoUrl = data.photoUrl + '?not-from-cache-please';
+			})
+		}
+		return res.data.data;    
+	})
+	.catch(error => {
+			console.log(error);
+			return false;
+	})
+}

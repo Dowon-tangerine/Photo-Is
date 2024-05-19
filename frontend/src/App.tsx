@@ -20,6 +20,7 @@ import SignUp from "./components/signin/SignUp";
 import LandScapePage from "./components/studio/LandScapePage";
 import TutorialPage from "./components/studio/TutorialPage";
 import MyPageEdit from "./components/mypage/MyPageEdit";
+import ExhibitionArea from "./components/exhibition/ExhibitionArea";
 
 export default function App() {
 
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="/landscape" element={<LandScapePage />} />
           <Route path="/tutorial" element={<TutorialPage />} />
         </Route>
+        <Route path="/exhibition-area" element={<ExhibitionArea />}></Route>
       </Routes>
     </BrowserRouter>
   );
