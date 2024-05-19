@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 registerLocale("ko", ko);
 
 interface Props {
-    handleDateChange: (startDate: Date | null, endDate: Date | null) => void;
+    handleDateChange: (endDate: Date | null) => void;
 }
 
 interface State {
@@ -29,11 +29,11 @@ export default class UserInfo extends Component<Props, State> {
         if (dates) {
             const [start, end] = dates;
             this.setState({ startDate: start, endDate: end }, () => {
-                this.props.handleDateChange(start, end);
+                this.props.handleDateChange(end);
             });
         } else {
             this.setState({ startDate: null, endDate: null }, () => {
-                this.props.handleDateChange(null, null);
+                this.props.handleDateChange(null);
             });
         }
     };

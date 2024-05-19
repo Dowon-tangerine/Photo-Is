@@ -87,3 +87,44 @@ export const postExhibition = async (exhibitionInfo: exhibitionDetailInterface) 
 			return false;
 	})
 }
+
+// 전시회 사진목록 조회
+export const getExhibitionPhotos = async (exhibitionId: number) => {
+	const url = `/exhibitions/photos/${exhibitionId}`;
+
+	return await instance.get(url)
+	.then(res => {
+		console.log(res)
+		if(res.data.data){
+			res.data.data.content.forEach((data: any) => {
+				data.photoUrl = data.photoUrl + '?not-from-cache-please';
+			})
+		}
+		return res.data.data;    
+	})
+	.catch(error => {
+			console.log(error);
+			return false;
+	})
+}
+
+// 내 전시회 전체목록 조회
+export const getMyExhibitionList = async (type: string) => {
+	const url = `/exhibitions/my/${type}`;
+
+	return await instance.get(url)
+	.then(res => {
+		if(res.data.data){
+			res.data.data.content.forEach((exhibition: exhibitionInterface)  => {
+				exhibition.startDate = dateFormatter.changeDateFormat(exhibition.startDate);
+				exhibition.endDate = dateFormatter.changeDateFormat(exhibition.endDate);
+			});
+			console.log(res.data.data)
+			return res.data.data;  
+		} 
+	})
+	.catch(error => {
+			console.log(error);
+			return false;
+	})
+}

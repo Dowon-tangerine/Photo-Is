@@ -6,6 +6,7 @@ import { getExhibitionList, getExhibitionDetail, postExhibition } from '../../ap
 import { changeExhibitionLike } from '../../apis/otherMemberApi';
 import { selectAllPhotoList } from '../../apis/photoApi';
 import { dateFormatter } from '../utils/changeDateFormat';
+import { useNavigate } from 'react-router-dom';
 
 interface imgInterface {
     photoId: number;
@@ -66,6 +67,8 @@ const Exhibition: React.FC = () => {
 
     const [isExhibition, setIsExhibition] = useState<boolean>(false);
     const [photoPage, setPhotoPage] = useState<number>(1);
+    const navigate = useNavigate();
+
     setPhotoPage
     const openExhibitionModal = function(){
         if(!isExhibition){
@@ -153,7 +156,7 @@ const Exhibition: React.FC = () => {
       getExhibitionList()
       .then(res=>{
         if(res){
-            setExhibitionList(res.exhibition);
+            setExhibitionList(res.exhibition.reverse());
             setFollowExhibitionList(res.followExhibition);
         }
       });
@@ -248,6 +251,7 @@ const Exhibition: React.FC = () => {
             || posterId===-1 
             || exhibitionDetailData?.endDate === undefined){
             alert('모든 내용을 입력해주세요.');
+            console.log(exhibitionDetailData?.endDate)
         }
         else{
             setIsRotatePhotos(!isRotatePhotos);
@@ -306,6 +310,14 @@ const Exhibition: React.FC = () => {
             })
         }
     }
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const goToExhibitionArea = (exhibitionId: number) => {
+        navigate('/exhibition-area', {state: {exhibitionId: exhibitionId}});
+    }
+
     return (
         <>
             {isExhibition && (
@@ -394,7 +406,10 @@ const Exhibition: React.FC = () => {
                                         <div className={styles.main_photo} 
                                              key={i+'a'}
                                              onClick={() =>{openImgList(); setSelectedPhotoNumber(i)}} 
-                                             style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`}}>
+                                             style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`, 
+                                                     display: 'flex', justifyContent: 'center', alignItems: 'center',
+                                                     color: 'white', fontWeight: 'bold', fontSize: '40px'}}>
+                                                {i+1}
                                         </div>
                                     )
                                 })
@@ -413,7 +428,12 @@ const Exhibition: React.FC = () => {
                                                         <div className={styles.sub_photo}>
                                                             <div className={styles.photo} 
                                                                 onClick={() =>{openImgList(); setSelectedPhotoNumber(i)}} 
-                                                                style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`}}>
+                                                                style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`,
+                                                                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                                                                color: 'white', fontWeight: 'bold', fontSize: '40px'}}>
+                                                                {
+                                                                    i+1
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
@@ -471,9 +491,12 @@ const Exhibition: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className={styles.exhibition_open_btn}>
-                    <p className={styles.open_btn_txt}>Enter</p>
-                </div>
+                {
+                    exhibitionDetail?.endDate && new Date(exhibitionDetail.endDate) >= today &&
+                    <div className={styles.exhibition_open_btn} onClick={() => {goToExhibitionArea(exhibitionDetail!.exhibitionId)}}>
+                        <p className={styles.open_btn_txt}>Enter</p>
+                    </div>
+                }
             </div>
             </>
         )}
@@ -500,6 +523,12 @@ const Exhibition: React.FC = () => {
                                     <div className={styles.item}>
 
                                     <div key={i + 'g'} className={styles.card}>
+                                        {
+                                            new Date(followExhibition.endDate) < today &&
+                                            <div className={styles.finished}>
+                                                <p>종료된 전시회입니다!</p>
+                                            </div>
+                                        }
                                         <img src={followExhibition.posterUrl} alt='프로필' className={styles.card_img}/>
                                         <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
                                         
@@ -529,8 +558,14 @@ const Exhibition: React.FC = () => {
                             {followExhibitionList.length > 5 && followExhibitionList.map((followExhibition, i) => (
                                 <li key={followExhibition.exhibitionId} onClick={() => {openExhibitionDetailModalOpeneds(followExhibition.exhibitionId);}}>
                                     <div className={styles.item}>
-
+                                        
                                     <div key={i + 'g'} className={styles.card}>
+                                        {
+                                            new Date(followExhibition.endDate) < today &&
+                                            <div className={styles.finished}>
+                                                <p>종료된 전시회입니다!</p>
+                                            </div>
+                                        }
                                         <img src={followExhibition.posterUrl} alt='프로필' className={styles.card_img}/>
                                         <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
                                         
@@ -581,6 +616,11 @@ const Exhibition: React.FC = () => {
                 {exhibitionList &&
                     exhibitionList.map((exhibition: exhibitionInterface, idx) => (
                         <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetailModalOpeneds(exhibition.exhibitionId);}}>
+                                {new Date(exhibition.endDate) < today &&
+                                    <div className={styles.finished}>
+                                        <p>종료된 전시회입니다!</p>
+                                    </div>
+                                }
                             <img src={exhibition.posterUrl} alt='프로필' className={styles.card_img}/>
                             <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
                             
