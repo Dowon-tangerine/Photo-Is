@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from "./css/Qna.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 // import axios from 'axios';
@@ -11,6 +12,15 @@ import { FaAngleDown } from 'react-icons/fa';
 //     liked: boolean,
 //     title: string,
 //   }
+
+interface articleInterface{
+    id: number,
+    category: string,
+    title: string,
+    author: string,
+    date: string,
+    view: number
+}
   
 const Qna: React.FC = () => {
 
@@ -18,11 +28,11 @@ const Qna: React.FC = () => {
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
     const [isRotated2, setIsRotated2] = useState<boolean>(false);
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     
-    // const moveToGallery = function(){
-    //     navigate("/community/gallery")
-    // }
+    const moveToWrite = function(){
+        navigate("/community/qna/writeqna")
+    }
 
     const openSortTypeList = function(){
         setSortTypeList(!sortTypeList);
@@ -106,24 +116,111 @@ const Qna: React.FC = () => {
 //         setIsLoading(false);
 //     };
 
-
-    const [uploadPhoto, setUploadPhoto] = useState<boolean>(false);
-
-    const openUploadModal = function(){
-        setUploadPhoto(!uploadPhoto);
-    }
-
     const [listNum, setListNum] = useState<number>(1231);
 
     useEffect(() => {
         setListNum(listNum);
     })
 
+    // const [totalPage, setTotalPage] = useState<number>(1);
+    // const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const articleList = [
+        {
+            id: 0,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 1,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 2,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 3,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 4,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 5,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 6,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 7,
+            category: '스튜디오',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 8,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 9,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친선경기자전거',
+            date: '11:12',
+            view: 2134
+        },
+        {
+            id: 10,
+            category: '일반',
+            title: '크크크크크ㅡㅇㄱ크ㅡㄱ 미친',
+            author: '미친자',
+            date: '11:12',
+            view: 2134
+        },
+    ]
+
     return (
         <>
         
 
-        <div className={styles.main_container}>
+        <div className={styles.main_container} style={{marginTop: '80px'}}>
             <div className={styles.page_intro}>
                 <p className={styles.intro_txt1}>Community</p>
                 <p className={styles.intro_txt2}>-QnA-</p>
@@ -134,7 +231,7 @@ const Qna: React.FC = () => {
                 <p style={{marginTop : '-15px', marginBottom : '10px'}}>{listNum}개의 글</p>
 
                 <div className={styles.btn_container}>
-                    <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
+                    <div className={styles.photo_btn} onClick={() => {moveToWrite();}}>
                         <p>글쓰기</p>
                     </div>
                     <div className={styles.sort_btn}>
@@ -157,6 +254,59 @@ const Qna: React.FC = () => {
             </div>
 
             <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
+
+            <div className={styles.type_category_title_container}>
+                <div className={styles.article_num}>
+                    <p>No.</p>
+                </div>
+                <div className={styles.article_category} style={{justifyContent: 'center'}}>
+                    <p>카테고리</p>
+                </div>
+                <div className={styles.article_title} style={{justifyContent: 'center'}}>
+                    <p>제목</p>
+                </div>
+                <div className={styles.article_author} style={{justifyContent: 'center'}}>
+                    <p>작성자</p>
+                </div>
+                <div className={styles.article_date} style={{justifyContent: 'center'}}>
+                    <p>작성일</p>
+                </div>
+                <div className={styles.article_view} style={{justifyContent: 'center'}}>
+                    <p>조회수</p>
+                </div>
+            </div>
+            <div className={styles.article_container}>
+                {articleList.map((item : articleInterface, idx) => (
+                    <>
+                    <div className={styles.type_category_title_container}>
+                        <div className={styles.article_num}>
+                            <p>{idx}</p>
+                        </div>
+                        <div className={styles.article_category} style={{justifyContent: 'center'}}>
+                            <div className={styles.category_btn}>
+                                <p>{item.category}</p>
+                            </div>
+                        </div>
+                        <div className={styles.article_title}>
+                            <p className={styles.click_title}>{item.title}</p>
+                        </div>
+                        <div className={styles.article_author}>
+                            <p style={{cursor: 'pointer'}}>{item.author}</p>
+                        </div>
+                        <div className={styles.article_date} style={{justifyContent: 'center'}}>
+                            <p>{item.date}</p>
+                        </div>
+                        <div className={styles.article_view} style={{justifyContent: 'center'}}>
+                            <p>{item.view}</p>
+                        </div>
+                    </div>
+                    </>
+                ))}
+            </div>
+
+            <div className={styles.pages_container}>
+
+            </div>
         </div>
         </>
     );

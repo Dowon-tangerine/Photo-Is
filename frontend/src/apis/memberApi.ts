@@ -103,3 +103,73 @@ export const searchProfile = async (memberId: number) => {
 		console.log(err)
 	})
 }
+
+// 프로필 수정
+// 수정해야함
+export const editProfile = async (memberInfo: FormData) => {
+	const url = `/members/`;
+
+	return await instance.put(url, memberInfo)
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		localStorage.setItem('profileUrl', res.data.data.profileUrl);
+		return res.data.data;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
+
+// 배경화면 사진 수정
+export const editBackgroundImg = async (background: FormData) => {
+	const url = `/members/change-background`;
+
+	return await instance.put(url, background, {
+		headers: {
+			'Content-Type': 'multipart/form-data'
+		}
+	})
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return true;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
+
+//갤러리 사진 삭제
+export const deletePhoto = async (id: number) => {
+	const url = `/photos/${id}`;
+
+	return await instance.delete(url)
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return true;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
+
+export const putEditPhoto = async (id: number, title: string, hashtag: Array<string> , accessType: string) => {
+	const url = `/photos/${id}`;
+
+	const data = {photoId: id, title: title, hashtagList: hashtag, accessType: accessType }
+	return await instance.put(url, data)
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return true;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
