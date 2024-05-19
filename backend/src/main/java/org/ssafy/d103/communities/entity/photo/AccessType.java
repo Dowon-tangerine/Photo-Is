@@ -9,7 +9,8 @@ public enum AccessType {
 
     PUBLIC("public"),
     PRIVATE("private"),
-    STUDIO("studio");
+    STUDIO("studio"),
+    QNA("qna");
 
     private final String AccessTypeName;
 
