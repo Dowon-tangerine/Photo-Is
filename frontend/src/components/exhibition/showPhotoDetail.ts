@@ -1,4 +1,4 @@
-const showPhotoDetail = (x, z) => {
+const showPhotoDetail = (x: number, z: number) => {
 	let value = -1;
 	if(z > 6) { // 9.95
 		if(x > 0){
