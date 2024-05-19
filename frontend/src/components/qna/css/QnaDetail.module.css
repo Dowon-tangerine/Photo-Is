@@ -34,6 +34,7 @@
     height: 60px;
     margin-top: 50px;
     position: relative;
+    margin-bottom: 10px;
 }
 
 .btn_container{
@@ -69,242 +70,143 @@
     height: 1000px;
     width: 90vw;
     display: flex;
+    margin-bottom: 50px;
 }
 
 .write_content_container{
     width: 75%;
-    height: 100%;
-}
-
-.choose_category_container{
+    height: fit-content;
+    border-radius: 10px;
     margin-top: 20px;
     margin-bottom: 20px;
-    width: 100%;
-    height: 160px;
-    border-radius: 10px;
-    border: 1px solid black;
-}
-
-
-.sort_btn{
-    width: 200px;
-    height: 40px;
-    background: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    color: black;
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-bottom: 20px;
-    position: relative;
-    border-bottom: 1px solid black;
-}
-
-.dropdown_container{
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.dropdown_txt2{
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    margin-left: 5px;
-    width: 170px;
-}
-
-
-.rotated {
-    transform: rotate(180deg); /* 회전 클래스 */
-}
-
-.dropdown_icon2 {
-    color: black;
-    font-size: 25px;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out; /* 애니메이션 효과를 위한 transition 속성 */
-    display: inline-block; /* transform 속성을 적용하기 위해 필요 */
-}
-
-.typeList_container2{
-    height: 80px;
-    width: 200px;
-    background: white;
-    position: absolute;
-    z-index: 2;
-    top: 110%;
-    border-radius: 10px;
-}
-
-.type_txt2_1{
-    color: black;
-    height: 40px;
-    width: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    transition: 0.5s all;
-}
-
-.type_txt2_3{
-    color: black;
-    height: 40px;
-    width: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-bottom: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;    
-    font-family: "부크크고딕bold";
-    font-size: 16px;
-    transition: 0.5s all;
-}
-
-.type_txt2_1:hover {
-    background: black;
-    color: white;
-}
-
-.type_txt2_3:hover {
-    background: black;
-    color: white;
-}
-
-.write_title{
-    width: 95%;
-    height: 60px;
-    background: rgba(0, 0, 0, 71%);
-    border-radius: 10px;
-    color: white;
-    padding: 20px;
-    margin-left: 20px;
-    font-family: "부크크고딕bold";
-}
-
-.write_title:focus{
-    outline: none;
-}
-
-.writing{
-    width: 100%;
-    height: 500px;
-    border: 1px solid black;
-    resize: none;
-    border-radius: 10px;
-    padding: 20px;
-    font-family: "부크크고딕";
-    font-size: 16px;
-    margin-bottom: 20px;
-}
-
-.writing:focus{
-    outline: none;
-}
-
-.photo_upload_container{
-    width: 100%;
-    height: 120px;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-}
-
-.upload_txt_container{
-    height: 120px;
-    width: 15%;
-    border-right: 1px solid black;
-    font-family: "부크크고딕bold";
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.upload_btn_container{
-    width: 65%;
-    height: 120px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 10px;
+    align-items: center;
 }
 
-
-.input_name{
-    font-family: '부크크고딕bold';
-    font-size: 16px;
-    margin-left: 1%;
+.qna_content{
+    width: 100%;
+    height: fit-content;
+    border-radius: 10px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.input_file_btn{
-    width: 150px;
-    height: 40px;
-    padding: 6px 15px;
-    background: white;
-    border-radius: 10px;
-    color: black;
-    border: 1px solid black;
+.title_container{
+    width: 95%;
+    height: 60px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin-left: 1%;
-    transition: 0.5s all;
+    padding: 20px;
+    font-family: "부크크고딕bold";
+    font-size: 28px;
+    margin-top: 20px;
+    border-bottom: 1px solid black;
 }
 
-.input_t{
+.content_container{
+    width: 95%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    padding: 20px;
     font-family: "부크크고딕bold";
     font-size: 16px;
-    text-align: center;
+    margin-top: 20px;
 }
 
-.input_file_btn:hover{
-    background: rgb(218, 218, 218);
-    transition: 0.5s all;
+.photo_container{
+    width: 95%;
+    height: fit-content;
+    margin-bottom: 40px;
 }
 
-.input_txt{
-    font-family: '부크크고딕bold';
-    font-size: 16px;
-}
-
-.upload_btn{
-    width: 130px;
-    height: 40px;
-    border: 1px solid black;
-    background: white;
-    display: flex;
-    border-radius: 10px;
-
-}
-
-.intro_img{
-    width: 18%;
-    height: 110px;
+.qna_photo{
+    margin-left: 10px;
+    width: 44%;
+    height: auto;
     object-fit: contain;
-    background: rgba(0, 0, 0, 0.347);
-    color: white;
+}
+
+.qna_comment_container{
+    width: 100%;
+    height: 530px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.comment_list_container{
+    width: 100%;
+    height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.one_comment_container{
+    width: 100%;
+    height: fit-content;
+    padding: 10px;
+    display: flex;
+}
+
+.comment_profile_img{
+    height: 40px;
+    width: 40px;
+    border-radius: 50px;
+}
+
+.comment_content_container{
+    width: 90%;
+    height: fit-content;
+    margin-left: 10px;
+    font-family: "부크크고딕";
+}
+
+.comment_send_container{
+    width: 100%;
+    height: 120px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.send{
+    width: 90%;
+    margin-top: -10px;
+    height: 50px;
+    resize: none;
+}
+
+.send:focus{
+    outline: none;
+}
+
+.send_btn{
+    position: absolute;
+    width: 70px;
+    height: 40px;
+    background: black;
+    border-radius: 10px;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
+    font-family: "부크크고딕bold";
+    transition: 0.5s all;
+}
+
+.send_btn:hover{
+    background: rgb(86, 86, 86);
+    transition: 0.5s all;
 }
 
 .write_rule_container{
@@ -314,36 +216,30 @@
     justify-content: center;
 }
 
-.rule_background{
+.detail_background{
     margin-top: 20px;
     width: 90%;
-    height: 350px;
-    background: black;
+    height: 470px;
+    background: white;
+    border: 1px solid black;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.rule_title_container{
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    width: 100%;
-    color: white;
-    font-size: 18px;
-    margin-bottom: 10px;
+.camera_info_title{
+    font-family: "부크크고딕bold";
+    font-size: 24px;
+    margin: 2%;
 }
 
-.rule_content_container{
-    margin-top: 20px;
+.camera_info{
+    width: 100%;
+    height: 420px;
+    overflow-y: auto;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    height: 30px;
-    width: 80%;
-    color: white;
-    font-size: 18px;
-    margin-bottom: 10px;
+    padding: 5px 10px;
 }
