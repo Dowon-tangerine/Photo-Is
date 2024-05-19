@@ -4,17 +4,15 @@ import StudioStyle from "./css/Studio.module.css";
 import Spinner from "./3Delement/spinner";
 import CameraSettings from "./element/CameraSettings";
 import Capture from "./element/Capture";
-import { EffectComposer, Noise } from "@react-three/postprocessing";
+import { EffectComposer } from "@react-three/postprocessing";
 import { useCameraStore } from "./store/useCameraStore";
 import CameraController from "./element/CameraController";
-import { BlendFunction } from "postprocessing";
-import * as THREE from "three";
 import { EffectComposer as EffectComposerImpl } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { createMotionBlurMaterial } from "./element/MotionBlurShader";
 import { createGrainMaterial } from "./element/GrainShader";
-import { ApertureShaderMaterial } from "./element/apertureShader";
+// import { ApertureShaderMaterial } from "./element/apertureShader";
 import { DepthOfField } from "@react-three/postprocessing";
 import { createExposureMaterial } from "./element/ExposureShader"; // Import the ExposureShader
 import Modal from "./element/Modal";
@@ -56,7 +54,7 @@ function Effects({ shutterSpeed, iso, aperture }: { shutterSpeed: number; iso: n
         //composer에 추가
         composerInstance.addPass(renderPass);
         composerInstance.addPass(shutterPass);
-        // composerInstance.addPass(exposurePass);
+        composerInstance.addPass(exposurePass);
         composerInstance.addPass(grainPass);
         // composerInstance.addPass(aperturePass);
 
