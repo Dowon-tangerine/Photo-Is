@@ -257,6 +257,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
 
   const fetchSessions = async () => {
     try {
+      const memberId = localStorage.getItem('memberId');
       const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/sessions', {
         params: { memberId }
       });
