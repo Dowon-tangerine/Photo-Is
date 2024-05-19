@@ -42,12 +42,6 @@ function Spinner() {
         loader.setMaterials(axisMaterial);
     });
 
-    const grassMaterial = useLoader(MTLLoader, "/models/Grass1.mtl");
-    grassMaterial.preload();
-    const grass = useLoader(OBJLoader, "/models/Grass1.obj", (loader) => {
-        loader.setMaterials(grassMaterial);
-    });
-
     const mountMaterial = useLoader(MTLLoader, "/models/mount.mtl");
     mountMaterial.preload();
     const mount = useLoader(OBJLoader, "/models/mount.obj", (loader) => {
@@ -68,19 +62,14 @@ function Spinner() {
             mount.scale.set(100, 190, 200); // mount 크기를 2배로 설정
             setModelLoaded(true); // 모델 로드 완료 상태 설정
         }
-        if (grass) {
-            grass.scale.set(2, 0.5, 3); // mount 크기를 2배로 설정
-            setModelLoaded(true); // 모델 로드 완료 상태 설정
-            grass.position.x = -12;
-        }
-    }, [blade, mount, grass]);
+    }, [blade, mount]);
 
     useFrame((state, delta) => {
         state;
         if (modelLoaded) {
             bladesRefs.current.forEach((blade) => {
                 if (blade) {
-                    const rotationSpeed = 10; // 회전 속도 조절
+                    const rotationSpeed = 0; // 회전 속도 조절
                     const angle = rotationSpeed * delta; // 프레임 속도에 따른 회전 각도 계산
                     blade.rotation.x += angle; // X축을 기준으로 회전
                 }
@@ -92,14 +81,12 @@ function Spinner() {
     return (
         <>
             {/* <ambientLight intensity={1} /> */}
-            <OrbitControls />
             <directionalLight ref={lightRef} castShadow position={[0, 100, -50]} intensity={2} />
             <Sky distance={40000} sunPosition={[0, 0.1, 0]} inclination={0} azimuth={0.25} />
             {blade && <primitive object={blade} />}
             {axis && <primitive object={axis} />}
             {stick && <primitive object={stick} />}
             {mount && <primitive object={mount} />}
-            {/* {grass && <primitive object={grass} />} */}
         </>
     );
 }

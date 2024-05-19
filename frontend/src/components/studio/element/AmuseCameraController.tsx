@@ -3,7 +3,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useCameraStore } from "../store/useCameraStore";
 
-function CameraController() {
+function AmuseCameraController() {
     const { setFocusDistance } = useCameraStore(); // Zustand 스토어에서 exposure 값을 가져옴
     const { gl, camera } = useThree();
     const spinnerPosition = new THREE.Vector3(0, 6.7, 0.1); // Spinner의 위치
@@ -24,4 +24,4 @@ function CameraController() {
     return null;
 }
 
-export default CameraController;
+export default AmuseCameraController;
