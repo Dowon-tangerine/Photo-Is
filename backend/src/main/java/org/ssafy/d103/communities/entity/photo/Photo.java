@@ -46,9 +46,6 @@ public class Photo extends OnlyCreatedTime {
     private PhotoDetail photoDetail;
 
     @OneToOne(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Question question;
-
-    @OneToOne(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private DailyPhotoRanking dailyPhotoRanking;
 
     @OneToOne(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -56,6 +53,9 @@ public class Photo extends OnlyCreatedTime {
 
     @OneToOne(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private MonthlyPhotoRanking monthlyPhotoRanking;
+
+    @OneToMany(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Question> question;
 
     @OneToMany(mappedBy = "photo", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PhotoLike> photoLikeList;
