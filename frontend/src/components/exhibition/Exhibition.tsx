@@ -406,7 +406,10 @@ const Exhibition: React.FC = () => {
                                         <div className={styles.main_photo} 
                                              key={i+'a'}
                                              onClick={() =>{openImgList(); setSelectedPhotoNumber(i)}} 
-                                             style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`}}>
+                                             style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`, 
+                                                     display: 'flex', justifyContent: 'center', alignItems: 'center',
+                                                     color: 'white', fontWeight: 'bold', fontSize: '40px'}}>
+                                                {i+1}
                                         </div>
                                     )
                                 })
@@ -425,7 +428,12 @@ const Exhibition: React.FC = () => {
                                                         <div className={styles.sub_photo}>
                                                             <div className={styles.photo} 
                                                                 onClick={() =>{openImgList(); setSelectedPhotoNumber(i)}} 
-                                                                style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`}}>
+                                                                style={{backgroundImage: `url(${exhibitionPhotoList[i].imageUrl})`,
+                                                                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                                                                color: 'white', fontWeight: 'bold', fontSize: '40px'}}>
+                                                                {
+                                                                    i+1
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
