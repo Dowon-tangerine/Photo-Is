@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCameraStore } from "../store/useCameraStore";
 import styles from "../../mypage/css/MyPage.module.css";
-import { uploadGalleryPhoto } from "../../../apis/photoApi";
+import { uploadGalleryPhoto, uploadMetaStudio, CameraSettings } from "../../../apis/studioApi";
 
 interface ModalProps {
     setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -88,7 +88,26 @@ const Modal: React.FC<ModalProps> = ({ setModalIsOpen, ImgUrl }) => {
                 setIsUploading(true);
 
                 const res = await uploadGalleryPhoto(formData);
-                if (res) {
+                if (res != false) {
+                    console.log("photoId : ", res);
+                    const settings: CameraSettings = {
+                        iso: iso.toString(),
+                        shutterSpeed: shutterSpeed === 1 ? "1 ss" : `1/${shutterSpeed} ss`,
+                        aperture: `f / ${aperture}`,
+                        exposure: `EV ${exposure}`,
+                    };
+
+                    try {
+                        const metaRes = await uploadMetaStudio(settings, res);
+                        if (!metaRes) {
+                            alert("메다 테이터 저장 문제가 발생했습니다.");
+                        } else {
+                            console.log(metaRes);
+                        }
+                    } catch (error) {
+                        console.log("메타 데이터 저장 중 에러");
+                        console.log(error);
+                    }
                     setUploadPhotoInfo({
                         title: "",
                         accessType: "STUDIO",
