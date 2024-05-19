@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useLoader, useFrame } from "@react-three/fiber";
 import { DirectionalLight, Object3D } from "three";
-import { Sky, OrbitControls } from "@react-three/drei";
+import { Sky } from "@react-three/drei";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 

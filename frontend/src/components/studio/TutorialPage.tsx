@@ -1,17 +1,15 @@
-import { useState, useRef, useEffect } from "react";
-import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { useState } from "react";
+import { Canvas, extend } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
 import Spinner from "./3Delement/spinner";
 import CameraSettings from "./element/CameraSettings";
 import Capture from "./element/Capture";
-import { EffectComposer } from "@react-three/postprocessing";
 import { useCameraStore } from "./store/useCameraStore";
 import CameraController from "./element/CameraController";
 import { EffectComposer as EffectComposerImpl } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 // import { ApertureShaderMaterial } from "./element/apertureShader";
-import { DepthOfField } from "@react-three/postprocessing";
 import Modal from "./element/Modal";
 import Effects from "./element/Effects";
 
