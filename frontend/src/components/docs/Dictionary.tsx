@@ -29,7 +29,7 @@ function Model({ setLoading }: { setLoading: (isLoading: boolean) => void }) {
     setLoading(false); // Set loading to false when the model is fully loaded
   }, [gltf, setLoading]);
   return (
-    <group position={[-1, -1, 0]}>
+    <group position={[-1, -4, 0]}>
       <primitive object={gltf.scene} />
     </group>
   );
@@ -62,7 +62,7 @@ interface CameraControllerProps {
 
 function CameraController({ targetPosition, lookAtPosition, resetCamera }: CameraControllerProps) {
   const { camera } = useThree();
-  const initialPosition = useRef(new Vector3(10, 10, 10));
+  const initialPosition = useRef(new Vector3(10, 7, 10));
 
   useEffect(() => {
     camera.position.copy(initialPosition.current);
@@ -113,15 +113,15 @@ interface AnnotationsProps {
 
 function Annotations({ onAnnotationClick, selectedAnnotationId }: AnnotationsProps) {
   const annotations: Annotation[] = [
-    { id: 1, position: [-6.5, 6.2, -2.7], label: 'Fn1 버튼' },
-    { id: 2, position: [-6.4, 6.7, -4.4], label: '노출 보정 다이얼' },
-    { id: 3, position: [-5.1, 6.7, -2.6], label: '셔터 버튼' },
-    { id: 5, position: [-3.1, 7.2, -3.7], label: '다이얼 잠금 해제' },
-    { id: 5, position: [4, 7.2, -3.85], label: '다이얼 잠금 해제' },
-    { id: 6, position: [0.3, 7.8, -5], label: '핫 슈' },
-    { id: 14, position: [4.1, 0.7, -2.1], label: '초점 모드 셀렉터' },
-    { id: 17, position: [-3.5, 4.2, -2], label: 'Fn2 버튼' },
-    { id: 35, position: [-4.7, 5.9, -5.6], label: '후면 커맨드 다이얼' },
+    { id: 1, position: [-6.5, 3.2, -2.7], label: 'Fn1 버튼' },
+    { id: 2, position: [-6.4, 3.7, -4.4], label: '노출 보정 다이얼' },
+    { id: 3, position: [-5.1, 3.7, -2.6], label: '셔터 버튼' },
+    { id: 5, position: [-3.1, 4.2, -3.7], label: '다이얼 잠금 해제' },
+    { id: 5, position: [4, 4.2, -3.85], label: '다이얼 잠금 해제' },
+    { id: 6, position: [0.3, 4.8, -5], label: '핫 슈' },
+    { id: 14, position: [4.1, -3.7, -2.1], label: '초점 모드 셀렉터' },
+    { id: 17, position: [-3.5, 1.2, -2], label: 'Fn2 버튼' },
+    { id: 35, position: [-4.7, 2.9, -5.6], label: '후면 커맨드 다이얼' },
   ];
 
   return (
