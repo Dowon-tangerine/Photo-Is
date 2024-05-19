@@ -37,7 +37,7 @@ const WriteQna: React.FC = () => {
 
     const [mainImg, setMainImg] = useState<string>("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [uploadPhotoId, setUploadPhotoId] = useState<number | null>();
+    // const [uploadPhotoId, setUploadPhotoId] = useState<number | null>();
 
     const setPreviewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files && event.target.files[0];
@@ -85,7 +85,7 @@ const WriteQna: React.FC = () => {
         else{
             postPhoto(selectedFile, selectedFile!.name, 'qna', [])
             .then((res) => {
-                setUploadPhotoId(res.photoId)
+                // setUploadPhotoId(res.photoId)
 
                 if(sortType === "일반"){
                     setTypess("normal")
