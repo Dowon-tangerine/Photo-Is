@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCameraStore } from "../store/useCameraStore";
 
 const CameraSettings: React.FC = () => {
-    const apertureValues = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
+    const apertureValues = [32, 22, 16, 11, 8, 5.6, 4, 2.8, 2, 1.4];
+
     const shutterSpeedValues = [4000, 2000, 1000, 500, 250, 125, 60, 30, 15, 8, 4, 2, 1];
     const isoValues = [100, 200, 400, 800, 1600, 3200, 6400, 12800];
     const options = ["Av", "Tv", "M"];
     const [selectedOption, setSelectedOption] = useState<string>(options[0]);
     const [shutterSpeedDisable, setShutterSpeedDisable] = useState(true);
-    const [isoDisable, setIsoDisable] = useState(true);
-    const [apertureDisable, setApertureDisable] = useState(true);
+    const [isoDisable, setIsoDisable] = useState(false);
+    const [apertureDisable, setApertureDisable] = useState(false);
 
     const handleClick = (option: string) => {
         setSelectedOption(option);
@@ -17,6 +18,7 @@ const CameraSettings: React.FC = () => {
     const { aperture, iso, shutterSpeed, exposure, setIso, setShutterSpeed, setAperture, setExposure } =
         useCameraStore();
 
+    //노출 update
     const updateExposure = (currentValue: any, newValue: any, valuesArray: any) => {
         if (valuesArray == apertureValues) {
             const currentIndex = valuesArray.indexOf(currentValue);
@@ -44,32 +46,57 @@ const CameraSettings: React.FC = () => {
             }
         }
     };
+
+    //av 모드 노출 update
+    // const updateShutterSpeedForExposure = (newAperture: number, newISO: number) => {
+    //     const newApertureIndex = apertureValues.indexOf(newAperture);
+    //     const shutterSpeedIndex = shutterSpeedValues.indexOf(shutterSpeed);
+    //     const newIsoIndex = isoValues.indexOf(newISO);
+
+    //     setExposure(0); // Always set exposure to 0 for AV mode
+    // };
+
     const handleApertureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newAperture = apertureValues[parseInt(event.target.value)];
-        updateExposure(aperture, newAperture, apertureValues);
         setAperture(apertureValues[parseInt(event.target.value)]);
+        // if (selectedOption === "Av") {
+        //     updateShutterSpeedForExposure(newAperture, iso);
+        // }
+        updateExposure(aperture, newAperture, apertureValues);
     };
 
     const handleIsoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newISO = isoValues[parseInt(event.target.value)];
-        updateExposure(iso, newISO, isoValues);
         setIso(isoValues[parseInt(event.target.value)]);
+
+        // if (selectedOption === "Av") {
+        //     updateShutterSpeedForExposure(aperture, newISO);
+        // }
+        updateExposure(iso, newISO, isoValues);
     };
+
     const handleShutterSpeedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newShutterSpeed = shutterSpeedValues[parseInt(event.target.value)];
         updateExposure(shutterSpeed, newShutterSpeed, shutterSpeedValues);
         setShutterSpeed(shutterSpeedValues[parseInt(event.target.value)]);
     };
 
-    const handelMode = () => {
+    //모드 조절
+    useEffect(() => {
         if (selectedOption == "Av") {
-        } else if (selectedOption == "Tv") {
-        } else {
-            setApertureDisable(true);
-            setIsoDisable(true);
+            setApertureDisable(false);
+            setIsoDisable(false);
             setShutterSpeedDisable(true);
+        } else if (selectedOption == "Tv") {
+            setApertureDisable(true);
+            setIsoDisable(false);
+            setShutterSpeedDisable(false);
+        } else {
+            setApertureDisable(false);
+            setIsoDisable(false);
+            setShutterSpeedDisable(false);
         }
-    };
+    }, [selectedOption]);
 
     return (
         <div className="font-bookkGothic w-[100%] flex flex-col">
@@ -106,6 +133,7 @@ const CameraSettings: React.FC = () => {
                 </div>
                 <input
                     type="range"
+                    disabled={apertureDisable}
                     min="0"
                     max={apertureValues.length - 1}
                     value={apertureValues.indexOf(aperture)}
@@ -123,6 +151,7 @@ const CameraSettings: React.FC = () => {
                 </div>
                 <input
                     type="range"
+                    disabled={shutterSpeedDisable}
                     min="0"
                     max={shutterSpeedValues.length - 1}
                     value={shutterSpeedValues.indexOf(shutterSpeed)}
@@ -142,6 +171,7 @@ const CameraSettings: React.FC = () => {
                 </div>
                 <input
                     type="range"
+                    disabled={isoDisable}
                     min="0"
                     max={isoValues.length - 1}
                     value={isoValues.indexOf(iso)}

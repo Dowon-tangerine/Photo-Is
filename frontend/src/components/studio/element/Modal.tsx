@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useCameraStore } from "../store/useCameraStore";
 import styles from "../../mypage/css/MyPage.module.css";
 import { uploadGalleryPhoto, uploadMetaStudio, CameraSettings } from "../../../apis/studioApi";
@@ -120,6 +120,7 @@ const Modal: React.FC<ModalProps> = ({ setModalIsOpen, ImgUrl }) => {
                 console.log(err);
             } finally {
                 setIsUploading(false);
+                console.log(isUploading);
             }
             uploadClickHandler();
         }
