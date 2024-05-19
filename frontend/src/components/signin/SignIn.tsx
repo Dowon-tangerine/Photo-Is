@@ -75,7 +75,6 @@ const SignIn: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <div className={styles.forgetPassword}>비밀번호를 잊으셨나요?</div>
           <button type="submit">로그인</button>
           <div className={styles.notsignup}>
             <span>아직 회원이 아니신가요?</span>

@@ -38,9 +38,9 @@
 }
 
 .signinForm h1 {
-  margin-bottom: 30px; /* 제목과 입력 필드 사이의 간격 추가 */
-  font-size: 24px; /* 필요에 따라 조정 가능 */
-  color: #333; /* 제목의 색상 지정 */
+  margin-bottom: 30px; 
+  font-size: 24px; 
+  color: #333; 
 }
 
 .signinForm {
@@ -50,6 +50,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px; /* 모든 폼 요소 사이의 간격을 일관되게 조정 */
+  margin-top: 30px;
 }
 
 .signinForm input[type="text"],
@@ -63,17 +64,11 @@
   border-radius: 10px;
 }
 
-.forgetPassword {
-  text-align: right;
-  font-size: 12px;
-  cursor: pointer;
-  margin-bottom: 20px;
-}
 
 .signinForm button {
   width: 100%;
   padding: 10px;
-  margin-top: 30px;
+  margin-top: 15px;
   background: black;
   color: white;
   border: none;

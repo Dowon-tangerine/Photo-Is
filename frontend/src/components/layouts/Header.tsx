@@ -17,7 +17,7 @@ const menuItems: MenuItems = {
         { name: "Hello Photo!", path: "/docs/product1" },
         { name: "Dictionary", path: "/docs/product2" },
     ],
-    Studio: [], // Studio에는 메뉴 아이템이 없으므로 never[] 타입을 유지
+    Studio: [], 
     Community: [
         { name: "Gallery", path: "/community/gallery" },
         { name: "QnA", path: "/community/qna" },
@@ -32,8 +32,7 @@ const Header: React.FC = () => {
     const { isLogin } = useLoginStatus();
 
     const navigate = useNavigate();
-    const location = useLocation(); // useLocation 훅 추가
-
+    const location = useLocation();
     const headerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -46,7 +45,6 @@ const Header: React.FC = () => {
         document.addEventListener("mousedown", handleClickOutside);
     }, [headerRef]);
 
-    // 페이지 경로 변경 시 드롭다운 메뉴 닫기
     useEffect(() => {
         setOpenMenu("");
     }, [location]);
@@ -59,17 +57,26 @@ const Header: React.FC = () => {
 
     const handleMenuClick = (item: string) => {
         if (item === "Studio") {
-            navigate("/studio-enter"); // Studio 메뉴 클릭 시 이동
-        }
-        if (item === "Exhibition") {
-            navigate("/Exhibition"); // Studio 메뉴 클릭 시 이동
+            navigate("/studio-enter");
+        } else if (item === "Exhibition") {
+            navigate("/Exhibition");
         } else {
             setOpenMenu(openMenu === item ? "" : item);
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("memberId");
+        localStorage.removeItem("nickname");
+        localStorage.removeItem("tokens");
+        localStorage.removeItem("profileUrl");
+        setIsLoggedIn(false);
+        setProfileUrl(null);
+        navigate("/signin");
+    };
+
     return (
-        <div ref={headerRef} className="header" style={{position:'fixed', width: '100%', zIndex:'9', top:'0.01px'}}>
+        <div ref={headerRef} className="header" style={{ position: 'fixed', width: '100%', zIndex: '9', top: '0.01px' }}>
             <header className="h-[80px] bg-black text-white font-bookkMyungjoBold p-3 flex justify-between items-center">
                 <button className={headerStyle.logo} onClick={() => navigate("/")}>
                     PhotoIs
@@ -80,13 +87,13 @@ const Header: React.FC = () => {
                             <button className={headerStyle.btn}>{item}</button>
                             {openMenu === item && menuItems[item].length > 0 && (
                                 <div
-                                    className={` absolute left-1/2 transform -translate-x-1/2 top-[51.5px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
+                                    className={`absolute left-1/2 transform -translate-x-1/2 top-[51.5px] mt-px w-40 bg-white text-black shadow-md ${headerStyle.dropdown}`}
                                 >
                                     <ul className="list-none">
                                         {menuItems[item].map((subItem: MenuItem) => (
                                             <li
                                                 key={subItem.name}
-                                                className="px-4 py-2 hover:bg-[#4C4C4C] hover:text-whiteu "
+                                                className="px-4 py-2 hover:bg-[#4C4C4C] hover:text-white"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigate(subItem.path);
@@ -101,15 +108,16 @@ const Header: React.FC = () => {
                         </div>
                     ))}
                     {isLoggedIn && profileUrl ? (
-                        <img
-                            src={profileUrl}
-                            alt="Profile"
-                            className={headerStyle["btn-profile"]}
-                            onClick={() => navigate("/mypage")}
-                            style={{
-                                cursor:'pointer'
-                            }}
-                        />
+                        <div className={headerStyle["profile-container"]}>
+                            <img
+                                src={profileUrl}
+                                alt="Profile"
+                                className={headerStyle["btn-profile"]}
+                                onClick={() => navigate("/mypage")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                            <button className={headerStyle["btn-logout"]} onClick={handleLogout}>Logout</button>
+                        </div>
                     ) : (
                         <button className={headerStyle["btn-signin"]} onClick={() => navigate("/signin")}>
                             SIGN IN
