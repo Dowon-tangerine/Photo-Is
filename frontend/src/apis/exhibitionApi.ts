@@ -95,7 +95,10 @@ export const getExhibitionPhotos = async (exhibitionId: number) => {
 	return await instance.get(url)
 	.then(res => {
 		if(res.data.data){
-			console.log(res.data.data);
+			console.log(res)
+			res.data.data.content.forEach((data: any) => {
+				data.photoUrl = data.photoUrl + '?not-from-cache-please';
+			})
 		}
 		return res.data.data;    
 	})
