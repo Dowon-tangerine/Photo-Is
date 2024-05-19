@@ -4,7 +4,7 @@ function StudioLayout() {
     const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 가져옵니다.
 
     const goBack = () => {
-        navigate(-1); // navigate 함수에 -1을 전달하여 이전 페이지로 이동
+        navigate("/studio-enter"); // navigate 함수에 -1을 전달하여 이전 페이지로 이동
     };
 
     return (
