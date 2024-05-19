@@ -49,3 +49,19 @@ export const selectDetailPhoto = async (photoId: number) => {
 		console.log(err)
 	})
 }
+
+// 내 전체 사진목록 조회
+export const selectAllPhotoList = async (page: number) => {
+	const url = `/photos/my/all?page=${page}`;
+
+	return await instance.get(url)
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return res.data.data.photoList;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
