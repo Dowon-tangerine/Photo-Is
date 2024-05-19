@@ -11,6 +11,7 @@ interface CameraSettings {
     setExposure: (exposure: number) => void;
     focusDistance: number;
     setFocusDistance: (focusDistance: number) => void;
+    resetSettings: () => void; // 초기화 메서드 추가
 }
 
 export const useCameraStore = create<CameraSettings>((set) => ({
@@ -24,4 +25,12 @@ export const useCameraStore = create<CameraSettings>((set) => ({
     setAperture: (aperture) => set({ aperture }),
     setExposure: (exposure) => set({ exposure }),
     setFocusDistance: (focusDistance) => set({ focusDistance }),
+    resetSettings: () =>
+        set({
+            iso: 100,
+            shutterSpeed: 125,
+            aperture: 8,
+            exposure: 0,
+            focusDistance: 0,
+        }), // 초기화 메서드 구현
 }));

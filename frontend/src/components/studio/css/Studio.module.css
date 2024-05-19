@@ -1,3 +1,22 @@
+/* Studio.module.css */
+/* Studio.module.css */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.tutorial-step {
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+.tutorial-step p {
+    color: black; /* 텍스트 색상을 검은색으로 설정 */
+}
+
 .enterTitle {
     @apply font-bookkMyungjoBold text-[50px] text-white;
 }
@@ -14,9 +33,11 @@
 }
 
 .canvasContainer {
-    margin: auto;
-    width: 70%; /* 컨테이너 너비 70%로 고정 */
-    height: 66.67%; /* 높이를 너비의 3:2 비율로 설정 (100 / (3/2) = 66.67%) */
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50vh; /* 높이를 60%로 고정 */
+    width: calc(50vh * 3 / 2); /* 높이의 3/2 비율로 너비를 설정 */
 }
 
 .controlPanel {
@@ -30,13 +51,14 @@
 
 .imageOverlay {
     position: absolute;
-    top: 110px;
-    left: 80px;
+    top: 90px;
+    margin-left: auto;
+    margin-right: auto;
     bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     pointer-events: none; /* 클릭 이벤트를 이미지가 아닌 배경 요소가 받도록 */
-    width: 70%;
-    height: 66.67%;
+    height: 50vh; /* 높이를 60%로 고정 */
+    width: calc(50vh * 3 / 2); /* 높이의 3/2 비율로 너비를 설정 */
 }
