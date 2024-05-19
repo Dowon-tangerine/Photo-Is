@@ -1079,3 +1079,14 @@
     background-repeat : no-repeat;
     background-size : cover;
 }
+.finished{
+    background: rgba(0,0,0,0.7);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
