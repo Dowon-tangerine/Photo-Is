@@ -1,7 +1,8 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from "./css/WriteQna.module.css";
 import { FaAngleDown } from 'react-icons/fa';
+import { postQna, postPhoto } from '../../apis/qnaApi';
 // import axios from 'axios';
 
 
@@ -22,98 +23,10 @@ const WriteQna: React.FC = () => {
         navigate("/community/qna")
     }
 
+    const [postTitle, setPostTitle] = useState<string>("");
+    const [postContent, setPostContent] = useState<string>("");
 
-    // const [page, setPage] = useState(1);
-    // const [isLoading, setIsLoading] = useState(false);
-//     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
-
-//     useEffect(() => {
-//       console.log("로드");
-  
-//       // key가 없으면 응답은 10개씩
-//       const API_URL =
-//         "https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=1";
-//       axios.get(API_URL).then((res) => {
-//         console.log(res);
-        
-//         // id값과 url만 저장
-//         const gotData = res.data.photoList.map((imgs: { photoId: string; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-//           id: imgs.photoId,
-//           url: imgs.thumbnailUrl,
-//           likeCnt: imgs.likeCnt,
-//           liked: imgs.liked,
-//           title: imgs.title,
-//         }));
-//         setImgArr(gotData);
-//       });
-//     }, []);
-
-//      // Intersection Observer 설정
-
-//   const handleObserver = (entries: IntersectionObserverEntry[]) => {
-//     const target = entries[0];
-//     if (target.isIntersecting && !isLoading) {
-//       setPage((prevPage) => prevPage + 1);
-//     }
-//   };
-
-  
-//   /*
-//   handleObserver: 교차점이 발생했을 때 실행되는 콜백 함수.
-//   entries: 교차점 정보를 담는 배열
-//   isIntersecting: 교차점(intersection)이 발생한 요소의 상태
-//   교차점이 발생하면 page 1 증가
-//   */
-
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(handleObserver, {
-//       threshold: 0, //  Intersection Observer의 옵션, 0일 때는 교차점이 한 번만 발생해도 실행, 1은 모든 영역이 교차해야 콜백 함수가 실행.
-//     });
-//     // 최하단 요소를 관찰 대상으로 지정함
-//     const observerTarget = document.getElementById("observer");
-//     // 관찰 시작
-//     if (observerTarget) {
-//       observer.observe(observerTarget);
-//     }
-//   }, []);
-
-//     useEffect(() => {
-//         fetchData();
-//     }, [page]);
-
-//     const fetchData = async () => {
-//         setIsLoading(true);
-//         try {
-//             const API_URL = `https://k10d103.p.ssafy.io/api/photos/gallery/latest?page=${page}`;
-//             const response = await axios.get(API_URL);
-//             const newData = response.data.data.photoList.map((imgs: { photoId: number; thumbnailUrl: string; likeCnt: number; liked: boolean; title: string }) => ({
-//                 id: imgs.photoId,
-//                 url: imgs.thumbnailUrl,
-//                 likeCnt: imgs.likeCnt,
-//                 liked: imgs.liked,
-//                 title: imgs.title,
-//             }));
-//             setImgArr((prevData) => [...prevData, ...newData]);
-//         } catch (error) {
-//             console.log(error);
-//         }
-//         setIsLoading(false);
-//     };
-
-
-    const [uploadPhoto, setUploadPhoto] = useState<boolean>(false);
-
-    const openUploadModal = function(){
-        setUploadPhoto(!uploadPhoto);
-    }
-
-    const [listNum, setListNum] = useState<number>(1231);
-
-    useEffect(() => {
-        setListNum(listNum);
-    })
-
-    const [sortType, setSortType] = useState<String>("일반");
+    const [sortType, setSortType] = useState<string>("일반");
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
     const [isRotated2, setIsRotated2] = useState<boolean>(false);
 
@@ -124,6 +37,7 @@ const WriteQna: React.FC = () => {
 
     const [mainImg, setMainImg] = useState<string>("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    // const [uploadPhotoId, setUploadPhotoId] = useState<number | null>();
 
     const setPreviewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files && event.target.files[0];
@@ -141,11 +55,66 @@ const WriteQna: React.FC = () => {
         // 이걸로 사진 올려야 함
     };
 
+    const [typess, setTypess] = useState<string>("normal");
+
+    const postArticle = function(){
+        if(selectedFile === null){
+            if(sortType === "일반"){
+                setTypess("normal")
+            }
+            else if(sortType === "스튜디오"){
+                setTypess("studio")
+            }
+
+            postQna(null, typess, postTitle, postContent)
+            .then((res) => {
+                if(res){
+                    setPostTitle("일반")
+                    setPostTitle("")
+                    setPostContent("")
+                    setMainImg("");
+                    setSelectedFile(null);
+                    
+                    navigate("/community/qna")
+                }
+                else{
+                    alert('문제가 발생했습니다..');
+                }
+            })
+        }
+        else{
+            postPhoto(selectedFile, selectedFile!.name, 'qna', [])
+            .then((res) => {
+                // setUploadPhotoId(res.photoId)
+
+                if(sortType === "일반"){
+                    setTypess("normal")
+                }
+                else if(sortType === "스튜디오"){
+                    setTypess("studio")
+                }
+                
+                postQna(res.photoId, typess, postTitle, postContent)
+                .then((res) => {
+                    if(res){
+                        setPostTitle("일반")
+                        setPostTitle("")
+                        setPostContent("")
+                        setMainImg("");
+                        setSelectedFile(null);
+                        
+                        navigate("/community/qna")
+                    }
+                    else{
+                        alert('문제가 발생했습니다..');
+                    }
+                })
+            })
+        }
+    }
 
     return (
         <>
-        
-
         <div className={styles.main_container} style={{marginTop: '80px'}}>
             <div className={styles.page_intro} onClick={() => {moveToqna();}}>
                 <p className={styles.intro_txt1}>Community</p>
@@ -156,7 +125,7 @@ const WriteQna: React.FC = () => {
                 <p style={{fontSize : '32px'}}>글쓰기</p>
 
                 <div className={styles.btn_container}>
-                    <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
+                    <div className={styles.photo_btn} onClick={() => {postArticle();}}>
                         <p>등록</p>
                     </div>
                 </div>
@@ -182,9 +151,9 @@ const WriteQna: React.FC = () => {
                                 </>
                             )}
                         </div>
-                        <input className={styles.write_title} placeholder='제목을 입력하세요.'></input>
+                        <input className={styles.write_title} placeholder='제목을 입력하세요.' onChange={(e) => {setPostTitle(e.target.value)}}></input>
                     </div>
-                    <textarea className={styles.writing} placeholder='내용'></textarea>
+                    <textarea className={styles.writing} placeholder='내용' onChange={(e) => {setPostContent(e.target.value)}}></textarea>
                     <div className={styles.photo_upload_container}>
                         <div className={styles.upload_txt_container}>
                             <p>사진 첨부</p>
