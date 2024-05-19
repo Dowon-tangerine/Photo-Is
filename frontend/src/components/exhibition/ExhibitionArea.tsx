@@ -386,11 +386,11 @@ const ExhibitionArea: React.FC = () => {
 							 pointerLockRequested = true;
 							 lastRequestTime = currentTime;
 							 
-							 // @ts-ingnore
-							 canvas.requestPointerLock().catch(() => {
-									 // 포인터락 요청이 실패한 경우
-									 pointerLockRequested = false; // 요청 상태 초기화
-							 });
+							//  // @ts-ingnore
+							//  canvas.requestPointerLock().catch(() => {
+							// 		 // 포인터락 요청이 실패한 경우
+							// 		 pointerLockRequested = false; // 요청 상태 초기화
+							//  });
 					 }
 			 });
 			 
