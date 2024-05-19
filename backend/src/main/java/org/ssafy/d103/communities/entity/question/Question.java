@@ -35,7 +35,7 @@ public class Question extends OnlyCreatedTime {
     @JoinColumn(name = "member_id")
     private Members member;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
 
