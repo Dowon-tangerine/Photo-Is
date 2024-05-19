@@ -102,7 +102,7 @@ public class PhotoService {
         saveHashtag(postUploadPhotoRequest.getHashtagList(), savedPhoto);
         photoDetailRepository.save(PhotoDetail.init(savedPhoto));
 
-        return PostUploadPhotoResponse.of(photo.getId(), true);
+        return PostUploadPhotoResponse.of(savedPhoto.getId(), true);
     }
 
     private Photo uploadImageFile(MultipartFile imageFile, Photo photo) {
@@ -157,7 +157,7 @@ public class PhotoService {
         }
     }
 
-    private void saveMetadata(MultipartFile file, Photo photo) {
+    public void saveMetadata(MultipartFile file, Photo photo) {
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(file.getInputStream());
 
