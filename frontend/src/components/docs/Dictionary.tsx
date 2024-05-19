@@ -62,7 +62,7 @@ interface CameraControllerProps {
 
 function CameraController({ targetPosition, lookAtPosition, resetCamera }: CameraControllerProps) {
   const { camera } = useThree();
-  const initialPosition = useRef(new Vector3(9, 9, 9));
+  const initialPosition = useRef(new Vector3(10, 10, 10));
 
   useEffect(() => {
     camera.position.copy(initialPosition.current);

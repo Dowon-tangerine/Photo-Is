@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import backgroundImage from "/imgs/homeMainPic.jpg";
+import backgroundImage from "/imgs/homeMainPic.png";
 
 const Home: React.FC = () => {
     const [sectionHeight, setSectionHeight] = useState("45vh"); // 초기 섹션 높이 설정
@@ -21,9 +21,9 @@ const Home: React.FC = () => {
     }, []);
 
     return (
-        <div className="wrap relative top-0 w-full h-full transition duration-500">
+        <div className="wrap relative  w-full h-screen transition duration-500">
             <div
-                className="page w-full h-screen bg-cover bg-center"
+                className="absolute top-20 page w-full h-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${backgroundImage})`, height: sectionHeight }}
             >
                 <div className="flex flex-col justify-center items-center h-full text-white font-bookkMyungjoBold text-[60px]">
@@ -32,13 +32,6 @@ const Home: React.FC = () => {
                     <p>AT</p>
                     <p>PHOTO IS</p>
                 </div>
-            </div>
-            <div className="page w-full h-screen bg-cover bg-center">
-                <p>Photo Is 초기 세팅</p>
-                <p className="font-bookkGothic">부크크 고딕 얇게: Hello PhotoIs!</p>
-                <p className="font-bookkGothicBold">부크크 고딕 굵게: Hello PhotoIs!</p>
-                <p className="font-bookkMyungjo">부크크 명조: Hello PhotoIs!</p>
-                <p className="font-bookkMyungjoBold">부크크 명조 굵게: Hello PhotoIs!</p>
             </div>
         </div>
     );

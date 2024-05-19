@@ -20,6 +20,6 @@ export default {
         },
     },
     plugins: [],
-    plugins: [require("kutty")],
+    plugins: [require("@tailwindcss/aspect-ratio"), require("kutty")],
     presets: [require("tailwindcss/defaultConfig"), require("xtendui/tailwind.preset")],
 };

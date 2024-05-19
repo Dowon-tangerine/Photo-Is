@@ -634,6 +634,16 @@ const fetchData = async () => {
         setSelectedImageIndex(index); // 이미지 클릭 시 선택된 이미지의 인덱스를 설정
     };
 
+    const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === 'Enter'){
+            moveToSearch();
+        }
+    }
+    const onCommentKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>, id : number | undefined) => {
+        if(e.key === 'Enter'){
+            sendClick(id);
+        }
+    }
 
     return (
         <>
@@ -722,7 +732,7 @@ const fetchData = async () => {
                         </div>
                         <div className={styles.send_comment_container}>
                             <div className={styles.send_box}>
-                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment}></input>
+                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment} onKeyDown={(e)=>onCommentKeyDownHandler(e, photoDetails?.photoId)}></input>
                                 <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기' onClick={() => {sendClick(photoDetails?.photoId);}}></img>
                             </div>
                         </div>  
@@ -830,7 +840,7 @@ const fetchData = async () => {
         )}
 
         <div className={styles.main_container}>
-            <div className={styles.search_container}>
+            <div className={styles.search_container} style={{marginTop: '120px'}}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
                         <p className={styles.dropdown_txt}>{type}</p>
@@ -848,7 +858,7 @@ const fetchData = async () => {
                     )}
                 </div>
                 <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord(e.target.value)}}></input>
+                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord(e.target.value)}} onKeyDown={onKeyDownHandler}></input>
                 <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
             </div>
 
