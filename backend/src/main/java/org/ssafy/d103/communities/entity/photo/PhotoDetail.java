@@ -1,5 +1,6 @@
 package org.ssafy.d103.communities.entity.photo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -53,6 +54,7 @@ public class PhotoDetail {
     @Column(nullable = false)
     private LocalDateTime monthlyLikeUpdatedAt = LocalDateTime.now();
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
