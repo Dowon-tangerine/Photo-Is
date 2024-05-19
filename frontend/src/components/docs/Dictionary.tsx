@@ -322,8 +322,22 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   ) : null;
 }
 
-function Dictionary() {
+function LoadingCompleteModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 1500);
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
+  return (
+    <div className={styles.loadingCompleteModal}>
+      <div className={styles.loadingCompleteModalContent}>
+      <h2 className={`font-bookkGothic`}>노란색 핀 모양을 클릭해보세요!</h2>
+      </div>
+    </div>
+  );
+}
+
+function Dictionary() {
   const [isChatBotModalOpen, setChatBotModalOpen] = useState(false);
   const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
   const [annotation, setAnnotation] = useState<Annotation | null>(null);
@@ -332,9 +346,8 @@ function Dictionary() {
   const [lookAtPosition, setLookAtPosition] = useState<Vector3 | null>(null); // Add lookAt position state
   const [selectedAnnotationId, setSelectedAnnotationId] = useState<number | null>(null); // 클릭된 핀의 ID를 저장하는 상태 추가
   const [resetCamera, setResetCamera] = useState(false); // 카메라 초기 위치로 복귀
+  const [showLoadingCompleteModal, setShowLoadingCompleteModal] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
-
-
 
   const toggleChatBotModal = () => setChatBotModalOpen((prev) => !prev);
 
@@ -400,6 +413,16 @@ function Dictionary() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      setShowLoadingCompleteModal(true);
+    }
+  }, [loading]);
+
+  const closeLoadingCompleteModal = () => {
+    setShowLoadingCompleteModal(false);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.content} ref={canvasRef}>
@@ -419,6 +442,9 @@ function Dictionary() {
       <ChatBotModal isOpen={isChatBotModalOpen} onClose={toggleChatBotModal} />
       {isAnnotationModalOpen && annotation && (
         <AnnotationModal annotation={annotation} onClose={closeAnnotationModal} />
+      )}
+      {showLoadingCompleteModal && (
+        <LoadingCompleteModal onClose={closeLoadingCompleteModal} />
       )}
     </div>
   );

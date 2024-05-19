@@ -7,6 +7,9 @@ import {useNavigate } from "react-router-dom";
 import { searchProfile, deletePhoto, putEditPhoto } from '../../apis/memberApi';
 import { uploadGalleryPhoto, selectEachPhotoList } from '../../apis/photoApi';
 import { getPhotoDetail, postComment, getComment, postLiked } from '../../apis/galleryApi';
+import { getMyExhibitionList, getExhibitionDetail } from '../../apis/exhibitionApi';
+import { changeExhibitionLike } from '../../apis/otherMemberApi';
+import { getFollowerList, getFollowingList } from '../../apis/followApi';
 
 interface imgInterface {
     photoId: number;
@@ -26,6 +29,7 @@ interface exhibitionInterface {
     nickname: string,
     likeCnt: number,
     liked: boolean,
+    description: string
 }
 // 팔로우 인터페이스
 interface profileInterface {
@@ -126,33 +130,65 @@ const MyPage: React.FC = () => {
         navigate("/mypage")
     }
 
-
     const tabClickHandler = function(index : number){
         let accessType = '';
-        if(index == 0){
-            accessType = 'PUBLIC';
-            setAccessType('PUBLIC');
-        }
-        else if(index == 1){
-            accessType = 'PRIVATE';
-            setAccessType('PRIVATE');
-        }
-        else{
-            accessType = 'STUDIO';
-            setAccessType('STUDIO');
+        if(index <3){
+            if(index == 0){
+                accessType = 'PUBLIC';
+                setAccessType('PUBLIC');
+            }
+            else if(index == 1){
+                accessType = 'PRIVATE';
+                setAccessType('PRIVATE');
+            }
+            else{
+                accessType = 'STUDIO';
+                setAccessType('STUDIO');
+            }
+            selectEachPhotoList(accessType, 1)
+            .then(res=>{
+                setImgArr(res)
+            })
+        } else{
+            getMyExhibitionList('current')
+            .then(res=>{
+                setExhibitionArr(res.content);
+            })
         }
         settabIndex(index);
-        selectEachPhotoList(accessType, 1)
+    }
+
+    const [exhibitionType, setExhibitionType] = useState<string>('current');
+    const tabClickHandler2 = function(index : number){
+        let type = 'current';
+        if(index === 1){
+            type = 'closed';
+            setExhibitionType(type);
+        }
+        getMyExhibitionList(type)
         .then(res=>{
-            setImgArr(res)
+            setExhibitionArr(res.content);
+            settabIndex2(index);
         })
     }
 
-    const tabClickHandler2 = function(index : number){
-        settabIndex2(index);
-    }
-
     const tabClickHandler3 = function(index : number){
+        if(index === 0){
+            // 팔로워 목록 조회
+            getFollowerList()
+            .then(res=>{
+                setProfileArr(res);
+            })
+            // setProfileArr();
+        }
+        else{
+            // 팔로잉 목록 조회
+            getFollowingList()
+            .then(res=>{
+                setProfileArr(res);
+            })
+            // setProfileArr();
+        }
         settabIndex3(index);
     }
     
@@ -160,20 +196,8 @@ const MyPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [imgArr, setImgArr] = useState<imgInterface[]>([]);
-    const [exhibitionArr, setExhibitionArr] = useState<exhibitionInterface[]>([]);
+    const [exhibitionArr, setExhibitionArr] = useState<Array<exhibitionInterface>>([]);
     const [profileArr, setProfileArr] = useState<profileInterface[]>([]);
-
-    // 에러 방지를 위해 무의미하게 써놓은 변수들(꼭 지우시오)
-    exhibitionArr
-    setExhibitionArr
-    setProfileArr
-
-    useEffect(() => {
-        selectEachPhotoList('PUBLIC', 1)
-        .then(res=>{
-            setImgArr(res);
-        })
-    }, []);
 
      // Intersection Observer 설정
 
@@ -211,6 +235,10 @@ const MyPage: React.FC = () => {
         else{
             console.log("예기치 못한 에러가 발생했습니다.");
         }
+    })
+    selectEachPhotoList('PUBLIC', 1)
+    .then(res=>{
+        setImgArr(res);
     })
 
   }, []);
@@ -267,36 +295,65 @@ const MyPage: React.FC = () => {
     
     const [photoLiked2, setPhotoLiked2] = useState<boolean>(false);
 
-    const clickHeart2 = function(){
+    const clickHeart2 = function(id: number){
         setPhotoLiked2(!photoLiked2);
+        changeExhibitionLike(id);
     }
 
-    const [photoLiked3, setPhotoLiked3] = useState<boolean>(false);
-
-    const clickHeart3 = function(){
-        setPhotoLiked3(!photoLiked3);
+    const clickHeart3 = function(id: number){
+        setDetailedExhibition({
+            ...detailedExhibition!,
+            liked: !detailedExhibition!.liked
+        })
+        changeExhibitionLike(id);
     }
 
     const [exhibitionDetail, setExhibitionDetail] = useState<boolean>(false);
+    const [detailedExhibition, setDetailedExhibition] = useState<exhibitionInterface | null>(null);
 
-    const openExhibitionDetails = function(){
+    const openExhibitionDetails = (exhibitionId: number) => {
         if(!exhibitionDetail){
             document.body.style.overflow = 'hidden';
         }
         else{
             document.body.style.overflow = 'auto';
         }
+        if(exhibitionId != -1){
+            getExhibitionDetail(exhibitionId)
+            .then(res=>{
+                setDetailedExhibition(res);
+            })
+        }
+        else{
+            getMyExhibitionList(exhibitionType)
+            .then(res=>{
+                setExhibitionArr(res.content);
+            })
+
+        }
         setExhibitionDetail(!exhibitionDetail);
     }
 
     const [finExhibitionDetail, setFinExhibitionDetail] = useState<boolean>(false);
 
-    const openFinExhibitionDetails = function(){
+    const openFinExhibitionDetails = function(exhibitionId: number){
         if(!finExhibitionDetail){
             document.body.style.overflow = 'hidden';
         }
         else{
             document.body.style.overflow = 'auto';
+        }
+        if(exhibitionId != -1){
+            getExhibitionDetail(exhibitionId)
+            .then(res=>{
+                setDetailedExhibition(res);
+            })
+        }
+        else{
+            getMyExhibitionList(exhibitionType)
+            .then(res=>{
+                setExhibitionArr(res.content);
+            })
         }
         setFinExhibitionDetail(!finExhibitionDetail);
     }
@@ -394,23 +451,23 @@ const MyPage: React.FC = () => {
         tabCont:(
             <> 
             <div className={styles.profile_card_container}>
-                {imgArr &&
-                    imgArr.map((Imgs: imgInterface, idx) => (
-                        <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails();}}>
+                {exhibitionArr &&
+                    exhibitionArr.map((exhibition: exhibitionInterface, idx: number) => (
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openExhibitionDetails(exhibition.exhibitionId);}}>
                             {/* 내 전시회 목록은 프로필사진이 없어야 함 */}
                             {/* <img src={Imgs.} alt='프로필' className={styles.card_img}/> */}
-                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
+                            <img src={exhibition.posterUrl} alt='커버' className={styles.cover}></img>
                             
                             <div className={styles.card_whole_info}>
-                                <p className={styles.card_title}>{Imgs.title}</p>
-                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
+                                <p className={styles.card_title}>{exhibition.title}</p>
+                                <p className={styles.card_date}>{exhibition.startDate} ~ {exhibition.endDate}</p>
                                 <div className={styles.photo_card_info}>
                                     {/* 내 전시회 목록은 프로필사진이 없어야 함 */}
                                     {/* <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img> */}
-                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
+                                    <p className={styles.card_info_txt}>{exhibition.title}</p>
                                     <div className={styles.card_like_container}>
-                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
-                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
+                                        <p className={styles.card_like_txt}>{exhibition.likeCnt}</p>
+                                        <img src={`/imgs/${exhibition.liked ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2(exhibition.exhibitionId);}}></img>
                                     </div>
                                 </div>
                             </div>
@@ -440,22 +497,22 @@ const MyPage: React.FC = () => {
         tabCont:(
             <> 
             <div className={styles.profile_card_container}>
-                {imgArr &&
-                    imgArr.map((Imgs: imgInterface, idx) => (
-                        <div key={idx + 'g'} className={styles.card} onClick={() => {openFinExhibitionDetails();}}>
+                {exhibitionArr &&
+                    exhibitionArr.map((exhibition: exhibitionInterface, idx) => (
+                        <div key={idx + 'g'} className={styles.card} onClick={() => {openFinExhibitionDetails(exhibition.exhibitionId);}}>
                             {/* <img src={Imgs.url} alt='프로필' className={styles.card_img}/> */}
-                            <img src='/imgs/black_cover.png' alt='커버' className={styles.cover}></img>
+                            <img src={exhibition.posterUrl} alt='커버' className={styles.cover}></img>
                             
                             <div className={styles.card_whole_info}>
-                                <p className={styles.card_title}>{Imgs.title}</p>
-                                <p className={styles.card_date}>2024.04.21 ~ 2024.04.30</p>
+                                <p className={styles.card_title}>{exhibition.title}</p>
+                                <p className={styles.card_date}>{exhibition.startDate} ~ {exhibition.endDate}</p>
                                 <div className={styles.photo_card_info}>
                                     {/* 내 전시회 목록은 프로필 사진이 없어야 함 */}
                                     {/* <img src={Imgs.url} alt='프로필 사진' className={styles.card_photo_profile}></img> */}
-                                    <p className={styles.card_info_txt}>{Imgs.title}</p>
+                                    <p className={styles.card_info_txt}>{exhibition.title}</p>
                                     <div className={styles.card_like_container}>
-                                        <p className={styles.card_like_txt}>{Imgs.likeCnt}</p>
-                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2();}}></img>
+                                        <p className={styles.card_like_txt}>{exhibition.likeCnt}</p>
+                                        <img src={`/imgs/${photoLiked2 ? 'heart' : 'empty_heart'}.png`} alt='하트' className={styles.card_heart} onClick={() => {clickHeart2(exhibition.exhibitionId);}}></img>
                                     </div>
                                 </div>
                             </div>
@@ -714,10 +771,10 @@ const MyPage: React.FC = () => {
                     profileArr.map((Profiles: profileInterface, idx) => (
                         <div key={idx + 'g'} className={styles.follow_profile}>
                             <img src={Profiles.profileUrl} alt='프로필' className={styles.card_profile}/>
-                            <p className={styles.profile_name2}>김짱구잠옷</p>
-                            {/* <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}> */}
-                                {/* <p className={styles.f_b_t}>{Imgs.liked ? `Following` : `Follow`}</p> */}
-                            {/* </div> */}
+                            <p className={styles.profile_name2}>{Profiles.nickname}</p>
+                            {/* <div className={Profiles.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
+                                <p className={styles.f_b_t}>{Profiles.liked ? `Following` : `Follow`}</p>
+                            </div> */}
                         </div>
                 ))}
             </div>
@@ -747,7 +804,7 @@ const MyPage: React.FC = () => {
                     profileArr.map((Profiles: profileInterface, idx) => (
                         <div key={idx + 'g'} className={styles.follow_profile}>
                             <img src={Profiles.profileUrl} alt='프로필' className={styles.card_profile}/>
-                            <p className={styles.profile_name2}>김짱구잠옷</p>
+                            <p className={styles.profile_name2}>{Profiles.nickname}</p>
                             {/* <div className={Imgs.liked ? styles.follower_btn_container: styles.no_follower_btn_container} onClick={() => {following(idx, Imgs.liked);}}>
                                 <p className={styles.f_b_t}>{Imgs.liked ? `Delete` : `Follow`}</p>
                             </div> */}
@@ -852,13 +909,6 @@ const MyPage: React.FC = () => {
 
     const handleIsImg = function(url : string){
         setIsImg(url);
-    }
-
-    const exhibition = {
-        thumbNail : 'imgs/photo4.jpg',
-        title : '먹을 수 없는 감은 장난감ㅋ',
-        date : '2024/04/17 ~ 2024/05/17',
-        description : '제 전시회로 말할거 같으면 ~~~~~~~ 짱구 보고 오세요 보고 오면 이해됨 이상무 전현무 깔깔'
     }
 
     const [isFollowList, setIsFollowList] = useState<boolean>(false);
@@ -992,11 +1042,11 @@ const MyPage: React.FC = () => {
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openFollowList();}}></img>
             <div className={styles.follow_modal_container}>
 
-                    <div className={styles.mode_tabs2}>
-                        {tabArr3.map((mode, index)=>{
-                            return <div key={index}>{mode.tabTitle}</div>
-                        })}
-                    </div>
+                <div className={styles.mode_tabs2}>
+                    {tabArr3.map((mode, index)=>{
+                        return <div key={index}>{mode.tabTitle}</div>
+                    })}
+                </div>
 
                 <div className={styles.line2}></div>
                 <div className={styles.photo_mode_container3}>
@@ -1385,27 +1435,27 @@ const MyPage: React.FC = () => {
         {exhibitionDetail && (
             <>
             <div className={styles.modal_background}> </div>
-            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionDetails();}}></img>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionDetails(-1);}}></img>
             <div className={styles.open_exhibition_modal_container}>
-            <img src={`/imgs/${photoLiked3 ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3();}}></img>
+            <img src={`/imgs/${detailedExhibition?.liked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3(detailedExhibition!.exhibitionId);}}></img>
                 <p className={styles.open_exhibition_title}>Exhibition Info</p>
                 <div className={styles.exhibition_info}>
                     <div className={styles.exhibition_photo_intro_container2}>
-                        <img src={exhibition.thumbNail} alt='썸네일' className={styles.is_img}></img>
+                        <img src={detailedExhibition?.posterUrl} alt='썸네일' className={styles.is_img}></img>
                     </div>
 
                     <div className={styles.exhibition_photo_info_container2}>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Title</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.title}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.title}</p>
                         </div>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Date</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.date}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.startDate} ~ {detailedExhibition?.endDate}</p>
                         </div>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Description</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.description}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.description}</p>
                         </div>
                     </div>
                 </div>
@@ -1419,27 +1469,27 @@ const MyPage: React.FC = () => {
         {finExhibitionDetail && (
             <>
             <div className={styles.modal_background}> </div>
-            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openFinExhibitionDetails();}}></img>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openFinExhibitionDetails(-1);}}></img>
             <div className={styles.open_exhibition_modal_container}>
-            <img src={`/imgs/${photoLiked3 ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3();}}></img>
+            <img src={`/imgs/${detailedExhibition?.liked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.exhibition_heart} onClick={() => {clickHeart3(detailedExhibition!.exhibitionId);}}></img>
                 <p className={styles.open_exhibition_title} style={{marginBottom : '20px'}}>Exhibition Info</p>
                 <div className={styles.exhibition_info}>
                     <div className={styles.exhibition_photo_intro_container2}>
-                        <img src={exhibition.thumbNail} alt='썸네일' className={styles.is_img}></img>
+                        <img src={detailedExhibition?.posterUrl} alt='썸네일' className={styles.is_img}></img>
                     </div>
 
                     <div className={styles.exhibition_photo_info_container2}>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Title</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.title}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.title}</p>
                         </div>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Date</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.date}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.startDate} ~ {detailedExhibition?.endDate}</p>
                         </div>
                         <div className={styles.open_title_container2}>
                             <p style={{fontSize : '28px'}}>Description</p>
-                            <p style={{fontFamily : '부크크고딕bold'}}>{exhibition.description}</p>
+                            <p style={{fontFamily : '부크크고딕bold'}}>{detailedExhibition?.description}</p>
                         </div>
                     </div>
                 </div>
