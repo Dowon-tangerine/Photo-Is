@@ -2,8 +2,10 @@ package org.ssafy.d103.communities.dto.question.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.ssafy.d103.communities.entity.photo.Photo;
 import org.ssafy.d103.communities.entity.photo.PhotoMetadata;
 import org.ssafy.d103.communities.entity.question.Question;
+import org.ssafy.d103.communities.entity.question.QuestionDetail;
 
 import java.time.LocalDateTime;
 
@@ -31,16 +33,29 @@ public class GetQuestionDetailResponse {
         this.metadata = metadata;
     }
 
-    public static GetQuestionDetailResponse from(Question question) {
+    public static GetQuestionDetailResponse from(Question question, QuestionDetail questionDetail) {
         return builder()
                 .questionId(question.getId())
                 .memberId(question.getMember().getId())
                 .title(question.getTitle())
                 .content(question.getContent())
-                .photoUrl(question.getPhoto().getImageUrl())
-                .viewCnt(question.getQuestionDetail().getViewCnt())
+                .photoUrl(null)
+                .viewCnt(questionDetail.getViewCnt())
                 .createdAt(question.getCreatedAt())
-                .metadata(PhotoMetadata.from(question.getPhoto().getPhotoMetadata()))
+                .metadata(null)
+                .build();
+    }
+
+    public static GetQuestionDetailResponse from(Question question, QuestionDetail questionDetail, Photo photo) {
+        return builder()
+                .questionId(question.getId())
+                .memberId(question.getMember().getId())
+                .title(question.getTitle())
+                .content(question.getContent())
+                .photoUrl(photo.getImageUrl())
+                .viewCnt(questionDetail.getViewCnt())
+                .createdAt(question.getCreatedAt())
+                .metadata(PhotoMetadata.from(photo.getPhotoMetadata()))
                 .build();
     }
 
