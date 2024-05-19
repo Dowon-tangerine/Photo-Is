@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { PointerLockControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -14,15 +14,19 @@ const AmuseUserController = () => {
         const handleKeyDown = (event: KeyboardEvent) => {
             switch (event.code) {
                 case "KeyW":
+                case "ArrowUp":
                     velocity.current.z = -SPEED;
                     break;
                 case "KeyS":
+                case "ArrowDown":
                     velocity.current.z = SPEED;
                     break;
                 case "KeyA":
+                case "ArrowLeft":
                     velocity.current.x = -SPEED;
                     break;
                 case "KeyD":
+                case "ArrowRight":
                     velocity.current.x = SPEED;
                     break;
                 default:
@@ -33,11 +37,15 @@ const AmuseUserController = () => {
         const handleKeyUp = (event: KeyboardEvent) => {
             switch (event.code) {
                 case "KeyW":
+                case "ArrowUp":
                 case "KeyS":
+                case "ArrowDown":
                     velocity.current.z = 0;
                     break;
                 case "KeyA":
+                case "ArrowLeft":
                 case "KeyD":
+                case "ArrowRight":
                     velocity.current.x = 0;
                     break;
                 default:
