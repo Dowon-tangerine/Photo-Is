@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { useState } from "react";
+import { Canvas, extend } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
 import Spinner from "./3Delement/spinner";
 import CameraSettings from "./element/CameraSettings";

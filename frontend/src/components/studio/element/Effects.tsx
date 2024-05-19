@@ -58,7 +58,7 @@ const Effects: React.FC<EffectsProps> = ({ shutterSpeed, iso, aperture }) => {
         // Composer에 추가
         composerInstance.addPass(renderPass);
         composerInstance.addPass(shutterPass);
-        // composerInstance.addPass(exposurePass);
+        composerInstance.addPass(exposurePass);
         composerInstance.addPass(grainPass);
         composerInstance.addPass(bokehPass);
 
