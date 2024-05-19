@@ -222,9 +222,17 @@ public class QuestionService {
         QuestionDetail questionDetail = questionDetailRepository.findByQuestion(question)
                 .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
 
-        questionDetail.updateViewCnt(true);
+        if (question.getPhoto() != null) {
+            Photo photo = photoRepository.findPhotoById(question.getPhoto().getId())
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_PHOTO));
 
-        return GetQuestionDetailResponse.from(question);
+            questionDetail.updateViewCnt(true);
+
+            return GetQuestionDetailResponse.from(question, questionDetail, photo);
+        } else {
+            questionDetail.updateViewCnt(true);
+            return GetQuestionDetailResponse.from(question, questionDetail);
+        }
     }
 
     @Transactional
