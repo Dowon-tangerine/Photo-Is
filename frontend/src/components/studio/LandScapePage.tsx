@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { useState } from "react";
+import { Canvas, extend } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
 import AmuseCameraController from "./element/AmuseCameraController";
 import CameraSettings from "./element/CameraSettings";
@@ -11,6 +11,7 @@ import { EffectComposer as EffectComposerImpl } from "three/examples/jsm/postpro
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import AmusementPark from "./3Delement/AmusementPark";
+import styles from "../exhibition/css/ExhibitionArea.module.css";
 
 // import { ApertureShaderMaterial } from "./element/apertureShader";
 import { DepthOfField } from "@react-three/postprocessing";
@@ -25,6 +26,11 @@ const PinwheelPage = () => {
     const [ImgUrl, setImgUrl] = useState<string | null>(null);
     const [takeScreenshot, setTakeScreenshot] = useState<(() => void) | null>(null);
     const { iso, shutterSpeed, aperture, exposure } = useCameraStore();
+    const [tutorialClosed, setTutorialClosed] = useState<boolean>(false);
+
+    const handleCloseClick = () => {
+        setTutorialClosed(true);
+    };
 
     return (
         <>
@@ -83,6 +89,49 @@ const PinwheelPage = () => {
                         </button>
                     )}
                 </div>
+                {!tutorialClosed && (
+                    <div className={styles.tutorial}>
+                        <div className={styles.description_exit}>
+                            <img src="imgs/twisted_arrow.png" alt="arrow" />
+                            <h1 style={{ fontFamily: "부크크고딕bold", fontSize: "25px" }}>
+                                나가고 싶을 때 클릭하세요
+                            </h1>
+                        </div>
+                        <div className={styles.description_move}>
+                            <img src="imgs/keyboard.png" alt="arrow" />
+                            <h1
+                                style={{
+                                    fontFamily: "부크크고딕bold",
+                                    fontSize: "25px",
+                                    marginLeft: "-20px",
+                                    marginBottom: "20px",
+                                }}
+                            >
+                                W,A,S,D로 이동하세요
+                            </h1>
+                        </div>
+                        <div className={styles.description_camera}>
+                            <img src="imgs/directional_arrow.png" alt="arrow" />
+                            <h1
+                                style={{
+                                    fontFamily: "부크크고딕bold",
+                                    width: "990px",
+                                    marginLeft: "-190px",
+                                    fontSize: "25px",
+                                }}
+                            >
+                                클릭 & ESC키를 눌러 모드를 전환하세요!
+                            </h1>
+                        </div>
+                        <div
+                            className={styles.exit_tutorial}
+                            onClick={handleCloseClick}
+                            style={{ fontSize: "30px", padding: "20px", fontFamily: "부크크고딕bold" }}
+                        >
+                            튜토리얼 닫기
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );
