@@ -19,7 +19,7 @@ public class ExhibitionPhoto {
     @JoinColumn(name = "exhibition_id", nullable = false)
     private Exhibitions exhibitionId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(referencedColumnName = "photo_id", name = "photo_id", nullable = false)
     private Photo photoId;
 
