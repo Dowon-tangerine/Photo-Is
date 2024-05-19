@@ -136,8 +136,8 @@ const MyPageEdit: React.FC = () =>{
 					<img src='imgs/upload_icon.png'/>
 				</div>
 			</label>
-			<input type='file' name='background' id='background' style={{position: 'absolute'}} onChange={onFileChangeHandler}/>
-			<input type='file' name='profile' id='profile' style={{position: 'absolute'}} onChange={onFileChangeHandler}/>
+			<input type='file' name='background' id='background' style={{position: 'absolute', zIndex: '-1'}} onChange={onFileChangeHandler}/>
+			<input type='file' name='profile' id='profile' style={{position: 'absolute', zIndex: '-1'}} onChange={onFileChangeHandler}/>
 				<div className={styles.mypage_info_container} style={{backgroundImage : `url(${backgroundImg || memberInfo.backgroundUrl})`, backgroundSize : 'cover', height : '350px', position : 'relative', backgroundPosition : 'center'}}>
 						<div className={styles.info_container}>
 						
