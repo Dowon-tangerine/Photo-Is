@@ -11,95 +11,6 @@
   overflow: hidden;
 }
 
-.sidebar {
-  width: 250px;
-  background-color: #000;
-  color: white;
-  padding: 20px;
-  overflow-y: auto;
-  transition: all 0.3s ease;
-}
-
-.sidebarTop,
-.sidebarBottom {
-  margin-bottom: 20px;
-}
-
-.sidebarBottom button {
-  display: block;
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 10px;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.sidebarTop h1 {
-  margin-bottom: 20px;
-  font-size: 30px;
-}
-
-.sidebarBottom div {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebarBottom button:hover {
-  background-color: #555;
-}
-
-.sidebarBottom .dropdownContent button {
-  background-color: grey;
-  transition: height 1s ease, opacity 1s ease;
-}
-
-.searchContainer {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.searchContainer :focus {
-  outline: none;
-}
-
-.inputGroup {
-  position: relative;
-  display: flex;
-  width: 100%;
-  max-width: 300px;
-}
-
-.searchInput {
-  flex-grow: 1;
-  padding: 8px 32px 8px 8px;
-  border-radius: 4px 4px 4px 4px;
-  border: 1px solid #ccc;
-  background: #fff;
-  color: #000;
-}
-
-.searchButton {
-  position: absolute;
-  right: 1px;
-  top: 1px;
-  width: 34px;
-  height: calc(100% - 2px);
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-}
-
-.searchButton img {
-  width: 24px;
-  height: 24px;
-}
-
 .content {
   flex-grow: 1;
   overflow: hidden;
@@ -107,36 +18,70 @@
 
 .annotationModal {
   position: absolute;
-  top: 80%;
-  left: 30%;
-  transform: translate(-50%, -20%);
+  top: 20%;
+  left: 6%;
+  transform: translate(-10%, -10%);
   background: white;
-  padding: 5px;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   z-index: 1000;
+  width: 380px;
 }
 
 .annotationModalHeader {
-  border-radius: 5px;
   font-weight: bold;
-  padding: 2px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .annotationTitle {
   margin: 0;
-  padding: 4px 7px;
+  padding: 0px 5px;
 }
 
 .closeButton {
-  position: absolute;
-  top: 3px;
-  right: 13px;
   cursor: pointer;
   font-size: 24px;
   font-weight: bold;
+  transition: color 0.3s;
+}
+
+.closeButton:hover {
+  color: red;
+}
+
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingCircle {
+  border: 10px solid #f3f3f3; 
+  border-top: 10px solid #000000; 
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+}
+
+.loadingText {
+  margin-top: 20px;
+  font-size: 24px;
+  font-family: 'BookkGothic', sans-serif;
+  color: #000;
+  text-align: center;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .chatBotContainer {
@@ -160,17 +105,6 @@
   z-index: 1000;
 }
 
-.sessionModal {
-  width: 300px; /* 1/3 of the total width */
-  height: 650px; /* Modal size */
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-}
-
 .modalHeader {
   display: flex;
   justify-content: space-between;
@@ -190,7 +124,8 @@
 
 .modalContent {
   flex-grow: 1;
-  padding-top: 10px;
+  padding-top: 20px;
+  padding-bottom: 7px;
   margin-right: 6px;
   margin-left: 7px;
   display: flex;
@@ -298,69 +233,9 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  z-index: 2000;
 }
 
 .chatButton img {
   width: 24px;
   height: 24px;
-}
-
-.sidebarDetail {
-  position: fixed;
-  top: 10%;
-  right: -450px;
-  width: 450px;
-  height: 100%;
-  background-color: #f9f9f9;
-  border-left: 1px solid #ccc;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.sidebarDetailOpen {
-  right: 0;
-}
-
-.sidebarDetailHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #f1f1f1;
-  border-bottom: 1px solid #ccc;
-}
-
-.sidebarDetailContent {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.sessionModal .modalHeader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  background-color: #f1f1f1;
-  border-bottom: 1px solid #ccc;
-  border-radius: 10px 0 0 0;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.sessionModal .modalContent {
-  flex-grow: 1;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-.sidebar {
-  overflow-y: auto;
-  overflow-x: hidden;
 }

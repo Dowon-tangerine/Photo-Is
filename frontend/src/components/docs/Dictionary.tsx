@@ -1,5 +1,4 @@
 import { Suspense, useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Canvas, useThree, useLoader, extend } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -119,7 +118,7 @@ function Annotations({ onAnnotationClick, selectedAnnotationId }: AnnotationsPro
     { id: 5, position: [-3.1, 4.2, -3.7], label: '다이얼 잠금 해제' },
     { id: 5, position: [4, 4.2, -3.85], label: '다이얼 잠금 해제' },
     { id: 6, position: [0.3, 4.8, -5], label: '핫 슈' },
-    { id: 14, position: [4.1, -3.7, -2.1], label: '초점 모드 셀렉터' },
+    { id: 14, position: [4.1, -2.4, -2.0], label: '초점 모드 셀렉터' },
     { id: 17, position: [-3.5, 1.2, -2], label: 'Fn2 버튼' },
     { id: 35, position: [-4.7, 2.9, -5.6], label: '후면 커맨드 다이얼' },
   ];
@@ -195,16 +194,6 @@ interface ChatMessage {
   text: string;
 }
 
-interface Session {
-  sessionId: number;
-  lastMessage: string;
-}
-
-interface ApiMessage {
-  role: 'user' | 'assistant';
-  message: string;
-}
-
 interface ApiResponse {
   answer: string;
   sessionId: number;
@@ -215,75 +204,15 @@ interface ChatBotModalProps {
   onClose: () => void;
 }
 
-interface SessionModalProps {
-  isOpen: boolean;
-  sessions: Session[];
-  onSessionClick: (sessionId: number) => void;
-  toggleModal: () => void;
-}
-
-function SessionModal({ isOpen, sessions, onSessionClick }: SessionModalProps) {
-  return (
-    <div className={`${styles.sessionModal} ${isOpen ? styles.open : ''}`}>
-      <div className={styles.modalHeader}>
-        <span>세션 목록</span>
-      </div>
-      <div className={styles.modalContent}>
-        <ul>
-          {sessions.map((session) => (
-            <li key={session.sessionId} onClick={() => onSessionClick(session.sessionId)}>
-              {session.lastMessage}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
 function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [sessionId, setSessionId] = useState<number | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [isSessionModalOpen, setSessionModalOpen] = useState(false);
   const memberId = localStorage.getItem('memberId'); // Get memberId from localStorage
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(e.target.value);
-  };
-
-  const fetchSessions = async () => {
-    try {
-      const memberId = localStorage.getItem('memberId');
-      const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/sessions', {
-        params: { memberId }
-      });
-      const fetchedSessions = res.data.map((session: { id: number; lastMessage: string }) => ({
-        sessionId: session.id,
-        lastMessage: session.lastMessage
-      }));
-      setSessions(fetchedSessions);
-    } catch (error) {
-      console.error('Failed to fetch sessions:', error);
-    }
-  };
-
-  const fetchMessages = async (sessionId: number) => {
-    try {
-      const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/messages', {
-        params: { sessionId }
-      });
-      const sessionMessages: ChatMessage[] = res.data.map((message: ApiMessage) => ({
-        sender: message.role === 'user' ? 'user' : 'assistant',
-        text: message.message,
-      }));
-      setMessages(sessionMessages);
-    } catch (error) {
-      console.error('Failed to fetch session messages:', error);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -301,9 +230,6 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
         memberId: memberId || '',
         question: question,
       });
-      if (sessionId !== null) {
-        params.append('sessionId', sessionId.toString());
-      }
 
       const res = await axios.post<ApiResponse>(`https://k10d103.p.ssafy.io/api/chatbot/chat?${params.toString()}`);
 
@@ -314,11 +240,6 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
         return newMessages;
       });
 
-      if (sessionId === null && res.data.sessionId) {
-        setSessionId(res.data.sessionId);
-      }
-
-      fetchSessions(); // 새로운 세션이 생성된 후 세션 목록 갱신
     } catch (error: unknown) {
       const errorMessage = axios.isAxiosError(error)
         ? `Error: ${error.response?.data?.message || error.message}`
@@ -349,25 +270,6 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
     e.currentTarget.scrollTop += e.deltaY;
   };
 
-  const handleSessionClick = async (sessionId: number) => {
-    setSessionId(sessionId);
-    await fetchMessages(sessionId);
-    setSessionModalOpen(false); // 세션 선택 후 모달 닫기
-  };
-
-  const handleNewSessionClick = () => {
-    setSessionId(null);
-    setMessages([]);
-  };
-
-  const toggleSessionModal = () => {
-    setSessionModalOpen((prev) => !prev);
-  };
-
-  useEffect(() => {
-    fetchSessions();
-  }, []);
-
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -376,12 +278,6 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
 
   return isOpen ? (
     <div className={styles.chatBotContainer}>
-      <SessionModal
-        isOpen={isSessionModalOpen}
-        sessions={sessions}
-        onSessionClick={handleSessionClick}
-        toggleModal={toggleSessionModal}
-      />
       <div className={styles.chatBotModal} onWheel={preventScroll}>
         <div className={styles.modalHeader}>
           <span>Ai 챗봇</span>
@@ -420,55 +316,17 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
               </ul>
             </div>
           )}
-          <button onClick={handleNewSessionClick} className={styles.newSessionButton}>
-            새로운 세션 시작
-          </button>
         </div>
       </div>
     </div>
   ) : null;
 }
 
-interface SidebarItem {
-  title: string;
-  content: string[];
-}
-
-const sidebarItems: SidebarItem[] = [
-  {
-    title: '카메라의 기본 구성',
-    content: ['렌즈', '바디', '뷰파인더', '센서'],
-  },
-  {
-    title: '노출의 3요소',
-    content: ['조리개', '셔터 스피드', 'ISO'],
-  },
-  {
-    title: '촬영모드와 설정',
-    content: ['매뉴얼 모드', '자동 모드', '프로그램 모드', '셔터 우선 모드'],
-  },
-  {
-    title: '사진의 구도',
-    content: ['삼분할 법칙', '중심 구도', '대각선 구도', '프레임 안의 프레임'],
-  },
-  {
-    title: '카메라 액세서리',
-    content: ['삼각대', '필터', '플래시', '배터리'],
-  },
-  {
-    title: '조명의 원리',
-    content: ['자연광', '인공광', '조명의 방향', '조명의 색온도'],
-  },
-];
-
 function Dictionary() {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
+
   const [isChatBotModalOpen, setChatBotModalOpen] = useState(false);
   const [isAnnotationModalOpen, setAnnotationModalOpen] = useState(false);
   const [annotation, setAnnotation] = useState<Annotation | null>(null);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [selectedSidebarItem, setSelectedSidebarItem] = useState<string | null>(null);
   const [loading, setLoading] = useState(true); // Add loading state
   const [targetPosition, setTargetPosition] = useState<Vector3 | null>(null); // Add target position state
   const [lookAtPosition, setLookAtPosition] = useState<Vector3 | null>(null); // Add lookAt position state
@@ -476,13 +334,7 @@ function Dictionary() {
   const [resetCamera, setResetCamera] = useState(false); // 카메라 초기 위치로 복귀
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
 
-  const handleSearch = () => {
-    navigate(`/search/${searchTerm}`);
-  };
 
   const toggleChatBotModal = () => setChatBotModalOpen((prev) => !prev);
 
@@ -535,18 +387,6 @@ function Dictionary() {
     setSelectedAnnotationId(null); // 핀의 색상을 초기 상태로 되돌립니다.
   };
 
-  const handleSidebarItemClick = (title: string) => {
-    setOpenDropdown(openDropdown === title ? null : title);
-  };
-
-  const handleContentItemClick = (item: string) => {
-    setSelectedSidebarItem(item);
-  };
-
-  const closeSidebarDetail = () => {
-    setSelectedSidebarItem(null);
-  };
-
   useEffect(() => {
     const canvasElement = canvasRef.current;
     const handleWheel = (e: WheelEvent) => {
@@ -562,48 +402,12 @@ function Dictionary() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <div className={styles.sidebarTop}>
-          <h1 className="font-bookkMyungjoBold">Dictionary</h1>
-          <div className={styles.searchContainer}>
-            <div className={styles.inputGroup}>
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className={styles.searchInput}
-                onKeyPress={(event) => event.key === 'Enter' && handleSearch()}
-              />
-              <button onClick={handleSearch} className={styles.searchButton}>
-                <img src="/imgs/magnifier.png" alt="Search" />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className={styles.sidebarBottom}>
-          <div className='font-bookkGothic'>
-            {sidebarItems.map((item) => (
-              <div key={item.title} className='font-bookkGothic'>
-                <button onClick={() => handleSidebarItemClick(item.title)}>{item.title}</button>
-                {openDropdown === item.title && (
-                  <div className={styles.dropdownContent}>
-                    {item.content.map((subItem) => (
-                      <button key={subItem} onClick={() => handleContentItemClick(subItem)}>{subItem}</button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
       <div className={styles.content} ref={canvasRef}>
         <div className={styles.canvasContainer}>
           <Canvas>
             <CameraController targetPosition={targetPosition} lookAtPosition={lookAtPosition} resetCamera={resetCamera} />
             <Lights />
-            <Suspense fallback={<Html><div>Loading Model...</div></Html>}>
+            <Suspense fallback={<Html center className={styles.loadingWrapper}><div className={styles.loadingCircle}></div><div className={styles.loadingText}>Loading...</div></Html>}>
               <Model setLoading={setLoading} />
             </Suspense>
             {!loading && <Annotations onAnnotationClick={handleAnnotationClick} selectedAnnotationId={selectedAnnotationId} />}
@@ -611,17 +415,6 @@ function Dictionary() {
           </Canvas>
         </div>
       </div>
-      {selectedSidebarItem && (
-        <div className={`${styles.sidebarDetail} ${selectedSidebarItem ? styles.sidebarDetailOpen : ''}`}>
-          <div className={styles.sidebarDetailHeader}>
-            <h2>{selectedSidebarItem}</h2>
-            <span className={styles.closeButton} onClick={closeSidebarDetail}>&times;</span>
-          </div>
-          <div className={styles.sidebarDetailContent}>
-            {/* Add detailed content for each sidebar item here */}
-          </div>
-        </div>
-      )}
       <button onClick={toggleChatBotModal} className={styles.chatButton}><img src="/imgs/mage_robot-happy-fill.png" alt="AI Chat" /></button>
       <ChatBotModal isOpen={isChatBotModalOpen} onClose={toggleChatBotModal} />
       {isAnnotationModalOpen && annotation && (
