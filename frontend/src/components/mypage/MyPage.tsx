@@ -3,10 +3,10 @@ import styles from "./css/MyPage.module.css";
 import Masonry from 'react-masonry-css';
 import MapComponent from '../gallery/MapComponent';
 import Toggle2 from '../gallery/ToggleBtn2';
-import Calendar from './Calendar';
 import {useNavigate } from "react-router-dom";
-import { searchProfile } from '../../apis/memberApi';
+import { searchProfile, deletePhoto, putEditPhoto } from '../../apis/memberApi';
 import { uploadGalleryPhoto, selectEachPhotoList } from '../../apis/photoApi';
+import { getPhotoDetail, postComment, getComment, postLiked } from '../../apis/galleryApi';
 
 interface imgInterface {
     photoId: number;
@@ -21,7 +21,11 @@ interface exhibitionInterface {
     title: string,
     posterUrl: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+    profileUrl: string,
+    nickname: string,
+    likeCnt: number,
+    liked: boolean,
 }
 // 팔로우 인터페이스
 interface profileInterface {
@@ -39,12 +43,53 @@ interface memberInfoInterface {
     introduction: string;
     followerCnt: number;
     followingCnt: number;
+    useYear: number,
 }
 interface uploadPhotoInterface {
     title: string;
     accessType: string;
     hashtag: Array<string>
 }
+
+
+interface metadataInterface {
+    time: string,
+    cameraType : string,
+    cameraModel : string,
+    lensModel : string,
+    aperture : string,
+    focusDistance : string,
+    shutterSpeed : string,
+    iso : string,
+    latitude : number,
+    longtitude : number,
+}
+
+interface photoDetailInterface {
+    photoId: number,
+    memberId : number,
+    nickname : string,
+    profileUrl : string,
+    title : string,
+    imageUrl : string,
+    likeCnt : number,
+    isLiked : boolean,
+    createdAt : string,
+    commentCnt : number,
+    accessType : string,
+    metadata: metadataInterface,
+    hashtagList : Array<string>,
+
+}
+
+interface commentInterface{
+    commentId: number,
+    nickname: string,
+    profileUrl: string,
+    comment: string,
+    createdAt: string,
+}
+
   
 const MyPage: React.FC = () => {
 
@@ -62,6 +107,7 @@ const MyPage: React.FC = () => {
         introduction: '',
         followerCnt: 0,
         followingCnt: 0,
+        useYear: 0,
     });
     const [uploadPhotoInfo, setUploadPhotoInfo] = useState<uploadPhotoInterface>({
         title: '',
@@ -122,13 +168,6 @@ const MyPage: React.FC = () => {
     setExhibitionArr
     setProfileArr
 
-    useEffect(() => {
-        selectEachPhotoList('PUBLIC', 1)
-        .then(res=>{
-            setImgArr(res);
-        })
-    }, []);
-
      // Intersection Observer 설정
 
   const handleObserver = (entries: IntersectionObserverEntry[]) => {
@@ -165,6 +204,10 @@ const MyPage: React.FC = () => {
         else{
             console.log("예기치 못한 에러가 발생했습니다.");
         }
+    })
+    selectEachPhotoList('PUBLIC', 1)
+    .then(res=>{
+        setImgArr(res);
     })
 
   }, []);
@@ -258,6 +301,82 @@ const MyPage: React.FC = () => {
     const handleEditClick = () =>{
         navigate('/myPageEdit');
     }
+
+    const [photoDetails, setPhotoDetails] = useState<photoDetailInterface | null>(null);
+    const [commentList, setCommentList] = useState<Array<commentInterface>>();
+
+    const openPhotoDetails = function(id : number | undefined){
+        document.body.style.overflow = 'hidden';
+
+        if(!imgDetail) {
+            // 상세정보 불러오기
+            getPhotoDetail(id)
+            .then((res) => {
+                if(res){
+                    setPhotoDetails(res);
+                    getComment(id)
+                    .then((res) => {
+                        if(res){
+                            setCommentList(res);
+                        }
+                    })
+                    setImgDetail(!imgDetail);
+                }
+                
+            })
+        }
+        else {
+            selectEachPhotoList(accessType, 1)
+            .then((res) => {
+                if(res){
+                    setImgArr(res);
+                    setPhotoDetails(null);
+                    setCommentList([]);
+                    setImgDetail(!imgDetail);
+                }
+            })
+        }
+    }
+
+    const sendClick = function(id : number | undefined){
+        setMyComment("");
+        postComment(id, myComment)
+        .then((res) => {
+            if(res){
+                console.log("댓글 목록 조회 " + res)
+                setCommentList(res);
+            }
+            else{
+                setCommentList([]);
+            }
+        })
+    }
+
+    const [myComment, setMyComment] = useState<string>("");
+
+    const clickHeart = function(id : number | undefined){
+        postLiked(id)
+        .then((res) => {
+            setPhotoDetails({
+                ...photoDetails!,
+                isLiked: res.liked,
+                likeCnt: res.likeCnt
+            })
+        })
+    }
+
+    const deleteimg = function(id : number){
+        deletePhoto(id)
+        .then(() => {
+            selectEachPhotoList(accessType, 1)
+            .then((res) => {
+                if(res){
+                    setImgArr(res);
+                }
+            })
+        })
+    }
+
     const tabArr2=[{
         tabTitle:(
             <>
@@ -380,19 +499,19 @@ const MyPage: React.FC = () => {
                                         <div className={styles.edit}>
                                             <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
 
-                                            <div className={styles.edit_container} onClick={openEditmodal}>
+                                            <div className={styles.edit_container} onClick={() => {editImgDetail(Imgs.photoId);}}>
                                                 <img src='/imgs/pencil.png' alt='연필' className={styles.pencil}></img>
                                                 <p>Edit</p>
                                             </div>
                                             
-                                            <div className={styles.delete_container}>
+                                            <div className={styles.delete_container} onClick={() => {deleteimg(Imgs.photoId);}}>
                                                 <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
                                                 <p>Delete</p>
                                             </div>
                                         </div>
                                     </>}
                                 </div>
-                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails()}} />
+                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails(Imgs.photoId)}} />
                                 <div className={styles.photo_info2}>
                                     <p className={styles.info_txt2}>{Imgs.title}</p>
                                     <div className={styles.like_container2}>
@@ -441,19 +560,19 @@ const MyPage: React.FC = () => {
                                         <div className={styles.edit}>
                                             <img src='/imgs/malpoongsun.png' alt='말풍선' style={{width : '100px', height : 'auto', right : '10px', position : 'absolute'}}></img>
 
-                                            <div className={styles.edit_container} onClick={openEditmodal}>
+                                            <div className={styles.edit_container} onClick={() => {editImgDetail(Imgs.photoId);}}>
                                                 <img src='/imgs/pencil.png' alt='연필' className={styles.pencil}></img>
                                                 <p>Edit</p>
                                             </div>
                                             
-                                            <div className={styles.delete_container}>
+                                            <div className={styles.delete_container}  onClick={() => {deleteimg(Imgs.photoId);}}>
                                                 <img src='/imgs/trash.png' alt='연필' className={styles.trash}></img>
                                                 <p>Delete</p>
                                             </div>
                                         </div>
                                     </>}
                                 </div>
-                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails();}} />
+                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails(Imgs.photoId);}} />
                                 <div className={styles.photo_info2}>
                                     <p className={styles.info_txt2}>{Imgs.title}</p>
                                     <div className={styles.like_container2}>
@@ -513,7 +632,7 @@ const MyPage: React.FC = () => {
                                         </div>
                                     </>}
                                 </div>
-                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails();}} />
+                                <img src={Imgs.thumbnailUrl} className={styles.img2}  onClick={() => {openPhotoDetails(Imgs.photoId);}} />
                                 <div className={styles.photo_info2}>
                                     <p className={styles.info_txt2}>{Imgs.title}</p>
                                     <div className={styles.like_container2}>
@@ -641,21 +760,6 @@ const MyPage: React.FC = () => {
         )
     },]
 
-    const openPhotoDetails = function(){
-        if(!imgDetail){
-            document.body.style.overflow = 'hidden';
-        }
-        else{
-            document.body.style.overflow = 'auto';
-        }
-        setImgDetail(!imgDetail);
-    }
-
-    const [photoLiked, setPhotoLiked] = useState<boolean>(false);
-
-    const clickHeart = function(){
-        setPhotoLiked(!photoLiked);
-    }
 
     const [uploadPhoto, setUploadPhoto] = useState<boolean>(false);
 
@@ -710,75 +814,6 @@ const MyPage: React.FC = () => {
         newTags.splice(index, 1); // 해당 인덱스의 태그 제거
         setTags(newTags); // 새로운 배열로 상태 업데이트
     };
-
-
-    const tagss = [
-        {
-            tag : "하이",
-        },        
-        {
-            tag : "벚꽃",
-        },
-        {
-            tag : "버스",
-        },
-        {
-            tag : "도로",
-        },
-        {
-            tag : "봄",
-        },
-        {
-            tag : "나무",
-        },
-        {
-            tag : "봄향기",
-        },
-        {
-            tag : "분홍분홍",
-        },
-
-    ]
-
-    const comments = [
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다 뻥이지롱 하하하하하 좋아요 많아서 좋겠다 사실 안부럽지롱 메롱메롱',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-        {
-            profile : '/imgs/profile1.jpg',
-            name : '마구리구리',
-            content : '사진 너무 이쁘쁘쁘 렉거렸다',
-            time : '12 : 12',
-        },
-
-    ]
 
     const [isExhibition, setIsExhibition] = useState<boolean>(false);
 
@@ -863,6 +898,14 @@ const MyPage: React.FC = () => {
         console.log(uploadPhotoInfo)
     }
 
+    const handleUploadPhotoTitle2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPhotoDetails({
+            ...photoDetails!,
+            title: e.target.value
+        })
+        console.log(uploadPhotoInfo)
+    }
+
     const changeAccessType = (accessType: string) => {
         setUploadPhotoInfo({
             ...uploadPhotoInfo,
@@ -904,6 +947,8 @@ const MyPage: React.FC = () => {
                         accessType: 'PUBLIC',
                         hashtag: [],
                     });
+                    setTags([]);
+                    setMainImg("");
                     setSelectedFile(null);
                 }
                 else{
@@ -917,6 +962,24 @@ const MyPage: React.FC = () => {
             uploadClickHandler();
         }
     }
+
+    const editImgDetail = function(id : number){
+        getPhotoDetail(id)
+        .then((res) => {
+            if(res){
+                setPhotoDetails(res);
+                setTags(res.hashtagList === undefined ? [] : [...res?.hashtagList])
+                openEditmodal();
+            }   
+        })
+    }
+
+    const [editTitle, setEditTitle] = useState<string>('');
+
+    const editOkImgDetail = function(id : number){
+        putEditPhoto(id, editTitle, tags, uploadPhotoInfo.accessType)
+    }
+
 
     return (
         <>
@@ -966,13 +1029,13 @@ const MyPage: React.FC = () => {
                 <div  className={styles.edit_detail_modal_container}>
                     <div className={styles.edit_photos_container}>
                         {/* 고쳐야함 */}
-                        <img src={'photoDetailInfo.url'} alt='사진' className={styles.edit_photo}></img>
+                        <img src={photoDetails?.imageUrl} alt='사진' className={styles.edit_photo}></img>
                     </div>
                     <div className={styles.edit_detail_info_container}>
                         <p style={{fontSize : '36px', margin : '10%'}}>Edit</p>
                         <div className={styles.edit_title_container}>
                             <p style={{fontSize : '20px'}}>Title</p>
-                            <input className={styles.edit_input_box3} type="text" placeholder="제목을 입력해주세요." ></input>
+                            <input className={styles.edit_input_box3} type="text" placeholder="제목을 입력해주세요." value={photoDetails?.title} onChange={(e) => {handleUploadPhotoTitle2(e); setEditTitle(e.target.value);}}></input>
                         </div>
                         <div className={styles.edit_publish_container}>
                             <p style={{fontSize : '20px'}}>Publish</p>
@@ -996,7 +1059,7 @@ const MyPage: React.FC = () => {
                                     })}
                             </div>
                             {/* 추가함 */}
-                            <div className={styles.edit_btn_container} onClick={() => {openEditOk();}}>
+                            <div className={styles.edit_btn_container} onClick={() => {openEditOk(); editOkImgDetail(photoDetails!.photoId);}}>
                                 <p className={styles.edit_upload_txt3}>Save</p>
                             </div>
                         </div>
@@ -1097,7 +1160,7 @@ const MyPage: React.FC = () => {
                         </div>
                         <div className={styles.open_title_container}>
                             <p style={{fontSize : '24px'}}>Date</p>
-                            <Calendar />
+                            {/* <Calendar handleDateChange={handleDateChange} /> */}
                         </div>
                         <div className={styles.open_title_container}>
                             <p style={{fontSize : '24px'}}>Description</p>
@@ -1112,22 +1175,22 @@ const MyPage: React.FC = () => {
             </>
         )}
 
-        {imgDetail && (
+            {imgDetail && (
             <>
-                <div className={styles.modal_background} style={{paddingTop: '80px', zIndex: '11'}}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails();}}></img>
+                <div className={styles.modal_background}></div>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails(photoDetails?.photoId);}}></img>
                 <div className={styles.photo_modal_container}>
                     <div className={styles.img_container}>
-                        <img src='/imgs/photo1.jpg' alt='사진' className={styles.photo}></img>
+                        <img src={photoDetails?.imageUrl} alt='사진' className={styles.photo}></img>
                         <div className={styles.detail_photo_info}>
-                            <img src='/imgs/profile1.jpg' alt='프로필' className={styles.detail_photo_profile}></img>
+                            <img src={photoDetails?.profileUrl} alt='프로필' className={styles.detail_photo_profile}></img>
                             <div className={styles.detail_photo_info_container}>
-                                <p className={styles.photo_title}>버스버스 스타벅스</p>
-                                <p className={styles.photo_date}>October 31, 2017 by 바다탐험대</p>
+                                <p className={styles.photo_title}>{photoDetails?.title}</p>
+                                <p className={styles.photo_date}>{photoDetails?.createdAt.substring(0,10)} by {photoDetails?.nickname}</p>
                             </div>
                             <div className={styles.detail_photo_like}>
-                                <p className={styles.heart_txt}>123</p>
-                                <img src={`/imgs/${photoLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart();}}></img>
+                                <p className={styles.heart_txt}>{photoDetails?.likeCnt}</p>
+                                <img src={`/imgs/${photoDetails?.isLiked ? 'heart' : 'empty_heart2'}.png`} alt='하트' className={styles.heart3} onClick={() => {clickHeart(photoDetails?.photoId);}}></img>
                             </div>
                         </div>
                     </div>
@@ -1138,27 +1201,27 @@ const MyPage: React.FC = () => {
                         <div className={styles.camera_info}>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>카메라 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.cameraModel}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>렌즈 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.lensModel}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>조리개 / F : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.aperture}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>초점 거리 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.focusDistance}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>셔터 스피드 / SS : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.shutterSpeed}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>심도 / ISO : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}> mollayo</p>
+                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.iso}</p>
                             </div>
                             <div><MapComponent/></div>
                         </div>
@@ -1167,32 +1230,38 @@ const MyPage: React.FC = () => {
                         </div>
                         <div className={styles.tags_container}>
                             <div className={styles.tags}>
-                                {tagss.map((tag, index)=>{
-                                return <a key={index + 'k'} href='#'>#{tag.tag} </a>
+                                {photoDetails?.hashtagList.map((tag, index)=>{
+                                return <a key={index + 'k'} href='#'>#{tag} </a>
 
                                 })}
                             </div>
                         </div>
                         <div style={{width : '300px', height : 'fit-content', display : 'flex', alignItems: 'center', marginTop : '10px', background : 'white'}}>
-                                <p className={styles.camera_info_title2}>{comments.length} Comments</p>
+                                <p className={styles.camera_info_title2}>{commentList?.length} Comments</p>
                         </div>
                         <div className={styles.comment_container}>
-                            {comments.map((comment, index)=>{
+                            {(commentList === undefined || commentList.length === 0)
+                            ? <>
+                                <div style={{display : "flex", alignItems : 'center', justifyContent : 'center'}}>
+                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록돤 댓글이 없습니다.</p>
+                                </div>
+                            </>
+                            :
+                            commentList.map((comment, index)=>{
                                 return <div key={index + 'm'} style={{padding : '5px', display : 'flex'}}>
-                                    <img src={comment.profile} alt='프로필' className={styles.comment_profile}></img>
+                                    <img src={comment.profileUrl} alt='프로필' className={styles.comment_profile}></img>
                                     <div className={styles.comment_info}>
-                                        <p style={{fontFamily : '부크크고딕bold', fontSize : '14px'}}>{comment.name}</p>
-                                        <p style={{fontFamily : '부크크고딕', fontSize : '12px', marginTop : '-10px', color : 'black'}}>{comment.content}</p>
-                                        <p style={{fontFamily : '부크크고딕', fontSize : '10px', marginTop : '-10px', color : 'gray'}}>{comment.time}</p>
+                                        <p style={{fontFamily : '부크크고딕bold', fontSize : '14px'}}>{comment.nickname}</p>
+                                        <p style={{fontFamily : '부크크고딕', fontSize : '12px', marginTop : '-10px', color : 'black'}}>{comment.comment}</p>
+                                        <p style={{fontFamily : '부크크고딕', fontSize : '10px', marginTop : '-10px', color : 'gray'}}>{comment.createdAt.slice(0,10)}</p>
                                     </div>
                                 </div>
-
                             })}
                         </div>
                         <div className={styles.send_comment_container}>
                             <div className={styles.send_box}>
-                                <input className={styles.input_box2} type="text" placeholder="댓글" ></input>
-                                <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기'></img>
+                                <input className={styles.input_box2} type="text" placeholder="댓글" onChange={(e) => setMyComment(e.target.value)} value={myComment}></input>
+                                <img className={styles.send_icon} src="/imgs/send_icon.png" alt='보내기' onClick={() => {sendClick(photoDetails?.photoId);}}></img>
                             </div>
                         </div>  
                     </div>
@@ -1385,7 +1454,7 @@ const MyPage: React.FC = () => {
                             <p>Edit</p>
                         </div>
                         <p>{memberInfo.nickname}</p>
-                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" }}>Camera using by 수정해야함 years</p>
+                        <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" }}>Camera using by {memberInfo.useYear} years</p>
                         <p style={{fontSize : '16px' , fontFamily : "부크크명조bold" , cursor : 'pointer' }} onClick={() => {openFollowList();}}>{memberInfo.followerCnt} Follower / {memberInfo.followingCnt} Following</p>
                         <p style={{fontSize : '16px'}}>{memberInfo.introduction}</p>
                     </div>
