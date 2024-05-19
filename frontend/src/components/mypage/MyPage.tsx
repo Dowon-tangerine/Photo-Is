@@ -3,7 +3,6 @@ import styles from "./css/MyPage.module.css";
 import Masonry from 'react-masonry-css';
 import MapComponent from '../gallery/MapComponent';
 import Toggle2 from '../gallery/ToggleBtn2';
-import Calendar from './Calendar';
 import {useNavigate } from "react-router-dom";
 import { searchProfile, deletePhoto, putEditPhoto } from '../../apis/memberApi';
 import { uploadGalleryPhoto, selectEachPhotoList } from '../../apis/photoApi';
@@ -1164,7 +1163,7 @@ const MyPage: React.FC = () => {
                         </div>
                         <div className={styles.open_title_container}>
                             <p style={{fontSize : '24px'}}>Date</p>
-                            <Calendar />
+                            {/* <Calendar handleDateChange={handleDateChange} /> */}
                         </div>
                         <div className={styles.open_title_container}>
                             <p style={{fontSize : '24px'}}>Description</p>
