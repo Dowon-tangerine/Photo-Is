@@ -30,7 +30,7 @@
     display: flex;
     position: absolute;
     align-items: center;
-    right: 5%;
+    right: 2%;
     top: 28%;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .typeList_container2{
-    height:80px;
+    height:120px;
     width: 140px;
     background: white;
     position: absolute;
@@ -180,3 +180,130 @@
     margin-top: 50px;
     position: relative;
 }
+
+.type_category_title_container{
+    height: 50px;
+    width: 90vw;
+    display: flex;
+    font-family: "부크크고딕bold";
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.article_container{
+    height: 650px;
+    width: 90vw;
+    margin-bottom: 50px;
+}
+
+.article_num{
+    height: 50px;
+    width: 7%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.article_category{
+    height: 50px;
+    width: 13%;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.category_btn{
+    height: 38px;
+    width: 58%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: black;
+    color: white;
+    font-size: 15px;
+    border-radius: 10px;
+}
+
+.article_title{
+    height: 50px;
+    width: 45%;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.click_title{
+    font-size: 16px;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0);
+    transition: 0.5s all;
+}
+
+.click_title:hover{
+    border-bottom: 1px solid black;
+    transition: 0.5s all;
+}
+
+.article_author{
+    height: 50px;
+    width: 15%;
+    display: flex;
+    align-items: center;
+}
+
+.article_date{
+    height: 50px;
+    width: 10%;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.article_view{
+    height: 50px;
+    width: 10%;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.pages_container{
+    width: fit-content;
+    height: 40px;
+    margin-bottom: 50px;
+    font-family: "부크크고딕bold";
+}
+
+/* .one_page_container{
+
+} */
+
+.pagination {
+    display: flex;
+    align-items: center;
+  }
+  
+  .pagination button {
+    margin: 0 2px;
+    padding: 5px 10px;
+    background-color: white;
+    cursor: pointer;
+    transition: 0.5s all;
+  }
+
+  .pagination button:hover {
+    background-color: rgb(225, 225, 225);
+    transition: 0.5s all;
+  }
+  
+  .pagination button.active {
+    font-weight: bold;
+    background-color: black;
+    color: white;
+  }
+  
+  .pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }

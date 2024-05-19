@@ -101,3 +101,31 @@ export const postComment = async (id : number | undefined, comment : string) => 
         return false;
     })
 }
+
+export const postFollow = async (id : number) => {
+    const url = `/follows/follow/${id}`
+
+    return await instance.post(url)
+    .then(res => {
+        console.log(res);
+        return res.data.data;
+    })    
+    .catch(error => {
+        error
+        return false;
+    })
+}
+
+export const deleteUnFollow = async (id : number) => {
+    const url = `/follows/unfollow/${id}`
+
+    return await instance.delete(url)
+    .then(res => {
+        console.log(res);
+        return res.data.data;
+    })    
+    .catch(error => {
+        error
+        return false;
+    })
+}

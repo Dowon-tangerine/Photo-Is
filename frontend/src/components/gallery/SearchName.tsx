@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from "./css/SearchName.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import { useLocation, useNavigate } from "react-router-dom";
-import { getSearching } from '../../apis/galleryApi';
+import { getSearching, postFollow, deleteUnFollow } from '../../apis/galleryApi';
 
 interface imgInterface {
     nickname: string,
@@ -14,6 +14,7 @@ interface imgInterface {
     followerCnt: number,
     follow: boolean,
     useYear: number,
+    memberId : number,
 }
   
 const SearchName: React.FC = () => {
@@ -32,8 +33,8 @@ const SearchName: React.FC = () => {
         navigate("/community/gallery")
     }  
     
-    const moveToMyPage = function(){
-        navigate("/myPage")
+    const moveToUserPage = function(id : number){
+        navigate("/userPage", { state: { userId :  id} })
     }    
     
     const [word, setWord] = useState<string>(location.state ? location.state.searchWord : "")
@@ -119,24 +120,45 @@ const SearchName: React.FC = () => {
         setIsLoading(false);
     };
 
+    const clickFollow = function(id : number, idx : number){
+        postFollow(id)
+        .then((res) => {
+            const tmp = [ ...imgArr];
+            tmp[idx].follow = res;
+            setImgArr(tmp);
+            getSearching("author", word, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
+        })
+    }
 
+    const clickunFollow = function(id : number, idx : number){
+        deleteUnFollow(id)
+        .then((res) => {
+            const tmp = [ ...imgArr];
+            tmp[idx].follow = res;
+            setImgArr(tmp);
+            getSearching("author", word, 1)
+            .then((res) => {
+                setImgArr(res);
+            })
+        })
+    }
     
     const openPhotoDetails = function(){
         setImgDetail(!imgDetail);
     }
 
-    const following = function(idx : number, follow : boolean){
-
-        let newArr = [...imgArr];
-
-        newArr[idx].follow = !follow;
-
-        setImgArr(newArr);
+    const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === 'Enter'){
+            moveToSearch();
+        }
     }
-
+    
     return (
         <>
-        <div className={styles.main_container}>
+        <div className={styles.main_container} style={{marginTop: '77px'}}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
@@ -155,7 +177,7 @@ const SearchName: React.FC = () => {
                     )}
                 </div>
                 <div className={styles.line}></div>
-                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}}></input>
+                <input className={styles.input_box} type="text" placeholder="검색어를 입력해주세요." onChange={(e) => {setWord2(e.target.value)}} onKeyDown={onKeyDownHandler}></input>
                 <img className={styles.find_icon} src="/imgs/search_icon.png" alt='돋보기' onClick={moveToSearch}></img>
             </div>
 
@@ -180,17 +202,17 @@ const SearchName: React.FC = () => {
                 {imgArr &&
                     imgArr.map((Imgs: imgInterface, idx) => (
                         <div key={idx + 'g'} className={styles.card} onClick={() => {openPhotoDetails();}}>
-                            <img src={Imgs.profileUrl} alt='프로필' className={styles.card_profile} onClick={moveToMyPage}/>
+                            <img src={Imgs.profileUrl} alt='프로필' className={styles.card_profile} onClick={() => {moveToUserPage(Imgs.memberId);}}/>
                             <p className={styles.profile_name}>{Imgs.nickname}</p>
                             <div className={styles.profile_info}>
                                 <p>Cameara use {Imgs.useYear} years</p>
                                 <div className={styles.imgs_cnt}>
                                     <img src='/imgs/photo_icon.png' alt='사진 아이콘' className={styles.photo_icon}></img>
-                                    <p style={{marginLeft : '10px'}}>180</p>
+                                    <p style={{marginLeft : '10px'}}>{Imgs.uploadedPhotoCnt}</p>
                                 </div>
                                 <p>follower {Imgs.followerCnt} / following {Imgs.followingCnt} </p>
                             </div>
-                            <div className={Imgs.follow ? styles.follow_btn_container : styles.no_follow_btn_container} onClick={() => {following(idx, Imgs.follow);}}>
+                            <div className={Imgs.follow ? styles.follow_btn_container : styles.no_follow_btn_container} onClick={() => {Imgs.follow ? clickunFollow(Imgs.memberId, idx) : clickFollow(Imgs.memberId, idx);}}>
                                 <p className={styles.plus_txt}>{Imgs.follow ? `Follower` : `Follow`}</p>
                                 <img src={Imgs.follow ? `` : `/imgs/white_plus.png`} className={Imgs.follow ? `` : styles.plus_icon}></img>
                             </div>

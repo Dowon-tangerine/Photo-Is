@@ -20,7 +20,7 @@ const menuItems: MenuItems = {
     Studio: [], // Studio에는 메뉴 아이템이 없으므로 never[] 타입을 유지
     Community: [
         { name: "Gallery", path: "/community/gallery" },
-        { name: "QnA", path: "/community/topic3" },
+        { name: "QnA", path: "/community/qna" },
     ],
     Exhibition: [],
 };
@@ -69,7 +69,7 @@ const Header: React.FC = () => {
     };
 
     return (
-        <div ref={headerRef} className="header">
+        <div ref={headerRef} className="header" style={{position:'fixed', width: '100%', zIndex:'9', top:'0.01px'}}>
             <header className="h-[80px] bg-black text-white font-bookkMyungjoBold p-3 flex justify-between items-center">
                 <button className={headerStyle.logo} onClick={() => navigate("/")}>
                     PhotoIs
@@ -106,6 +106,9 @@ const Header: React.FC = () => {
                             alt="Profile"
                             className={headerStyle["btn-profile"]}
                             onClick={() => navigate("/mypage")}
+                            style={{
+                                cursor:'pointer'
+                            }}
                         />
                     ) : (
                         <button className={headerStyle["btn-signin"]} onClick={() => navigate("/signin")}>
