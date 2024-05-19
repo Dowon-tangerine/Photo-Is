@@ -1,73 +1,140 @@
-import { useRef, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { DirectionalLight } from "three";
+import { useState } from "react";
+import { Canvas, extend } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
+import AmuseCameraController from "./element/AmuseCameraController";
+import CameraSettings from "./element/CameraSettings";
+import Capture from "./element/Capture";
+import { EffectComposer } from "@react-three/postprocessing";
+import { useCameraStore } from "./store/useCameraStore";
+import AmuseUserController from "./element/AmuseUserController";
+import { EffectComposer as EffectComposerImpl } from "three/examples/jsm/postprocessing/EffectComposer";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import AmusementPark from "./3Delement/AmusementPark";
+import styles from "../exhibition/css/ExhibitionArea.module.css";
 
-function LandScapePage() {
-    const lightRef = useRef<DirectionalLight>(null);
+// import { ApertureShaderMaterial } from "./element/apertureShader";
+import { DepthOfField } from "@react-three/postprocessing";
 
-    const [showSettings, setShowSettings] = useState(false);
+import Modal from "./element/Modal";
+import Effects from "./element/Effects";
 
-    useEffect(() => {
-        if (lightRef.current) {
-            const light = lightRef.current;
-            light.castShadow = true;
-            light.shadow.bias = -0.0001;
-            light.shadow.mapSize.width = 4096;
-            light.shadow.mapSize.height = 4096;
-            light.shadow.camera.near = 0.5;
-            light.shadow.camera.far = 1500;
-            light.shadow.camera.left = -1000;
-            light.shadow.camera.right = 1000;
-            light.shadow.camera.top = 1000;
-            light.shadow.camera.bottom = -1000;
-        }
-    }, []);
+extend({ EffectComposer: EffectComposerImpl, RenderPass, ShaderPass });
+
+const PinwheelPage = () => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [ImgUrl, setImgUrl] = useState<string | null>(null);
+    const [takeScreenshot, setTakeScreenshot] = useState<(() => void) | null>(null);
+    const { iso, shutterSpeed, aperture, exposure } = useCameraStore();
+    const [tutorialClosed, setTutorialClosed] = useState<boolean>(false);
+
+    const handleCloseClick = () => {
+        setTutorialClosed(true);
+    };
 
     return (
         <>
             <div className={StudioStyle.container}>
-                <div className={`${StudioStyle.canvasContainer} ${showSettings ? StudioStyle.shrink : ""}`}>
-                    <Canvas shadows camera={{ rotation: [10, 0, 0], position: [162, 3, 60], far: 10000 }}>
+                <div className="m-auto w-[70%] h-[70vh]">
+                    <Canvas gl={{ alpha: true }} shadows camera={{ position: [0, 0, 5], fov: 50 }}>
                         <ambientLight intensity={1} />
-                        <directionalLight ref={lightRef} castShadow position={[0, 100, -40]} intensity={2} />
-                        <OrbitControls />
+                        <directionalLight position={[10, 10, 10]} intensity={2} />
+                        <Capture
+                            setTakeScreenshot={setTakeScreenshot}
+                            setImgUrl={setImgUrl}
+                            setModalIsOpen={setModalIsOpen}
+                        />
+                        <EffectComposer>
+                            <DepthOfField
+                                focusDistance={0} // focus distance in world units
+                                focalLength={0.02} // focal length in world units
+                                bokehScale={aperture} // bokeh size
+                                height={480} // render height
+                            />
+                        </EffectComposer>
+                        <AmuseCameraController />
                         <AmusementPark />
+                        <AmuseUserController /> {/* 사용자 컨트롤러 추가 */}
+                        <Effects shutterSpeed={shutterSpeed} iso={iso} aperture={aperture} />
                     </Canvas>
+                    {modalIsOpen && ImgUrl ? <Modal setModalIsOpen={setModalIsOpen} ImgUrl={ImgUrl}></Modal> : null}
+                    <div className="absolute top-36 m-auto w-[70%]">
+                        <img src="/imgs/viewFinder.png" alt="Overlay Image" style={{ width: "100%", height: "100%" }} />
+                    </div>
+                    <div className="mt-6 setting-info flex justify-center items-center">
+                        <div className="font-digital   text-[45px] mx-10 text-green-400">F {aperture}</div>
+                        {shutterSpeed === 1 ? (
+                            <div className="font-digital  text-[45px] mx-10 text-green-400"> 1</div>
+                        ) : (
+                            <div className="font-digital  text-[45px] mx-10 text-green-400"> 1 / {shutterSpeed} </div>
+                        )}
+                        <div className="font-digital text-[45px] mx-10 text-green-400">{iso} </div>
+                        {exposure > 0 ? (
+                            <div className="font-digital text-[45px] mx-10 text-green-400"> +{exposure} EV</div>
+                        ) : (
+                            <div className="font-digital text-[45px] mx-10 text-green-400">{exposure} EV</div>
+                        )}
+                    </div>
                 </div>
-                {!showSettings && (
-                    <button
-                        onClick={() => setShowSettings(true)}
-                        className="camera-btn flex flex-col justify-center items-center absolute bottom-5 right-5 z-50 bg-white rounded-[100%] w-[80px] h-[80px] border-1 border-black"
-                    >
-                        <img src="./imgs/camera.png" alt="Camera Icon" className="w-[30px]" />
-                        <p className="font-bookkMyungjoBold text-[10px]">CAMERA</p>
-                    </button>
-                )}
-                {showSettings && (
-                    <div className="absolute top-0 right-0 w-[300px] bg-black bg-opacity-90 h-full flex flex-col items-center">
-                        <div className="title  items-center flex w-[100%] py-3">
-                            <button
-                                className=" w-[40px] flex items-center mx-2 "
-                                onClick={() => setShowSettings(false)}
-                            >
-                                <img src="./imgs/cancel.png" alt="Right Arrow" />
-                            </button>
-
-                            <p className="text-white font-bookkMyungjoBold text-[25px] ml-[65px]">Setting</p>
-                        </div>
-
-                        <button className="rounded-[80px] flex items-center justify-center bg-white w-[170px] h-[50px]">
+                <div className=" w-[300px] border-l-[1px] bg-black h-full flex flex-col items-center">
+                    <p className="py-5 text-white font-bookkMyungjoBold text-[30px] ">Setting</p>
+                    <CameraSettings />
+                    {takeScreenshot && (
+                        <button
+                            onClick={takeScreenshot}
+                            className="mt-36 rounded-[80px] flex items-center justify-center bg-white w-[170px] h-[50px]"
+                        >
                             <p className="font-bookkGothicBold mr-2 text-[18px]">SHOOT</p>
                             <img src="./imgs/camera.png" alt="Camera Icon" className="w-[25px]" />
                         </button>
+                    )}
+                </div>
+                {!tutorialClosed && (
+                    <div className={styles.tutorial}>
+                        <div className={styles.description_exit}>
+                            <img src="imgs/twisted_arrow.png" alt="arrow" />
+                            <h1 style={{ fontFamily: "부크크고딕bold", fontSize: "25px" }}>
+                                나가고 싶을 때 클릭하세요
+                            </h1>
+                        </div>
+                        <div className={styles.description_move}>
+                            <img src="imgs/keyboard.png" alt="arrow" />
+                            <h1
+                                style={{
+                                    fontFamily: "부크크고딕bold",
+                                    fontSize: "25px",
+                                    marginLeft: "-20px",
+                                    marginBottom: "20px",
+                                }}
+                            >
+                                W,A,S,D로 이동하세요
+                            </h1>
+                        </div>
+                        <div className={styles.description_camera}>
+                            <img src="imgs/directional_arrow.png" alt="arrow" />
+                            <h1
+                                style={{
+                                    fontFamily: "부크크고딕bold",
+                                    width: "990px",
+                                    marginLeft: "-190px",
+                                    fontSize: "25px",
+                                }}
+                            >
+                                클릭 & ESC키를 눌러 모드를 전환하세요!
+                            </h1>
+                        </div>
+                        <div
+                            className={styles.exit_tutorial}
+                            onClick={handleCloseClick}
+                            style={{ fontSize: "30px", padding: "20px", fontFamily: "부크크고딕bold" }}
+                        >
+                            튜토리얼 닫기
+                        </div>
                     </div>
                 )}
             </div>
         </>
     );
-}
+};
 
-export default LandScapePage;
+export default PinwheelPage;
