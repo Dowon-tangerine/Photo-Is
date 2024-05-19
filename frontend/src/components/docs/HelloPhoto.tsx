@@ -11,7 +11,7 @@ interface ChatMessage {
 
 // Session 타입 정의
 interface Session {
-  sessionId: number; // Long 타입으로 처리
+  sessionId: number;
   lastMessage: string;
 }
 
@@ -80,9 +80,28 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
       const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/sessions', {
         params: { memberId }
       });
-      setSessions(res.data);
+      const fetchedSessions = res.data.map((session: { id: number; lastMessage: string }) => ({
+        sessionId: session.id,
+        lastMessage: session.lastMessage
+      }));
+      setSessions(fetchedSessions);
     } catch (error) {
       console.error('Failed to fetch sessions:', error);
+    }
+  };
+
+  const fetchMessages = async (sessionId: number) => {
+    try {
+      const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/messages', {
+        params: { sessionId }
+      });
+      const sessionMessages: ChatMessage[] = res.data.map((message: ApiMessage) => ({
+        sender: message.role === 'user' ? 'user' : 'assistant',
+        text: message.message,
+      }));
+      setMessages(sessionMessages);
+    } catch (error) {
+      console.error('Failed to fetch session messages:', error);
     }
   };
 
@@ -116,7 +135,7 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
       });
 
       if (sessionId === null && res.data.sessionId) {
-        setSessionId(res.data.sessionId); // sessionId를 숫자로 설정
+        setSessionId(res.data.sessionId);
       }
 
       fetchSessions(); // 새로운 세션이 생성된 후 세션 목록 갱신
@@ -124,8 +143,8 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
       const errorMessage = axios.isAxiosError(error)
         ? `Error: ${error.response?.data?.message || error.message}`
         : error instanceof Error
-          ? `Error: ${error.message}`
-          : 'An unexpected error occurred';
+        ? `Error: ${error.message}`
+        : 'An unexpected error occurred';
 
       const assistantMessage: ChatMessage = { sender: 'assistant', text: errorMessage };
       setMessages((prevMessages) => {
@@ -152,24 +171,13 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
 
   const handleSessionClick = async (sessionId: number) => {
     setSessionId(sessionId);
-    try {
-      const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/messages', {
-        params: { sessionId }
-      });
-      const sessionMessages: ChatMessage[] = res.data.map((message: ApiMessage) => ({
-        sender: message.role === 'user' ? 'user' : 'assistant',
-        text: message.message,
-      }));
-      setMessages(sessionMessages);
-      setSessionModalOpen(false); // 세션 선택 후 모달 닫기
-    } catch (error) {
-      console.error('Failed to fetch session messages:', error);
-    }
+    await fetchMessages(sessionId);
+    setSessionModalOpen(false); // 세션 선택 후 모달 닫기
   };
 
   const handleNewSessionClick = () => {
     setSessionId(null);
-    setMessages([]); // 새로운 세션을 시작할 때 메시지 초기화
+    setMessages([]);
   };
 
   const toggleSessionModal = () => {
@@ -293,7 +301,6 @@ const HelloPhoto = () => {
         return (
           <>
             <h2>3. 사진 촬영 기초</h2>
-            {/* Replace with actual content */}
             <p>사진 촬영 기초 내용...</p>
           </>
         );
@@ -323,7 +330,7 @@ const HelloPhoto = () => {
         <div className={styles.content}>
           {renderContent()}
           <div className={styles.pagination}>
-            <button onClick={handlePrevPage} disabled={currentPage === 1} className={styles.paginationButton} >이전</button>
+            <button onClick={handlePrevPage} disabled={currentPage === 1} className={styles.paginationButton}>이전</button>
             <span className={styles.pageIndicator}>{currentPage} / {totalPages}</span>
             <button onClick={handleNextPage} disabled={currentPage === totalPages} className={styles.paginationButton}>다음</button>
           </div>

@@ -107,25 +107,33 @@
 
 .annotationModal {
   position: absolute;
-  top: 20%;
-  left: 80%;
+  top: 80%;
+  left: 30%;
   transform: translate(-50%, -20%);
   background: white;
-  padding: 20px;
+  padding: 5px;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
   z-index: 1000;
+}
+
+.annotationModalHeader {
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 2px;
+  border-bottom: 2px solid #ccc;
 }
 
 .annotationTitle {
   margin: 0;
-  padding: 0;
+  padding: 4px 7px;
 }
 
 .closeButton {
   position: absolute;
-  top: 0px;
-  right: 10px;
+  top: 3px;
+  right: 13px;
   cursor: pointer;
   font-size: 24px;
   font-weight: bold;
@@ -149,10 +157,11 @@
   display: flex;
   flex-direction: column;
   margin-left: 1px; /* Space between the modals */
+  z-index: 1000;
 }
 
 .sessionModal {
-  width: 333px; /* 1/3 of the total width */
+  width: 300px; /* 1/3 of the total width */
   height: 650px; /* Modal size */
   background-color: white;
   border: 1px solid #ccc;
@@ -181,7 +190,9 @@
 
 .modalContent {
   flex-grow: 1;
-  padding: 0;
+  padding-top: 10px;
+  margin-right: 6px;
+  margin-left: 7px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;

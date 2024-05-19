@@ -57,9 +57,10 @@ function Lights() {
 interface CameraControllerProps {
   targetPosition: Vector3 | null;
   lookAtPosition: Vector3 | null;
+  resetCamera: boolean;
 }
 
-function CameraController({ targetPosition, lookAtPosition }: CameraControllerProps) {
+function CameraController({ targetPosition, lookAtPosition, resetCamera }: CameraControllerProps) {
   const { camera } = useThree();
   const initialPosition = useRef(new Vector3(9, 9, 9));
 
@@ -89,6 +90,13 @@ function CameraController({ targetPosition, lookAtPosition }: CameraControllerPr
     }
   }, [targetPosition, lookAtPosition, camera]);
 
+  useEffect(() => {
+    if (resetCamera) {
+      camera.position.copy(initialPosition.current);
+      camera.lookAt(new Vector3(0, 0, 0));
+    }
+  }, [resetCamera, camera]);
+
   return null;
 }
 
@@ -100,7 +108,7 @@ interface Annotation {
 
 interface AnnotationsProps {
   onAnnotationClick: (annotation: Annotation) => void;
-  selectedAnnotationId: number | null; // 추가
+  selectedAnnotationId: number | null;
 }
 
 function Annotations({ onAnnotationClick, selectedAnnotationId }: AnnotationsProps) {
@@ -119,11 +127,15 @@ function Annotations({ onAnnotationClick, selectedAnnotationId }: AnnotationsPro
   return (
     <>
       {annotations.map((annotation, index) => (
-        <group key={index} position={annotation.position} onClick={() => onAnnotationClick(annotation)}>
+        <group
+          key={index}
+          position={annotation.position}
+          onClick={() => onAnnotationClick(annotation)}
+        >
           <mesh position={[0, 0.225, 0]}>
             <sphereGeometry args={[0.17, 32, 32]} />
             <meshStandardMaterial
-              color={selectedAnnotationId === annotation.id ? 'red' : 'yellow'} // 클릭된 핀의 색을 변경합니다.
+              color={selectedAnnotationId === annotation.id ? 'red' : 'yellow'}
               emissive={selectedAnnotationId === annotation.id ? 'red' : 'yellow'}
               emissiveIntensity={0.5}
             />
@@ -131,7 +143,7 @@ function Annotations({ onAnnotationClick, selectedAnnotationId }: AnnotationsPro
           <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.15, 0]}>
             <coneGeometry args={[0.15, 0.3, 32]} />
             <meshStandardMaterial
-              color={selectedAnnotationId === annotation.id ? 'red' : 'yellow'} // 클릭된 핀의 색을 변경합니다.
+              color={selectedAnnotationId === annotation.id ? 'red' : 'yellow'}
               emissive={selectedAnnotationId === annotation.id ? 'red' : 'yellow'}
               emissiveIntensity={0.5}
             />
@@ -165,30 +177,37 @@ function AnnotationModal({ annotation, onClose }: AnnotationModalProps) {
 
   return (
     <div className={styles.annotationModal}>
-      <div className={styles.modalHeader}>
-        <h2 className={styles.annotationTitle}>{annotation.label}</h2>
+      <div className={`${styles.annotationModalHeader} font-bookkGothic`}>
+        <h2 className={`${styles.annotationTitle} font-bookkGothic`}>{annotation.label}</h2>
         <span className={styles.closeButton} onClick={onClose}>&times;</span>
       </div>
-      <div className={styles.modalContent}>
+      <div className={`${styles.modalContent} font-bookkGothic`}>
         {details || 'Loading...'}
       </div>
     </div>
   );
 }
 
+type SenderType = 'user' | 'assistant' | 'loading';
+
 interface ChatMessage {
-  sender: 'user' | 'bot' | 'loading';
+  sender: SenderType;
   text: string;
 }
 
 interface Session {
-  sessionId: string;
+  sessionId: number;
   lastMessage: string;
 }
 
 interface ApiMessage {
   role: 'user' | 'assistant';
   message: string;
+}
+
+interface ApiResponse {
+  answer: string;
+  sessionId: number;
 }
 
 interface ChatBotModalProps {
@@ -199,8 +218,8 @@ interface ChatBotModalProps {
 interface SessionModalProps {
   isOpen: boolean;
   sessions: Session[];
-  onSessionClick: (sessionId: string) => void;
-  toggleModal: () => void; // Add this prop
+  onSessionClick: (sessionId: number) => void;
+  toggleModal: () => void;
 }
 
 function SessionModal({ isOpen, sessions, onSessionClick }: SessionModalProps) {
@@ -226,14 +245,44 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<number | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
-  const memberId = 'someMemberId'; // Replace this with the actual memberId
+  const [isSessionModalOpen, setSessionModalOpen] = useState(false);
+  const memberId = localStorage.getItem('memberId'); // Get memberId from localStorage
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(e.target.value);
+  };
+
+  const fetchSessions = async () => {
+    try {
+      const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/sessions', {
+        params: { memberId }
+      });
+      const fetchedSessions = res.data.map((session: { id: number; lastMessage: string }) => ({
+        sessionId: session.id,
+        lastMessage: session.lastMessage
+      }));
+      setSessions(fetchedSessions);
+    } catch (error) {
+      console.error('Failed to fetch sessions:', error);
+    }
+  };
+
+  const fetchMessages = async (sessionId: number) => {
+    try {
+      const res = await axios.get('https://k10d103.p.ssafy.io/api/chatbot/messages', {
+        params: { sessionId }
+      });
+      const sessionMessages: ChatMessage[] = res.data.map((message: ApiMessage) => ({
+        sender: message.role === 'user' ? 'user' : 'assistant',
+        text: message.message,
+      }));
+      setMessages(sessionMessages);
+    } catch (error) {
+      console.error('Failed to fetch session messages:', error);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -247,27 +296,39 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
     setQuestion('');
 
     try {
-      const res = await axios.post('https://k10d103.p.ssafy.io/api/chatbot/chat', {
-        question,
-        sessionId,
+      const params = new URLSearchParams({
+        memberId: memberId || '',
+        question: question,
       });
-      const botMessage: ChatMessage = { sender: 'bot', text: res.data.answer };
+      if (sessionId !== null) {
+        params.append('sessionId', sessionId.toString());
+      }
+
+      const res = await axios.post<ApiResponse>(`https://k10d103.p.ssafy.io/api/chatbot/chat?${params.toString()}`);
+
+      const assistantMessage: ChatMessage = { sender: 'assistant', text: res.data.answer };
       setMessages((prevMessages) => {
         const newMessages = [...prevMessages];
-        newMessages[newMessages.length - 1] = botMessage;
+        newMessages[newMessages.length - 1] = assistantMessage;
         return newMessages;
       });
+
+      if (sessionId === null && res.data.sessionId) {
+        setSessionId(res.data.sessionId);
+      }
+
+      fetchSessions(); // 새로운 세션이 생성된 후 세션 목록 갱신
     } catch (error: unknown) {
       const errorMessage = axios.isAxiosError(error)
         ? `Error: ${error.response?.data?.message || error.message}`
         : error instanceof Error
-          ? `Error: ${error.message}`
-          : 'An unexpected error occurred';
+        ? `Error: ${error.message}`
+        : 'An unexpected error occurred';
 
-      const botMessage: ChatMessage = { sender: 'bot', text: errorMessage };
+      const assistantMessage: ChatMessage = { sender: 'assistant', text: errorMessage };
       setMessages((prevMessages) => {
         const newMessages = [...prevMessages];
-        newMessages[newMessages.length - 1] = botMessage;
+        newMessages[newMessages.length - 1] = assistantMessage;
         return newMessages;
       });
     }
@@ -287,36 +348,24 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
     e.currentTarget.scrollTop += e.deltaY;
   };
 
-  const handleSessionClick = async (sessionId: string) => {
+  const handleSessionClick = async (sessionId: number) => {
     setSessionId(sessionId);
-    try {
-      const res = await axios.get(`https://k10d103.p.ssafy.io/api/chatbot/messages?sessionId=${sessionId}`);
-      const sessionMessages: ChatMessage[] = res.data.map((message: ApiMessage) => ({
-        sender: message.role === 'user' ? 'user' : 'bot',
-        text: message.message,
-      }));
-      setMessages(sessionMessages);
-    } catch (error) {
-      console.error('Failed to fetch session messages:', error);
-    }
+    await fetchMessages(sessionId);
+    setSessionModalOpen(false); // 세션 선택 후 모달 닫기
+  };
+
+  const handleNewSessionClick = () => {
+    setSessionId(null);
+    setMessages([]);
   };
 
   const toggleSessionModal = () => {
-    setIsSessionModalOpen((prev) => !prev);
+    setSessionModalOpen((prev) => !prev);
   };
 
   useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const res = await axios.get(`https://k10d103.p.ssafy.io/api/chatbot/sessions?memberId=${memberId}`);
-        setSessions(res.data);
-      } catch (error) {
-        console.error('Failed to fetch sessions:', error);
-      }
-    };
-
     fetchSessions();
-  }, [memberId]);
+  }, []);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -370,6 +419,9 @@ function ChatBotModal({ isOpen, onClose }: ChatBotModalProps) {
               </ul>
             </div>
           )}
+          <button onClick={handleNewSessionClick} className={styles.newSessionButton}>
+            새로운 세션 시작
+          </button>
         </div>
       </div>
     </div>
@@ -420,6 +472,7 @@ function Dictionary() {
   const [targetPosition, setTargetPosition] = useState<Vector3 | null>(null); // Add target position state
   const [lookAtPosition, setLookAtPosition] = useState<Vector3 | null>(null); // Add lookAt position state
   const [selectedAnnotationId, setSelectedAnnotationId] = useState<number | null>(null); // 클릭된 핀의 ID를 저장하는 상태 추가
+  const [resetCamera, setResetCamera] = useState(false); // 카메라 초기 위치로 복귀
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -442,28 +495,28 @@ function Dictionary() {
     let cameraPos;
     switch (annotation.id) {
       case 1:
-        cameraPos = new Vector3(lookAtPos.x -3, lookAtPos.y + 3, lookAtPos.z + 1);
+        cameraPos = new Vector3(lookAtPos.x - 3, lookAtPos.y + 3, lookAtPos.z + 1);
         break;
       case 2:
-        cameraPos = new Vector3(lookAtPos.x -7, lookAtPos.y + 3, lookAtPos.z -1);
+        cameraPos = new Vector3(lookAtPos.x - 7, lookAtPos.y + 3, lookAtPos.z - 1);
         break;
       case 3:
         cameraPos = new Vector3(lookAtPos.x - 5, lookAtPos.y + 5, lookAtPos.z + 4);
         break;
       case 5:
-        cameraPos = new Vector3(lookAtPos.x -5, lookAtPos.y + 3, lookAtPos.z -8);
+        cameraPos = new Vector3(lookAtPos.x - 5, lookAtPos.y + 3, lookAtPos.z - 8);
         break;
       case 6:
-        cameraPos = new Vector3(lookAtPos.x + 4, lookAtPos.y + 4, lookAtPos.z -6);
+        cameraPos = new Vector3(lookAtPos.x + 4, lookAtPos.y + 4, lookAtPos.z - 6);
         break;
       case 14:
         cameraPos = new Vector3(lookAtPos.x + 6, lookAtPos.y + 3, lookAtPos.z + 6);
         break;
       case 17:
-        cameraPos = new Vector3(lookAtPos.x -5, lookAtPos.y + 3, lookAtPos.z +5);
+        cameraPos = new Vector3(lookAtPos.x - 5, lookAtPos.y + 3, lookAtPos.z + 5);
         break;
       case 35:
-        cameraPos = new Vector3(lookAtPos.x -5, lookAtPos.y + 3, lookAtPos.z -6);
+        cameraPos = new Vector3(lookAtPos.x - 5, lookAtPos.y + 3, lookAtPos.z - 6);
         break;
       default:
         cameraPos = new Vector3(lookAtPos.x + 5, lookAtPos.y + 5, lookAtPos.z + 5);
@@ -477,6 +530,8 @@ function Dictionary() {
   const closeAnnotationModal = () => {
     setAnnotation(null);
     setAnnotationModalOpen(false);
+    setResetCamera(true); // 카메라 초기 위치로 복귀
+    setSelectedAnnotationId(null); // 핀의 색상을 초기 상태로 되돌립니다.
   };
 
   const handleSidebarItemClick = (title: string) => {
@@ -545,7 +600,7 @@ function Dictionary() {
       <div className={styles.content} ref={canvasRef}>
         <div className={styles.canvasContainer}>
           <Canvas>
-            <CameraController targetPosition={targetPosition} lookAtPosition={lookAtPosition} />
+            <CameraController targetPosition={targetPosition} lookAtPosition={lookAtPosition} resetCamera={resetCamera} />
             <Lights />
             <Suspense fallback={<Html><div>Loading Model...</div></Html>}>
               <Model setLoading={setLoading} />
