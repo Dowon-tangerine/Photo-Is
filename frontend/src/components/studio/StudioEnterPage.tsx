@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import tutorialPicture from "/imgs/tutorialBackImg.png";
 import landscapePicture from "/imgs/landScapeBackImg.png";
-import portraitPicture from "/imgs/portraitBackImg.jpg";
 import StudioStyle from "./css/Studio.module.css";
 
 function StudioEnterPage() {
