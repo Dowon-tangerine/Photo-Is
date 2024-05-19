@@ -10,6 +10,7 @@ import SearchTag from "./components/gallery/SearchTag"
 import MyPage from "./components/mypage/MyPage";
 import Exhibition from "./components/exhibition/Exhibition";
 import Qna from "./components/qna/Qna";
+import WriteQna from "./components/qna/WriteQna";
 import UserPage from "./components/userpage/UserPage";
 import HelloPhoto from "./components/docs/HelloPhoto";
 import Dictionary from "./components/docs/Dictionary";
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/myPageEdit" element={<MyPageEdit />}></Route>
           <Route path="/Exhibition" element={<Exhibition />}></Route>
           <Route path="/community/qna" element={<Qna />}></Route>
+          <Route path="/community/qna/writeqna" element={<WriteQna />}></Route>
           <Route path="/userPage" element={<UserPage />}></Route>
           <Route path="/docs/product1" element={<HelloPhoto />} />
           <Route path="/docs/product2" element={<Dictionary />} />
