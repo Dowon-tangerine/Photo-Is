@@ -76,3 +76,10 @@ dummy:
   photos:
     profile-url: ${PROFILE_URL}
     background-url: ${BACKGROUND_URL}
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        messaging: DEBUG
