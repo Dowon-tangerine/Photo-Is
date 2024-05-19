@@ -141,3 +141,35 @@ export const editBackgroundImg = async (background: FormData) => {
 		console.log(err)
 	})
 }
+
+//갤러리 사진 삭제
+export const deletePhoto = async (id: number) => {
+	const url = `/photos/${id}`;
+
+	return await instance.delete(url)
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return true;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}
+
+export const putEditPhoto = async (id: number, title: string, hashtag: Array<string> , accessType: string) => {
+	const url = `/photos/${id}`;
+
+	const data = {photoId: id, title: title, hashtagList: hashtag, accessType: accessType }
+	return await instance.put(url, data)
+	.then(res => {
+		if(res.data.errorResponse){
+			return false;
+		}
+		return true;
+	})
+	.catch(err => {
+		console.log(err)
+	})
+}

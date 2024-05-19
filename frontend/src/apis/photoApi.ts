@@ -24,6 +24,7 @@ export const selectEachPhotoList = async (accessType: string, page: number) => {
 
 	return await instance.get(url)
 	.then(res => {
+		console.log(res)
 		if(res.data.errorResponse){
 			return false;
 		}

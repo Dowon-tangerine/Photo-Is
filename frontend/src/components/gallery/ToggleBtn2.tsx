@@ -1,5 +1,5 @@
 // ToggleBtn.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './css/ToggleBtn2.module.css';
 
 type Props ={
@@ -8,13 +8,17 @@ type Props ={
 
 const ToggleBtn2: React.FC<Props> = ({ changeAccessType }) => {
   const [clicked, setClicked] = useState<boolean>(false);
-  const [accessType, setAccessType] = useState<string>('');
-
+  useEffect(()=>{
+    changeAccessType('PUBLIC');
+  }, [])
   const toggleClickHandler = () => {
+    if(!clicked){
+      changeAccessType('PRIVATE');
+    }
+    else{
+      changeAccessType('PUBLIC');
+    }
     setClicked(!clicked);
-    setAccessType(clicked ? 'PRIVATE' : 'PUBLIC');
-    changeAccessType(accessType);
-    console.log(accessType);
   }
 
   return (
