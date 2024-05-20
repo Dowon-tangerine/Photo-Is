@@ -1174,8 +1174,8 @@ const MyPage: React.FC = () => {
         {isExhibition && (
             <>
             <div className={styles.modal_background}> </div>
-            <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionModal();}}></img>
-            <div className={styles.open_exhibition_modal_container}>
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={() => {openExhibitionModal();}}></img>
+            <div className={styles.open_exhibition_modal_container} style={{marginTop: '120px'}}>
                 <p className={styles.open_exhibition_title}>Exhibition Info</p>
                 <div className={styles.exhibition_info}>
                     <div className={styles.exhibition_photo_intro_container} onClick={openImgList}>
@@ -1231,8 +1231,8 @@ const MyPage: React.FC = () => {
             {imgDetail && (
             <>
                 <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails(photoDetails?.photoId);}}></img>
-                <div className={styles.photo_modal_container}>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={() => {openPhotoDetails(photoDetails?.photoId);}}></img>
+                <div className={styles.photo_modal_container} style={{marginTop: '120px'}}>
                     <div className={styles.img_container}>
                         <img src={photoDetails?.imageUrl} alt='사진' className={styles.photo}></img>
                         <div className={styles.detail_photo_info}>
@@ -1296,7 +1296,7 @@ const MyPage: React.FC = () => {
                             {(commentList === undefined || commentList.length === 0)
                             ? <>
                                 <div style={{display : "flex", alignItems : 'center', justifyContent : 'center'}}>
-                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록돤 댓글이 없습니다.</p>
+                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록된 댓글이 없습니다.</p>
                                 </div>
                             </>
                             :
@@ -1327,8 +1327,8 @@ const MyPage: React.FC = () => {
                 {uploadPhotoDetail 
                 ? <>
                 <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
-                <div  className={styles.upload_detail_modal_container}>
+                <img src='/imgs/x.png' alt='x' style={{marginTop: '120px'}} className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
+                <div  className={styles.upload_detail_modal_container} style={{marginTop: '120px'}}>
                     {
                         isUploading
                         ? <h1>업로드중...</h1>
@@ -1397,8 +1397,8 @@ const MyPage: React.FC = () => {
                     ?
                     <>
                         <div className={styles.modal_background}> </div>
-                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={closeModalHandler}></img>
-                        <div className={styles.upload_modal_container}>
+                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={closeModalHandler}></img>
+                        <div className={styles.upload_modal_container} style={{marginTop: '120px'}}>
                             <img src='/imgs/check_gif.gif' alt='체크' style={{height : '100px', width : 'auto'}}></img>
                             <p className={styles.upload_ok_txt}>사진을 성공적으로 업로드하였습니다.</p>
                             <p className={styles.go_detail_txt}>당신의 소중하고 특별한 순간을 다른사람들과 함께 빛내보세요. <br></br> 행복은 나눌수록 커진답니다.</p>
@@ -1415,8 +1415,8 @@ const MyPage: React.FC = () => {
                     :
                     <>
                         <div className={styles.modal_background}></div>
-                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadModal();}}></img>
-                        <div  className={styles.upload_modal_container}>
+                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={() => {openUploadModal();}}></img>
+                        <div  className={styles.upload_modal_container} style={{marginTop: '120px'}}>
                             <p className={styles.upload_modal_title}>당신의 사진을 업로드해 보세요.</p>
                             <div className={styles.go_upload_btn_container} onClick={() => {openUploadDetailModal();}}>
                                 <p className={styles.upload_txt}>업로드할 사진 선택하기</p>
@@ -1522,9 +1522,9 @@ const MyPage: React.FC = () => {
                             return <div key={index}>{mode.tabTitle}</div>
                         })}
                         <div className={styles.btn_photo_container}>
-                            <div className={styles.exhibition_btn} onClick={() => {openExhibitionModal();}}>
+                            {/* <div className={styles.exhibition_btn} onClick={() => {openExhibitionModal();}}>
                                 <p>전시회 개최</p>
-                            </div>   
+                            </div>    */}
                             <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
                                 <p>사진 업로드</p>
                             </div>   
