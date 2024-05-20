@@ -482,7 +482,7 @@ const ExhibitionArea: React.FC = () => {
 				{
 					metaData 
 					&&
-					<div style={{marginTop: '40px'}}>
+					<div style={{marginTop: '30px'}}>
 						<p>Camera: {metaData.cameraModel}</p>
 						<p>Lens: {metaData.lensModel}</p>
 						<p>Focus: {metaData.focusDistance}</p>
