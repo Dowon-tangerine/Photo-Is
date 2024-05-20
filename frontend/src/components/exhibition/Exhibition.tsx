@@ -519,7 +519,7 @@ const Exhibition: React.FC = () => {
                             )}
                         >
                            {followExhibitionList.map((followExhibition, i) => (
-                                <li key={followExhibition.exhibitionId}  onClick={() => {() => {openExhibitionDetailModalOpeneds(followExhibition.exhibitionId);}}}>
+                                <li key={followExhibition.exhibitionId}  onClick={() => {openExhibitionDetailModalOpeneds(followExhibition.exhibitionId);}}>
                                     <div className={styles.item}>
 
                                     <div key={i + 'g'} className={styles.card}>
