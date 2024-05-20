@@ -326,7 +326,7 @@ const SearchTag: React.FC = () => {
         )}
 
 
-        <div className={styles.main_container}>
+        <div className={styles.main_container} style={{marginTop: '80px'}}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>
