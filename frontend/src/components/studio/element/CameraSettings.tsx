@@ -3,7 +3,6 @@ import { useCameraStore } from "../store/useCameraStore";
 
 const CameraSettings: React.FC = () => {
     const apertureValues = [32, 22, 16, 11, 8, 5.6, 4, 2.8, 2, 1.4];
-
     const shutterSpeedValues = [4000, 2000, 1000, 500, 250, 125, 60, 30, 15, 8, 4, 2, 1];
     const isoValues = [100, 200, 400, 800, 1600, 3200, 6400, 12800];
     const options = ["Av", "Tv", "M"];
@@ -18,76 +17,43 @@ const CameraSettings: React.FC = () => {
     const { aperture, iso, shutterSpeed, exposure, setIso, setShutterSpeed, setAperture, setExposure } =
         useCameraStore();
 
-    //노출 update
-    const updateExposure = (currentValue: any, newValue: any, valuesArray: any) => {
-        if (valuesArray == apertureValues) {
-            const currentIndex = valuesArray.indexOf(currentValue);
-            const newIndex = valuesArray.indexOf(newValue);
-            const exposureChange = currentIndex - newIndex;
-            const newExposure = exposure + exposureChange;
-            if (newExposure >= 3) {
-                setExposure(3);
-            } else if (newExposure <= -3) {
-                setExposure(-3);
-            } else {
-                setExposure(exposure + exposureChange);
-            }
-        } else {
-            const currentIndex = valuesArray.indexOf(currentValue);
-            const newIndex = valuesArray.indexOf(newValue);
-            const exposureChange = newIndex - currentIndex;
-            const newExposure = exposure + exposureChange;
-            if (newExposure >= 3) {
-                setExposure(3);
-            } else if (newExposure <= -3) {
-                setExposure(-3);
-            } else {
-                setExposure(exposure + exposureChange);
-            }
-        }
+    // 노출 update
+    const updateExposure = (currentIndex: number, newIndex: number) => {
+        const exposureChange = newIndex - currentIndex;
+        setExposure(exposure + exposureChange);
     };
 
-    //av 모드 노출 update
-    // const updateShutterSpeedForExposure = (newAperture: number, newISO: number) => {
-    //     const newApertureIndex = apertureValues.indexOf(newAperture);
-    //     const shutterSpeedIndex = shutterSpeedValues.indexOf(shutterSpeed);
-    //     const newIsoIndex = isoValues.indexOf(newISO);
-
-    //     setExposure(0); // Always set exposure to 0 for AV mode
-    // };
-
     const handleApertureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newAperture = apertureValues[parseInt(event.target.value)];
-        setAperture(apertureValues[parseInt(event.target.value)]);
-        // if (selectedOption === "Av") {
-        //     updateShutterSpeedForExposure(newAperture, iso);
-        // }
-        updateExposure(aperture, newAperture, apertureValues);
+        const newIndex = parseInt(event.target.value);
+        const newAperture = apertureValues[newIndex];
+        const currentIndex = apertureValues.indexOf(aperture);
+        setAperture(newAperture);
+        updateExposure(currentIndex, newIndex);
     };
 
     const handleIsoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newISO = isoValues[parseInt(event.target.value)];
-        setIso(isoValues[parseInt(event.target.value)]);
-
-        // if (selectedOption === "Av") {
-        //     updateShutterSpeedForExposure(aperture, newISO);
-        // }
-        updateExposure(iso, newISO, isoValues);
+        const newIndex = parseInt(event.target.value);
+        const newISO = isoValues[newIndex];
+        const currentIndex = isoValues.indexOf(iso);
+        setIso(newISO);
+        updateExposure(currentIndex, newIndex);
     };
 
     const handleShutterSpeedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newShutterSpeed = shutterSpeedValues[parseInt(event.target.value)];
-        updateExposure(shutterSpeed, newShutterSpeed, shutterSpeedValues);
-        setShutterSpeed(shutterSpeedValues[parseInt(event.target.value)]);
+        const newIndex = parseInt(event.target.value);
+        const newShutterSpeed = shutterSpeedValues[newIndex];
+        const currentIndex = shutterSpeedValues.indexOf(shutterSpeed);
+        setShutterSpeed(newShutterSpeed);
+        updateExposure(currentIndex, newIndex);
     };
 
-    //모드 조절
+    // 모드 조절
     useEffect(() => {
-        if (selectedOption == "Av") {
+        if (selectedOption === "Av") {
             setApertureDisable(false);
             setIsoDisable(false);
             setShutterSpeedDisable(true);
-        } else if (selectedOption == "Tv") {
+        } else if (selectedOption === "Tv") {
             setApertureDisable(true);
             setIsoDisable(false);
             setShutterSpeedDisable(false);
