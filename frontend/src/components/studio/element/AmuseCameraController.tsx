@@ -11,15 +11,13 @@ function AmuseCameraController() {
         // 카메라에서 Spinner까지의 거리 계산
         const distance = camera.position.distanceTo(spinnerPosition);
         console.log(camera);
-        camera.position.set(11, 6, 0);
+        camera.position.set(65, 3, 50);
         camera.position.z -= 2;
         camera.far = 10000;
         setFocusDistance(distance);
     }, [gl, camera]);
 
-    useFrame(() => {
-        camera.lookAt(spinnerPosition); // 카메라가 항상 Spinner를 바라보도록 설정
-    });
+    useFrame(() => {});
 
     return null;
 }
