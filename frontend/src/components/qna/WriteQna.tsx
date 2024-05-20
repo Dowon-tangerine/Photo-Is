@@ -3,16 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import styles from "./css/WriteQna.module.css";
 import { FaAngleDown } from 'react-icons/fa';
 import { postQna, postPhoto } from '../../apis/qnaApi';
-// import axios from 'axios';
-
-
-// interface imgInterface {
-//     id: number;
-//     url: string;
-//     likeCnt: number,
-//     liked: boolean,
-//     title: string,
-//   }
 
   
 const WriteQna: React.FC = () => {
