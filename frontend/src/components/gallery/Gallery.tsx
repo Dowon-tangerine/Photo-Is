@@ -715,7 +715,7 @@ const fetchData = async () => {
                             {(commentList === undefined || commentList.length === 0)
                             ? <>
                                 <div style={{display : "flex", alignItems : 'center', justifyContent : 'center'}}>
-                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록돤 댓글이 없습니다.</p>
+                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록된 댓글이 없습니다.</p>
                                 </div>
                             </>
                             :
@@ -881,7 +881,7 @@ const fetchData = async () => {
 
             <div style={{width : "90vw", height : "1px", background : "black", padding : "1px"}}></div>
             <div className={styles.btn_container}>
-                <div className={styles.photo_btn} onClick={() => {openUploadModal();}}>
+                <div className={styles.photo_btn} style={{visibility:'hidden'}} onClick={() => {openUploadModal();}}>
                     <p>사진 업로드</p>
                 </div>
                 <div className={styles.sort_btn}>

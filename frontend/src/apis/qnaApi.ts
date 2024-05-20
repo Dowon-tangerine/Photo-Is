@@ -37,8 +37,6 @@ export const postQna = async (photoId : number | null, category : string, title 
     }
     return await instance.post(url, data)
     .then(res => {
-        console.log(photoId)
-        console.log("글업로드" + res)
         return res.data.data;    
     })
     .catch(error => {
@@ -72,3 +70,43 @@ export const postPhoto = async (사진 : File, title : string, accessType : stri
     })
 }
 
+export const getQnaDetail = async (id : number) => {
+    const url = `/questions/detail/${id}`
+
+    return await instance.get(url)
+    .then(res => {
+        return res.data.data;    
+    })
+    .catch(error => {
+        console.log("fffccvb" + error);
+        return false;
+    })
+}
+
+export const getComment = async (id : number) => {
+    const url = `/questions/${id}/comment`
+
+    return await instance.get(url)
+    .then(res => {
+        console.log(res)
+        return res.data.data.commentList;    
+    })
+    .catch(error => {
+        console.log("fffccvb" + error);
+        return false;
+    })
+}
+
+export const postComment = async (id : number, comment : string) => {
+    const url = `/questions/${id}/comment`
+
+    return await instance.post(url, {comment})
+    .then(res => {
+        console.log("post" + res)
+        return res.data.data.content;    
+    })
+    .catch(error => {
+        console.log("post" + error);
+        return false;
+    })
+}
