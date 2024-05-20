@@ -56,12 +56,6 @@ const Qna: React.FC = () => {
         setIsRotated2(!isRotated2);
     }
 
-    const [listNum, setListNum] = useState<number>(1231);
-
-    useEffect(() => {
-        setListNum(listNum);
-    })
-
     const [totalPage, setTotalPage] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalNum, setTotalNum] = useState<number>(1);
