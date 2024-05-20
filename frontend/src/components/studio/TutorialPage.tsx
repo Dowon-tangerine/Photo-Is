@@ -66,23 +66,23 @@ const steps = [
     {
         title: "Step 4 : ISO",
         descriptions: [
-            "Set the aperture to control the depth of field and the amount of light entering the camera.",
-            "A wider aperture (lower f-number) creates a shallower depth of field.",
-            "A narrower aperture (higher f-number) increases depth of field.",
+            "조리개를 설정하여 심도와 카메라에 들어오는 빛의 양을 조절합니다.",
+            "넓은 조리개(낮은 f-숫자)는 얕은 심도를 만듭니다.",
+            "좁은 조리개(높은 f-숫자)는 심도를 증가시킵니다.",
         ],
     },
     {
         title: "Step 5 : 노출",
         descriptions: [
-            "Set the exposure to ensure the image is not too dark or too bright.",
-            "Use exposure compensation if necessary.",
+            "노출을 설정하여 이미지가 너무 어둡거나 밝지 않도록 합니다.",
+            "필요시 노출 보정을 사용합니다.",
         ],
     },
     {
         title: "Step 6 : 카메라 모드",
         descriptions: [
-            "Press the shoot button to capture the photo.",
-            "Review the photo to check if the settings are correct.",
+            "촬영 버튼을 눌러 사진을 촬영합니다.",
+            "사진을 검토하여 설정이 올바른지 확인합니다.",
         ],
     },
 ];
