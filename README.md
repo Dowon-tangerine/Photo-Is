@@ -121,6 +121,10 @@ Hello, Photo Is!
     <td style="text-align: center;">Backend</td>
     <td>
       - DB 설계<br>
+      - Dictionary 담당
+      - Chatbot 담당
+      - Python 백엔드 담당
+      - Openai API 이용 챗봇 구현
     </td>
   </tr>
   <tr>
