@@ -89,8 +89,7 @@ Hello, Photo Is!
 <br>
 
 ## 팀 소개
-D103 도원귤의🍊
-<br>
+### D103 도원귤의🍊
 
 <table border="1" style="width:100%; border-collapse: collapse;">
   <tr>
