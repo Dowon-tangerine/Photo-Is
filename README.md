@@ -31,7 +31,7 @@ Hello, Photo Is!
 #### 4. 나만의 전시회 : 
 &nbsp;&nbsp;&nbsp;&nbsp; 내가 찍은 사진을 직접 배치한 3D 전시회를 개최할 수 있고, 사용자들은 보다 몰입감 있는 작품 관람 가능
 #### 5. 사진 공유 갤러리 : 
-&nbsp;&nbsp;&nbsp;&nbsp; 사진 좋아요의 일/주/월 증감량을 주기적으로 집계하여 일간/주간/월간 랭킹을 제공 
+&nbsp;&nbsp;&nbsp;&nbsp; 자동 스케줄링을 통해 사진 좋아요의 일/주/월 증감량을 집계하여 사진들의 일간/주간/월간 랭킹을 제공 
 
 <br>
 
@@ -114,8 +114,10 @@ Hello, Photo Is!
     <td>
       - DB 설계<br>
       - 프로젝트 초기 세팅<br>
-      - Member, Follow, Exhibition API 담당<br>
-      - 가상 전시회 페이지 담당<br>
+      - Member, Follow API 구현<br>
+      - Exhibition 담당<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 3D 가상 전시회 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Exhibition API 구현
       - UCC 제작<br>
     </td>
   </tr>
@@ -124,10 +126,13 @@ Hello, Photo Is!
     <td style="text-align: center;">Backend</td>
     <td>
       - DB 설계<br>
-      - Dictionary 담당<br>
-      - Chatbot 담당<br>
       - Python 백엔드 담당<br>
-      - Openai API 이용 챗봇 구현<br>
+      - Docs 담당<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Hello photo! 화면<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Docs API 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Dictionary 화면<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Dictionaries API 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- OpenAI API를 활용한 Chatbot 기능 구현<br>
     </td>
   </tr>
   <tr>
@@ -136,13 +141,13 @@ Hello, Photo Is!
     <td>
       - 화면 설계<br>
       - Studio 담당 <br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 화면 구현 <br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 프로세스 구현 <br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 바람개비 화면 구현<br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 놀이동산 화면 구현<br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 세팅 설정 구현 (iso, ss, aperture, ev)<br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 사진 찍기 기능 구현<br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 모의 사진 찍기 api 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 튜토리얼 화면 구현 <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 튜토리얼 프로세스 구현 <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 바람개비 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 놀이동산 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 카메라 세팅 설정 구현 (iso, ss, aperture, ev)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 카메라 사진 찍기 기능 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 모의 사진 찍기 api 연결<br>
     </td>
   </tr>
   <tr>
