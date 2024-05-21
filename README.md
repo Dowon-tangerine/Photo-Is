@@ -114,11 +114,11 @@ Hello, Photo Is!
     <td>
       - DB 설계<br>
       - 프로젝트 초기 세팅<br>
-      - Member, Follow API 구현<br>
+      - Members 및 Follows API 구현<br>
       - Exhibition 담당<br>
         &nbsp;&nbsp;&nbsp;&nbsp;- 3D 가상 전시회 구현<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;- Exhibition API 구현
-      - UCC 제작<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Exhibition API 구현<br>
+      - UCC 제작
     </td>
   </tr>
   <tr>
@@ -132,7 +132,7 @@ Hello, Photo Is!
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Docs API 구현<br>
         &nbsp;&nbsp;&nbsp;&nbsp;- Dictionary 화면<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Dictionaries API 구현<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;- OpenAI API를 활용한 Chatbot 기능 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- OpenAI API를 활용한 Chatbot 기능 구현
     </td>
   </tr>
   <tr>
@@ -147,7 +147,7 @@ Hello, Photo Is!
         &nbsp;&nbsp;&nbsp;&nbsp;- 놀이동산 화면 구현<br>
         &nbsp;&nbsp;&nbsp;&nbsp;- 카메라 세팅 설정 구현 (iso, ss, aperture, ev)<br>
         &nbsp;&nbsp;&nbsp;&nbsp;- 카메라 사진 찍기 기능 구현<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;- 모의 사진 찍기 api 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 모의 사진 찍기 API 연결
     </td>
   </tr>
   <tr>
