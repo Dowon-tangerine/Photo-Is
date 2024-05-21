@@ -128,6 +128,14 @@ Hello, Photo Is!
     <td style="text-align: center;">Frontend</td>
     <td>
       - 화면 설계<br>
+      - Studio 담당 <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 화면 구현 
+        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 프로세스 구현 
+        &nbsp;&nbsp;&nbsp;&nbsp; - 바람개비 화면 구현
+        &nbsp;&nbsp;&nbsp;&nbsp; - 놀이동산 화면 구현
+        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 세팅 설정 구현 (iso, ss, aperture, ev)
+        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 사진 찍기 기능 구현
+        &nbsp;&nbsp;&nbsp;&nbsp; - 모의 사진 찍기 api 연결
     </td>
   </tr>
   <tr>
