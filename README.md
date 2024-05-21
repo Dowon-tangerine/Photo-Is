@@ -156,15 +156,15 @@ Hello, Photo Is!
     <td>
       - 화면 설계<br>
       - Members 담당<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;- Sign Up 화면 구현<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;- Sign In 화면 구현<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;- Members API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Sign Up 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Sign In 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Members API 연결<br>
       - Docs 담당<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;- Hello Photo! 화면<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Docs API 연결<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;- Dictionary 화면<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Three.js 기반 3D 카메라 모델링을 통한 용어 사전 기능 구현<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Dictionaries 및 Chatbots API 연결
+        &nbsp;&nbsp;&nbsp;&nbsp;- Hello Photo! 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Docs API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Dictionary 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Three.js 기반 3D 카메라 모델링을 통한 용어 사전 기능 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Dictionaries 및 Chatbots API 연결
     </td>
   </tr>
   <tr>
