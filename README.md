@@ -44,11 +44,12 @@ Hello, Photo Is!
 ## 주요 기술 및 개발 환경
 ### Frontend
 - Visual Studio Code
-- HTML5, CSS3, Typescript
+- HTML5, CSS3, Typescript, Tailwind
 - React 18.2.0
 - Vite 5.1.4
 - Zustand
 - three.js
+- R3F
 
 ### Backend
 - IntelliJ
@@ -133,13 +134,13 @@ Hello, Photo Is!
     <td>
       - 화면 설계<br>
       - Studio 담당 <br>
-        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 화면 구현 
-        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 프로세스 구현 
-        &nbsp;&nbsp;&nbsp;&nbsp; - 바람개비 화면 구현
-        &nbsp;&nbsp;&nbsp;&nbsp; - 놀이동산 화면 구현
-        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 세팅 설정 구현 (iso, ss, aperture, ev)
-        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 사진 찍기 기능 구현
-        &nbsp;&nbsp;&nbsp;&nbsp; - 모의 사진 찍기 api 연결
+        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 화면 구현 <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; - 튜토리얼 프로세스 구현 <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; - 바람개비 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; - 놀이동산 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 세팅 설정 구현 (iso, ss, aperture, ev)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; - 카메라 사진 찍기 기능 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; - 모의 사진 찍기 api 연결<br>
     </td>
   </tr>
   <tr>
