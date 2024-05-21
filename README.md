@@ -60,11 +60,9 @@ Hello, Photo Is!
   - Spring Batch
 - Gradle
 - JWT
-- Stomp.js
 - OpenAI
 - Fast API
 - Redis
-- WebSocket
 - Amazon RDS
 - Amazon S3 Bucket Cloud
 - MariaDB
@@ -89,7 +87,7 @@ Hello, Photo Is!
 <br>
 
 ## UCC 및 시연영상
-- UCC : 
+- UCC : https://youtu.be/ATMvR24_iWM
 - 시연영상 : 
 
 <br>
@@ -115,6 +113,10 @@ Hello, Photo Is!
     <td style="text-align: center;">Backend<br>Frontend<br>Infra</td>
     <td>
       - DB 설계<br>
+      - 프로젝트 초기 세팅<br>
+      - Member, Follow, Exhibition API 담당<br>
+      - 가상 전시회 페이지 담당<br>
+      - UCC 제작<br>
     </td>
   </tr>
   <tr>
@@ -122,10 +124,10 @@ Hello, Photo Is!
     <td style="text-align: center;">Backend</td>
     <td>
       - DB 설계<br>
-      - Dictionary 담당
-      - Chatbot 담당
-      - Python 백엔드 담당
-      - Openai API 이용 챗봇 구현
+      - Dictionary 담당<br>
+      - Chatbot 담당<br>
+      - Python 백엔드 담당<br>
+      - Openai API 이용 챗봇 구현<br>
     </td>
   </tr>
   <tr>
