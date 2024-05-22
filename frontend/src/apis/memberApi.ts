@@ -105,7 +105,6 @@ export const searchProfile = async (memberId: number) => {
 }
 
 // 프로필 수정
-// 수정해야함
 export const editProfile = async (memberInfo: FormData) => {
 	const url = `/members/`;
 

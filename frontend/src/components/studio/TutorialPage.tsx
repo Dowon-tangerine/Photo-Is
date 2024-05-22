@@ -1,21 +1,17 @@
-import { useState, useRef, useEffect } from "react";
-import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { useState } from "react";
+import { Canvas, extend } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
 import Spinner from "./3Delement/spinner";
 import CameraSettings from "./element/CameraSettings";
 import Capture from "./element/Capture";
-import { EffectComposer } from "@react-three/postprocessing";
 import { useCameraStore } from "./store/useCameraStore";
 import CameraController from "./element/CameraController";
 import { EffectComposer as EffectComposerImpl } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
-import { createMotionBlurMaterial } from "./element/MotionBlurShader";
-import { createGrainMaterial } from "./element/GrainShader";
 // import { ApertureShaderMaterial } from "./element/apertureShader";
-import { DepthOfField } from "@react-three/postprocessing";
-import { createExposureMaterial } from "./element/ExposureShader"; // Import the ExposureShader
 import Modal from "./element/Modal";
+import Effects from "./element/Effects";
 
 import Lottie from "lottie-react";
 import arrow from "../../../public/imgs/arrow.json";
@@ -28,7 +24,7 @@ const steps = [
         descriptions: [
             "안녕하세요. 카메라 튜토리얼에 오신 여러분들을 환영합니다!",
             "지금부터 여러분은 실제 카메라에서 사용되는 여러가지 요소들을 순서에 따라 차근차근 배우게 될 것 입니다.",
-            "순서대로 잘 따라와 다 함꼐 멋진 사진을 찍을 수 있을거에요!",
+            "순서대로 잘 따라와 다 함께 멋진 사진을 찍을 수 있을거에요!",
             "자 그럼 지금부터 시작해보겠습니다.",
         ],
     },
@@ -41,7 +37,7 @@ const steps = [
             " 사용자는 이곳에서 카메라 모드, 조리개, 셔터스피드 ,iso를 조절할 수 있습니다.",
             "세팅 섹션 하단에 있는 Shoot 버튼을 클릭해 사진을 찍고 결과를 확인할 수 있습니다.",
             "장면 밑으로 보이는 숫자는 각 setting값을 뜻합니다.",
-            " 왼쪽부터 차래대로 조리개, 셔터스피드, iso, 노출값을 뜻합니다.",
+            " 왼쪽부터 순서대로 조리개, 셔터스피드, iso, 노출값을 뜻합니다.",
         ],
     },
     {
@@ -70,23 +66,23 @@ const steps = [
     {
         title: "Step 4 : ISO",
         descriptions: [
-            "Set the aperture to control the depth of field and the amount of light entering the camera.",
-            "A wider aperture (lower f-number) creates a shallower depth of field.",
-            "A narrower aperture (higher f-number) increases depth of field.",
+            "조리개를 설정하여 심도와 카메라에 들어오는 빛의 양을 조절합니다.",
+            "넓은 조리개(낮은 f-숫자)는 얕은 심도를 만듭니다.",
+            "좁은 조리개(높은 f-숫자)는 심도를 증가시킵니다.",
         ],
     },
     {
         title: "Step 5 : 노출",
         descriptions: [
-            "Set the exposure to ensure the image is not too dark or too bright.",
-            "Use exposure compensation if necessary.",
+            "노출을 설정하여 이미지가 너무 어둡거나 밝지 않도록 합니다.",
+            "필요시 노출 보정을 사용합니다.",
         ],
     },
     {
         title: "Step 6 : 카메라 모드",
         descriptions: [
-            "Press the shoot button to capture the photo.",
-            "Review the photo to check if the settings are correct.",
+            "촬영 버튼을 눌러 사진을 촬영합니다.",
+            "사진을 검토하여 설정이 올바른지 확인합니다.",
         ],
     },
 ];
@@ -108,65 +104,6 @@ const TutorialStep = ({ step, descriptionIndex }: { step: number; descriptionInd
         </div>
     );
 };
-
-function Effects({ shutterSpeed, iso, aperture }: { shutterSpeed: number; iso: number; aperture: number }) {
-    const { gl, scene, camera } = useThree();
-    const composer = useRef<EffectComposerImpl>();
-    const { exposure } = useCameraStore((state) => ({ exposure: state.exposure }));
-    const { resetSettings } = useCameraStore();
-
-    useEffect(() => {
-        const composerInstance = new EffectComposerImpl(gl);
-        const renderPass = new RenderPass(scene, camera);
-
-        // ShutterSpeed 설정
-        const motionBlurMaterial = createMotionBlurMaterial();
-        const baseSpeed = 2.0; // 기준 셔터 스피드
-        const velocityFactor = baseSpeed / Math.pow(shutterSpeed, 0.2); // 여기서 지수를 조정하여 효과 조절
-        motionBlurMaterial.uniforms["velocityFactor"].value = velocityFactor;
-        const shutterPass = new ShaderPass(motionBlurMaterial);
-
-        // BokehShader 설정
-        // const apertureMaterial = new ApertureShaderMaterial();
-        // apertureMaterial.uniforms.aperture.value = aperture;
-        // const aperturePass = new ShaderPass(apertureMaterial);
-
-        // ExposureShader 설정
-        const exposureMaterial = createExposureMaterial();
-        exposureMaterial.uniforms["exposure"].value = Math.pow(2, exposure);
-        const exposurePass = new ShaderPass(exposureMaterial);
-
-        // NoiseShader 설정
-        const grainMaterial = createGrainMaterial();
-        grainMaterial.uniforms["amount"].value = Math.min(0.2, iso / 12800); // ISO 값을 기반으로 그레인 강도 설정 (비율 낮춤)
-        const grainPass = new ShaderPass(grainMaterial);
-
-        // Composer에 추가
-        composerInstance.addPass(renderPass);
-        composerInstance.addPass(shutterPass);
-        composerInstance.addPass(exposurePass);
-        composerInstance.addPass(grainPass);
-        // composerInstance.addPass(aperturePass);
-
-        composer.current = composerInstance;
-
-        return () => {
-            composerInstance.dispose();
-        };
-    }, [gl, scene, camera, shutterSpeed, exposure, iso, aperture]);
-
-    useEffect(() => {
-        resetSettings();
-    }, []);
-
-    useFrame((_, delta) => {
-        if (composer.current) {
-            composer.current.render(delta);
-        }
-    }, 1);
-
-    return null;
-}
 
 const TutorialPage = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -235,14 +172,7 @@ const TutorialPage = () => {
                                 setImgUrl={setImgUrl}
                                 setModalIsOpen={setModalIsOpen}
                             />
-                            <EffectComposer>
-                                <DepthOfField
-                                    focusDistance={0} // focus distance in world units
-                                    focalLength={0.02} // focal length in world units
-                                    bokehScale={aperture} // bokeh size
-                                    height={480} // render height
-                                />
-                            </EffectComposer>
+
                             <CameraController />
                             <Spinner />
 
@@ -257,20 +187,17 @@ const TutorialPage = () => {
                             />
                         </div>
                         <div className="mt-6 setting-info flex justify-center items-center">
-                            <div className="font-digital text-[33px] mx-10 text-green-400">F {aperture}</div>
+                            <div className="font-digital text-[30px] mx-8 text-green-400">F {aperture}</div>
                             {shutterSpeed === 1 ? (
-                                <div className="font-digital text-[33px] mx-10 text-green-400"> 1</div>
+                                <div className="font-digital text-[30px] mx-8 text-green-400"> 1</div>
                             ) : (
-                                <div className="font-digital text-[33px] mx-10 text-green-400">
-                                    {" "}
-                                    1 / {shutterSpeed}{" "}
-                                </div>
+                                <div className="font-digital text-[30px] mx-8 text-green-400"> 1 / {shutterSpeed} </div>
                             )}
-                            <div className="font-digital text-[33px] mx-10 text-green-400">{iso} </div>
+                            <div className="font-digital text-[30px] mx-8 text-green-400">{iso} </div>
                             {exposure > 0 ? (
-                                <div className="font-digital text-[33px] mx-10 text-green-400"> +{exposure} EV</div>
+                                <div className="font-digital text-[30px] mx-8 text-green-400"> +{exposure} EV</div>
                             ) : (
-                                <div className="font-digital text-[33px] mx-10 text-green-400">{exposure} EV</div>
+                                <div className="font-digital text-[30px] mx-8 text-green-400">{exposure} EV</div>
                             )}
                         </div>
                     </div>

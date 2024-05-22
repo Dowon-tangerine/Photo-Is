@@ -240,7 +240,7 @@ const Modal: React.FC<ModalProps> = ({ setModalIsOpen, ImgUrl }) => {
                                                 );
                                             })}
                                         </div>
-                                        <div className={styles.edit_btn_container} onClick={handleUploadPhoto}>
+                                        <div className={styles.edit_btn_container} style={{marginTop: "-80px"}} onClick={handleUploadPhoto}>
                                             <p className={styles.upload_txt3} style={{ color: "white" }}>
                                                 Upload
                                             </p>

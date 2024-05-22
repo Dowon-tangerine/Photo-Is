@@ -107,3 +107,24 @@ export const getExhibitionPhotos = async (exhibitionId: number) => {
 			return false;
 	})
 }
+
+// 내 전시회 전체목록 조회
+export const getMyExhibitionList = async (type: string) => {
+	const url = `/exhibitions/my/${type}`;
+
+	return await instance.get(url)
+	.then(res => {
+		if(res.data.data){
+			res.data.data.content.forEach((exhibition: exhibitionInterface)  => {
+				exhibition.startDate = dateFormatter.changeDateFormat(exhibition.startDate);
+				exhibition.endDate = dateFormatter.changeDateFormat(exhibition.endDate);
+			});
+			console.log(res.data.data)
+			return res.data.data;  
+		} 
+	})
+	.catch(error => {
+			console.log(error);
+			return false;
+	})
+}
