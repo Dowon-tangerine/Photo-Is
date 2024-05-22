@@ -4,7 +4,6 @@ import { FaAngleDown } from 'react-icons/fa';
 import Carousel from 'react-material-ui-carousel'
 import Masonry from 'react-masonry-css';
 import MapComponent from './MapComponent';
-import Toggle from './ToggleBtn';
 import {useNavigate } from "react-router-dom";
 import { getRanking, getSorting, getPhotoDetail, postLiked, getComment, postComment } from '../../apis/galleryApi';
 
@@ -73,13 +72,8 @@ const Gallery: React.FC = () => {
     const [sortTypeList, setSortTypeList] = useState<boolean>(false);
     const [isRotated2, setIsRotated2] = useState<boolean>(false);
     const [imgDetail, setImgDetail] = useState<boolean>(false);
-    const [isUploadFinished, setIsUploadFinished] = useState<boolean>(false);
     
     const navigate = useNavigate();
-    
-    const moveToGallery = function(){
-        navigate("/community/gallery")
-    }
 
     const [word, setWord] = useState<String>("");
 
@@ -110,191 +104,6 @@ const Gallery: React.FC = () => {
         setSortTypeList(!sortTypeList);
         setIsRotated2(!isRotated2);
     }
-    
-
-    const imageData = [
-        {
-          label: "Image 1",
-          alt: "image1",
-          profile: "/imgs/profile1.jpg",
-          name : "짱센 짱세일러문",
-          title : "벚꽃 버스",
-          like: 1231,
-          url: "/imgs/photo1.jpg",
-        },
-      
-        {
-          label: "Image 2",
-          alt: "image2",
-          profile: "/imgs/profile1.jpg",
-          name : "짱센 짱세일러무늬",
-          title : "세계종말이 오면 뭘 할것이냐 '사과나무를 심을 것 입니다.' ",
-          like: 1131,
-          url: "/imgs/photo2.jpg",
-        },
-      
-        {
-          label: "Image 3",
-          alt: "image3",
-          profile: "/imgs/profile1.jpg",
-          name : "짱센 짱세일러문어",
-          title : "벚꽃 버스",
-          like: 911,
-          url: "/imgs/photo1.jpg",
-        },
-      
-        {
-          label: "Image 4",
-          alt: "image4",
-          profile: "/imgs/profile1.jpg",
-          name : "짱센 짱세일러도어",
-          title : "벚꽃 버스",
-          like: 731,
-          url: "/imgs/photo2.jpg",
-        },
-      
-        {
-          label: "Image 5",
-          alt: "image5",
-          profile: "/imgs/profile1.jpg",
-          name : "짱센 짱세일러",
-          title : "벚꽃 버스",
-          like: 331,
-          url: "/imgs/photo1.jpg",
-        },
-
-        {
-            label: "Image 6",
-            alt: "image6",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo1.jpg",
-        },
-
-        {
-            label: "Image 7",
-            alt: "image7",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo4.jpg",
-        },
-
-        {
-            label: "Image 8",
-            alt: "image8",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo3.jpg",
-        },
-
-        {
-            label: "Image 9",
-            alt: "image9",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo2.jpg",
-        },
-
-        {
-            label: "Image 10",
-            alt: "image10",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo4.jpg",
-        },
-
-        {
-            label: "Image 11",
-            alt: "image11",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo3.jpg",
-        },
-
-        {
-            label: "Image 12",
-            alt: "image12",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo4.jpg",
-        },
-
-        {
-            label: "Image 13",
-            alt: "image13",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo1.jpg",
-        },
-
-        {
-            label: "Image 14",
-            alt: "image14",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo2.jpg",
-        },
-
-        {
-            label: "Image 15",
-            alt: "image15",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo3.jpg",
-        },
-
-        {
-            label: "Image 16",
-            alt: "image16",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "망가진 열차 속 낭만",
-            like: 121,
-            url: "/imgs/photo4.jpg",
-        },
-
-        {
-            label: "Image 17",
-            alt: "image17",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo1.jpg",
-        },
-
-        {
-            label: "Image 18",
-            alt: "image18",
-            profile: "/imgs/profile1.jpg",
-            name : "짱센 짱세일러곰",
-            title : "벚꽃 버스",
-            like: 121,
-            url: "/imgs/photo2.jpg",
-        },
-
-    ];
-
   /*
   handleObserver: 교차점이 발생했을 때 실행되는 콜백 함수.
   entries: 교차점 정보를 담는 배열
@@ -539,6 +348,14 @@ const fetchData = async () => {
             .then((res) => {
                 if(res){
                     setPhotoDetails(res);
+                    if(res.metadata.latitude && res.metadata.longitude){
+                        localStorage.setItem('lat', res.metadata.latitude);
+                        localStorage.setItem('long', res.metadata.longitude);
+                    }
+                    else{
+                        localStorage.setItem('lat', 'none');
+                        localStorage.setItem('long', 'none');
+                    }
                     getComment(id)
                     .then((res) => {
                         if(res){
@@ -594,46 +411,6 @@ const fetchData = async () => {
         setUploadPhoto(!uploadPhoto);
     }
 
-    const [uploadPhotoDetail, setUploadPhotoDetail] = useState<boolean>(false);
-
-    const openUploadDetailModal = function(){
-        setUploadPhotoDetail(!uploadPhotoDetail);
-    }
-
-    const uploadClickHandler = () => {
-        setUploadPhotoDetail(false);
-        setIsUploadFinished(true);
-    }
-
-    const closeModalHandler = () => {
-        openUploadModal();
-        setIsUploadFinished(false);
-    }
-
-    const [inputText, setInputText] = useState(''); // 입력된 텍스트 상태 변수
-    const [tags, setTags] = useState(["하이", "꽃", "버스", "꽃", "도로", "봄봄봄봄", "봄나무", "헬리콥터", "봄사랑벚꽃말고", "아이유"]); // 태그 배열 상태 변수
-
-    // 입력된 텍스트를 태그 배열에 추가하는 함수
-    const addTag = () => {
-        console.log(inputText)
-        if (inputText.trim() !== '') { // 입력된 텍스트가 공백이 아닌 경우에만 추가
-            setTags(prevTags => [...prevTags, inputText]); // 이전 태그 배열에 새로운 텍스트 추가
-            setInputText(''); // 입력된 텍스트 초기화
-        }
-    }
-
-    const removeTag = (index : number) => {
-        const newTags = [...tags]; // 새로운 배열 생성
-        newTags.splice(index, 1); // 해당 인덱스의 태그 제거
-        setTags(newTags); // 새로운 배열로 상태 업데이트
-    };
-
-    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null); // 선택된 이미지의 인덱스
-
-    const handleImageClick = (index: number) => {
-        setSelectedImageIndex(index); // 이미지 클릭 시 선택된 이미지의 인덱스를 설정
-    };
-
     const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if(e.key === 'Enter'){
             moveToSearch();
@@ -670,6 +447,8 @@ const fetchData = async () => {
                         <div style={{width : '300px', height : 'fit-content', display : 'flex', justifyContent : 'center', alignItems: 'center', background : 'white'}}>
                             <p className={styles.camera_info_title}>Information</p>
                         </div>
+                        {
+                            photoDetails ?
                         <div className={styles.camera_info}>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>카메라 모델 : </p>
@@ -677,7 +456,7 @@ const fetchData = async () => {
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>렌즈 모델 : </p>
-                                <p style={{float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.lensModel}</p>
+                                <p style={{width: '50%',float : 'right', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>{photoDetails?.metadata.lensModel}</p>
                             </div>
                             <div style={{width : '100%'}}>
                                 <p style={{float : 'left', margin : '2%', fontFamily : '부크크고딕bold', fontSize : '14px'}}>조리개 / F : </p>
@@ -697,6 +476,8 @@ const fetchData = async () => {
                             </div>
                             <div><MapComponent/></div>
                         </div>
+                        : <h3>상세정보가 없습니다.</h3>
+                        }
                         <div style={{width : '300px', height : 'fit-content', display : 'flex', justifyContent : 'center', alignItems: 'center', marginTop : '10px', background : 'white'}}>
                             <p className={styles.camera_info_title}>Tags</p>
                         </div>
@@ -738,104 +519,6 @@ const fetchData = async () => {
                         </div>  
                     </div>
                 </div>
-            </>
-        )}
-
-        {uploadPhoto && (
-            <>
-                {uploadPhotoDetail 
-                ? <>
-                <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
-                <div  className={styles.upload_detail_modal_container}>
-                    <div className={styles.upload_photos_container}>
-                        {imageData.map((image, index)=>{
-                            return( 
-                                <div key={index + 'o'} className={styles.upload_photo}>
-                                    {/* 추가함 */}
-                                    <div className={`${styles.upload_photo_overlay} ${selectedImageIndex === index && styles.upload_photo_overlay_clicked}`} onClick={() => {handleImageClick(index);}}>
-                                        {selectedImageIndex === index && <img src='/imgs/check_white.png'></img>}
-                                    </div>
-                                    <img src={image.url} alt='이미지' className={styles.upimg}></img>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div style={{width : '1px', height : '100%', background : 'black'}}></div>
-                    <div className={styles.upload_detail_info_container}>
-                        <p style={{fontSize : '36px', margin : '10%'}}>Detail</p>
-                        <div className={styles.upload_title_container}>
-                            <p style={{fontSize : '20px'}}>Title</p>
-                            <input className={styles.input_box3} type="text" placeholder="제목을 입력해주세요." ></input>
-                        </div>
-                        <div className={styles.upload_publish_container}>
-                            <p style={{fontSize : '20px'}}>Publish</p>
-                            <Toggle/>
-                        </div>
-                        <div className={styles.upload_tag_container}>
-                            <p style={{fontSize : '20px'}}>Tags</p>
-                            <div className={styles.tag_input_container}>
-                                <input className={styles.input_box4} value={inputText} type="text" placeholder="사진에 태그를 추가해 보세요." onChange={(e) => {setInputText(e.target.value)}}></input>
-                                <div className={styles.plus_btn} onClick={() => {addTag();}}>
-                                    <img src='/imgs/plus.png' alt='플러스' style={{width : '22px', height : '22px'}}></img>
-                                </div>
-                
-                            </div>
-                            <div className={styles.upload_tags_container}>
-                                    {tags.map((tag, index)=>{
-                                        return <div key={index + 'n'} className={`${styles.upload_tag} ${index %2 != 0 ? styles.float : ''}`}>{tag.length > 5 ? '# ' + tag.slice(0, 5) + '..' :  '# ' + tag}
-                                            <img src='/imgs/black_x.png' alt='x' style={{height : '13px', width : 'auto', position : 'absolute', right : '7px', cursor : 'pointer'}} onClick={() => {removeTag(index);}}></img>
-                                        </div>
-
-                                    })}
-                            </div>
-                            {/* 추가함 */}
-                            <div className={styles.upload_btn_container} onClick={uploadClickHandler}>
-                                <p className={styles.upload_txt3}>Upload</p>
-                                <img src='/imgs/black_upload_icon.png' alt='아이콘' style={{height : '30px', width : 'auto'}}></img>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </> 
-                : // 이 안에 삼항 연산자가 하나 더 있어야 함
-                (
-                    isUploadFinished 
-                    ?
-                    <>
-                        <div className={styles.modal_background}> </div>
-                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={closeModalHandler}></img>
-                        <div className={styles.upload_modal_container}>
-                            <img src='/imgs/check_gif.gif' alt='체크' style={{height : '100px', width : 'auto'}}></img>
-                            <p className={styles.upload_ok_txt}>사진을 성공적으로 업로드하였습니다.</p>
-                            <p className={styles.go_detail_txt}>당신의 소중하고 특별한 순간을 다른사람들과 함께 빛내보세요. <br></br> 행복은 나눌수록 커진답니다.</p>
-                            <div  className={styles.go_all_btn_container}>
-                                <div className={styles.go_gallery_btn_container} onClick={closeModalHandler}>
-                                    <p className={styles.go_txt} onClick={() => {moveToGallery();}}>Community</p>
-                                </div>
-                                <div className={styles.go_mypage_btn_container} onClick={closeModalHandler}>
-                                    <p className={styles.go_txt}>MyPage</p>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                    :
-                    <>
-                        <div className={styles.modal_background}></div>
-                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadModal();}}></img>
-                        <div  className={styles.upload_modal_container}>
-                            <p className={styles.upload_modal_title}>당신의 사진을 업로드해 보세요.</p>
-                            <div className={styles.go_upload_btn_container} onClick={() => {openUploadDetailModal();}}>
-                                <p className={styles.upload_txt}>업로드할 사진 선택하기</p>
-                                <img src='/imgs/upload_icon.png' alt='업로드 아이콘' className={styles.upload_icon}></img>
-                            </div>
-                            <p className={styles.upload_txt2}>*최대 200mb / JPEG,PNG만 허용</p>
-                        </div>
-                    </>
-                )
-                
-            }
-                
             </>
         )}
 

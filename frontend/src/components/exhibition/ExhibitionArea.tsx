@@ -480,8 +480,8 @@ const ExhibitionArea: React.FC = () => {
       <div className={`${showDetail && styles.photo_info_visible} ${styles.photo_info}`}>
 				<h1><span style={{fontSize: '45px',}}>{title}</span></h1>
 				{
-					metaData 
-					&&
+					metaData?.cameraModel
+					?
 					<div style={{marginTop: '30px'}}>
 						<p>Camera: {metaData.cameraModel}</p>
 						<p>Lens: {metaData.lensModel}</p>
@@ -489,6 +489,8 @@ const ExhibitionArea: React.FC = () => {
 						<p>SS: {metaData.shutterSpeed}</p>
 						<p>ISO: {metaData.iso}</p>
 					</div>
+					:
+					<p>추가정보가 존재하지 않습니다.</p>
 				}
       </div>
 

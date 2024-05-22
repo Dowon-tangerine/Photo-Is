@@ -449,6 +449,7 @@ const MyPage: React.FC = () => {
             </>
         ),
         tabCont:(
+            exhibitionArr.length !== 0 ?
             <> 
             <div className={styles.profile_card_container}>
                 {exhibitionArr &&
@@ -481,6 +482,7 @@ const MyPage: React.FC = () => {
             <div id="observer" style={{ height: "10px" }}></div>
             </div>
             </>
+            : <h3 style={{margin: '150px', textAlign:'center', fontFamily: "부크크고딕bold"}}>등록된 전시회가 없습니다...</h3>
         )
     },
     {
@@ -495,6 +497,7 @@ const MyPage: React.FC = () => {
             </>
         ),
         tabCont:(
+            exhibitionArr.length !== 0 ?
             <> 
             <div className={styles.profile_card_container}>
                 {exhibitionArr &&
@@ -526,6 +529,7 @@ const MyPage: React.FC = () => {
             <div id="observer" style={{ height: "10px" }}></div>
             </div>
             </>
+            : <h3 style={{margin: '150px', textAlign:'center', fontFamily: "부크크고딕bold"}}>등록된 전시회가 없습니다...</h3>
         )
     },]
 
@@ -541,6 +545,7 @@ const MyPage: React.FC = () => {
             </>
         ),
         tabCont:(
+            imgArr ?
             <> 
                 <Masonry 
                 breakpointCols={3}
@@ -589,6 +594,7 @@ const MyPage: React.FC = () => {
                 <div id="observer" style={{ height: "10px" }}></div>
                 </div>
             </>
+            : <h3 style={{fontFamily : '부크크고딕bold', textAlign:'center', margin: '100px'}}>등록한 사진이 없습니다..</h3>
         )
     },
     {
@@ -602,6 +608,7 @@ const MyPage: React.FC = () => {
             </>
         ),
         tabCont:(
+            imgArr ?
             <>  
                 <Masonry 
                 breakpointCols={3}
@@ -650,6 +657,8 @@ const MyPage: React.FC = () => {
                     <div id="observer" style={{ height: "10px" }}></div>
                     </div>
             </>    
+            :
+            <h3 style={{fontFamily : '부크크고딕bold', textAlign:'center', margin: '100px'}}>등록한 사진이 없습니다..</h3>
         )
     },
     {
@@ -663,6 +672,7 @@ const MyPage: React.FC = () => {
             </>
         ),
         tabCont:(
+            imgArr ?
             <>
                 <Masonry 
                 breakpointCols={3}
@@ -711,6 +721,7 @@ const MyPage: React.FC = () => {
                 </div>
 
             </>
+            : <h3 style={{fontFamily : '부크크고딕bold', textAlign:'center', margin: '100px'}}>등록한 사진이 없습니다..</h3>
         )
     },
     {
@@ -765,6 +776,7 @@ const MyPage: React.FC = () => {
             </>
         ),
         tabCont:(
+            profileArr.length !== 0 ?
             <> 
              <div className={styles.profile_card_container2}>
                 {profileArr &&
@@ -784,6 +796,7 @@ const MyPage: React.FC = () => {
             <div id="observer" style={{ height: "10px" }}></div>
             </div>
             </>
+            : <h3 style={{fontFamily : '부크크고딕bold', textAlign:'center', margin: '100px 50px'}}>팔로우한 유저가 없습니다</h3>
         )
     },
     {
@@ -798,6 +811,7 @@ const MyPage: React.FC = () => {
             </>
         ),
         tabCont:(
+            profileArr.length !== 0 ?
             <> 
              <div className={styles.profile_card_container2}>
                 {profileArr &&
@@ -817,6 +831,7 @@ const MyPage: React.FC = () => {
             <div id="observer" style={{ height: "10px" }}></div>
             </div>
             </>
+            : <h3 style={{fontFamily : '부크크고딕bold', textAlign:'center', margin: '100px 50px'}}>팔로우한 유저가 없습니다</h3>
         )
     },]
 
@@ -1038,7 +1053,7 @@ const MyPage: React.FC = () => {
         <>
         {isFollowList && (
             <>
-            <div className={styles.modal_background}> </div>
+            <div className={styles.modal_background}> 
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openFollowList();}}></img>
             <div className={styles.follow_modal_container}>
 
@@ -1054,13 +1069,14 @@ const MyPage: React.FC = () => {
                 </div>
                 
             </div>
+            </div>
             </>
         )}
 
         {editModal && ( <>
             {editOk
             ? <>
-            <div className={styles.modal_background}> </div>
+            <div className={styles.modal_background}> 
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openEditOk(); openEditmodal();}}></img>
             <div className={styles.upload_modal_container}>
                 <img src='/imgs/check_gif.gif' alt='체크' style={{height : '100px', width : 'auto'}}></img>
@@ -1074,10 +1090,10 @@ const MyPage: React.FC = () => {
                         <p className={styles.go_txt}>MyPage</p>
                     </div>
                 </div>
-            </div>
+            </div></div>
             </>
             :<>
-                <div className={styles.modal_background}></div>
+                <div className={styles.modal_background}>
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openEditmodal();}}></img>
                 <div  className={styles.edit_detail_modal_container}>
                     <div className={styles.edit_photos_container}>
@@ -1117,7 +1133,7 @@ const MyPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div></div>
             </>
             }
             </>
@@ -1126,7 +1142,7 @@ const MyPage: React.FC = () => {
         {shareModal && ( <>
             {shareOk
             ? <>
-            <div className={styles.modal_background}> </div>
+            <div className={styles.modal_background}>
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openShareOk(); openSharemodal();}}></img>
             <div className={styles.upload_modal_container}>
                 <img src='/imgs/check_gif.gif' alt='체크' style={{height : '100px', width : 'auto'}}></img>
@@ -1140,10 +1156,10 @@ const MyPage: React.FC = () => {
                         <p className={styles.go_txt}>MyPage</p>
                     </div>
                 </div>
-            </div>
+            </div></div>
             </>
             :<>
-                <div className={styles.modal_background}></div>
+                <div className={styles.modal_background}>
                 <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openSharemodal();}}></img>
                 <div  className={styles.edit_detail_modal_container}>
                     <div className={styles.edit_photos_container}>
@@ -1165,7 +1181,7 @@ const MyPage: React.FC = () => {
                             <p className={styles.edit_upload_txt3}>Save</p>
                         </div>
                     </div>
-                </div>
+                </div></div>
             </>
             }
             </>
@@ -1173,9 +1189,9 @@ const MyPage: React.FC = () => {
 
         {isExhibition && (
             <>
-            <div className={styles.modal_background}> </div>
-            <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={() => {openExhibitionModal();}}></img>
-            <div className={styles.open_exhibition_modal_container} style={{marginTop: '120px'}}>
+            <div className={styles.modal_background}> 
+            <img src='/imgs/x.png' alt='x' className={styles.modal_x}  onClick={() => {openExhibitionModal();}}></img>
+            <div className={styles.open_exhibition_modal_container}>
                 <p className={styles.open_exhibition_title}>Exhibition Info</p>
                 <div className={styles.exhibition_info}>
                     <div className={styles.exhibition_photo_intro_container} onClick={openImgList}>
@@ -1224,15 +1240,15 @@ const MyPage: React.FC = () => {
                 <div className={styles.exhibition_open_btn}>
                     <p className={styles.open_btn_txt}>Open</p>
                 </div>
-            </div>
+            </div></div>
             </>
         )}
 
             {imgDetail && (
             <>
-                <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={() => {openPhotoDetails(photoDetails?.photoId);}}></img>
-                <div className={styles.photo_modal_container} style={{marginTop: '120px'}}>
+                <div className={styles.modal_background}>
+                <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openPhotoDetails(photoDetails?.photoId);}}></img>
+                <div className={styles.photo_modal_container} >
                     <div className={styles.img_container}>
                         <img src={photoDetails?.imageUrl} alt='사진' className={styles.photo}></img>
                         <div className={styles.detail_photo_info}>
@@ -1318,7 +1334,7 @@ const MyPage: React.FC = () => {
                             </div>
                         </div>  
                     </div>
-                </div>
+                </div></div>
             </>
         )}
 
@@ -1326,9 +1342,9 @@ const MyPage: React.FC = () => {
             <>
                 {uploadPhotoDetail 
                 ? <>
-                <div className={styles.modal_background}></div>
-                <img src='/imgs/x.png' alt='x' style={{marginTop: '120px'}} className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
-                <div  className={styles.upload_detail_modal_container} style={{marginTop: '120px'}}>
+                <div className={styles.modal_background}>
+                <img src='/imgs/x.png' alt='x'  className={styles.modal_x} onClick={() => {openUploadDetailModal(); openUploadModal();}}></img>
+                <div  className={styles.upload_detail_modal_container}>
                     {
                         isUploading
                         ? <h1>업로드중...</h1>
@@ -1389,16 +1405,16 @@ const MyPage: React.FC = () => {
                     </div>
                         </>
                     }
-                </div>
+                </div></div>
                 </> 
                 : // 이 안에 삼항 연산자가 하나 더 있어야 함
                 (
                     isUploadFinished 
                     ?
                     <>
-                        <div className={styles.modal_background}> </div>
-                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={closeModalHandler}></img>
-                        <div className={styles.upload_modal_container} style={{marginTop: '120px'}}>
+                        <div className={styles.modal_background}>
+                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={closeModalHandler}></img>
+                        <div className={styles.upload_modal_container} >
                             <img src='/imgs/check_gif.gif' alt='체크' style={{height : '100px', width : 'auto'}}></img>
                             <p className={styles.upload_ok_txt}>사진을 성공적으로 업로드하였습니다.</p>
                             <p className={styles.go_detail_txt}>당신의 소중하고 특별한 순간을 다른사람들과 함께 빛내보세요. <br></br> 행복은 나눌수록 커진답니다.</p>
@@ -1410,19 +1426,20 @@ const MyPage: React.FC = () => {
                                     <p className={styles.go_txt}>MyPage</p>
                                 </div>
                             </div>
-                        </div>
+                        </div></div>
                     </>
                     :
                     <>
-                        <div className={styles.modal_background}></div>
-                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} style={{marginTop: '120px'}} onClick={() => {openUploadModal();}}></img>
-                        <div  className={styles.upload_modal_container} style={{marginTop: '120px'}}>
+                        <div className={styles.modal_background}>
+                        <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openUploadModal();}}></img>
+                        <div  className={styles.upload_modal_container} >
                             <p className={styles.upload_modal_title}>당신의 사진을 업로드해 보세요.</p>
                             <div className={styles.go_upload_btn_container} onClick={() => {openUploadDetailModal();}}>
                                 <p className={styles.upload_txt}>업로드할 사진 선택하기</p>
                                 <img src='/imgs/upload_icon.png' alt='업로드 아이콘' className={styles.upload_icon}></img>
                             </div>
                             <p className={styles.upload_txt2}>*최대 200mb / JPEG,PNG만 허용</p>
+                        </div>
                         </div>
                     </>
                 )
