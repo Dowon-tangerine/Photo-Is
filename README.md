@@ -88,7 +88,7 @@ Hello, Photo Is!
 
 ## UCC 및 시연영상
 - UCC : https://youtu.be/ATMvR24_iWM
-- 시연영상 : 
+- 시연영상 : https://youtu.be/wiT63j4eXmw
 
 <br>
 
