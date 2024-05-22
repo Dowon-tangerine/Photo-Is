@@ -299,7 +299,7 @@ const SearchTag: React.FC = () => {
                             {(commentList === undefined || commentList.length === 0)
                             ? <>
                                 <div style={{display : "flex", alignItems : 'center', justifyContent : 'center'}}>
-                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록돤 댓글이 없습니다.</p>
+                                    <p style={{fontFamily : '부크크고딕bold', marginTop : '90px'}}>등록된 댓글이 없습니다.</p>
                                 </div>
                             </>
                             :
@@ -326,7 +326,7 @@ const SearchTag: React.FC = () => {
         )}
 
 
-        <div className={styles.main_container}>
+        <div className={styles.main_container} style={{marginTop: '80px'}}>
             <div className={styles.search_container}>
                 <div className={styles.combo_box}>
                     <div className={styles.dropdown_container} onClick={() => {openTypeList(); toggleRotation();}}>

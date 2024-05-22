@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useLoader, useFrame } from "@react-three/fiber";
 import { DirectionalLight, Object3D } from "three";
-import { Sky, OrbitControls } from "@react-three/drei";
+import { Sky } from "@react-three/drei";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
@@ -42,12 +42,6 @@ function Spinner() {
         loader.setMaterials(axisMaterial);
     });
 
-    const grassMaterial = useLoader(MTLLoader, "/models/Grass1.mtl");
-    grassMaterial.preload();
-    const grass = useLoader(OBJLoader, "/models/Grass1.obj", (loader) => {
-        loader.setMaterials(grassMaterial);
-    });
-
     const mountMaterial = useLoader(MTLLoader, "/models/mount.mtl");
     mountMaterial.preload();
     const mount = useLoader(OBJLoader, "/models/mount.obj", (loader) => {
@@ -68,12 +62,7 @@ function Spinner() {
             mount.scale.set(100, 190, 200); // mount 크기를 2배로 설정
             setModelLoaded(true); // 모델 로드 완료 상태 설정
         }
-        if (grass) {
-            grass.scale.set(2, 0.5, 3); // mount 크기를 2배로 설정
-            setModelLoaded(true); // 모델 로드 완료 상태 설정
-            grass.position.x = -12;
-        }
-    }, [blade, mount, grass]);
+    }, [blade, mount]);
 
     useFrame((state, delta) => {
         state;
@@ -92,14 +81,12 @@ function Spinner() {
     return (
         <>
             {/* <ambientLight intensity={1} /> */}
-            <OrbitControls />
             <directionalLight ref={lightRef} castShadow position={[0, 100, -50]} intensity={2} />
             <Sky distance={40000} sunPosition={[0, 0.1, 0]} inclination={0} azimuth={0.25} />
             {blade && <primitive object={blade} />}
             {axis && <primitive object={axis} />}
             {stick && <primitive object={stick} />}
             {mount && <primitive object={mount} />}
-            {/* {grass && <primitive object={grass} />} */}
         </>
     );
 }

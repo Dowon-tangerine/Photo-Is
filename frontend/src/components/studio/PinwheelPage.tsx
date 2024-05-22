@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { useState } from "react";
+import { Canvas, extend } from "@react-three/fiber";
 import StudioStyle from "./css/Studio.module.css";
 import Spinner from "./3Delement/spinner";
 import CameraSettings from "./element/CameraSettings";
@@ -10,69 +10,14 @@ import CameraController from "./element/CameraController";
 import { EffectComposer as EffectComposerImpl } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
-import { createMotionBlurMaterial } from "./element/MotionBlurShader";
-import { createGrainMaterial } from "./element/GrainShader";
+
 // import { ApertureShaderMaterial } from "./element/apertureShader";
 import { DepthOfField } from "@react-three/postprocessing";
-import { createExposureMaterial } from "./element/ExposureShader"; // Import the ExposureShader
+
 import Modal from "./element/Modal";
+import Effects from "./element/Effects";
 
 extend({ EffectComposer: EffectComposerImpl, RenderPass, ShaderPass });
-
-function Effects({ shutterSpeed, iso, aperture }: { shutterSpeed: number; iso: number; aperture: number }) {
-    const { gl, scene, camera } = useThree();
-    const composer = useRef<EffectComposerImpl>();
-    const { exposure } = useCameraStore((state) => ({ aperture: state.aperture, exposure: state.exposure }));
-
-    useEffect(() => {
-        const composerInstance = new EffectComposerImpl(gl);
-        const renderPass = new RenderPass(scene, camera);
-
-        //ShutterSpeed 설정
-        const motionBlurMaterial = createMotionBlurMaterial();
-        const baseSpeed = 2.0; // 기준 셔터 스피드
-        const velocityFactor = baseSpeed / Math.pow(shutterSpeed, 0.2); // 여기서 지수를 조정하여 효과 조절
-        motionBlurMaterial.uniforms["velocityFactor"].value = velocityFactor;
-        const shutterPass = new ShaderPass(motionBlurMaterial);
-
-        // BokehShader 설정
-        // const apertureMaterial = new ApertureShaderMaterial();
-        // apertureMaterial.uniforms.aperture.value = aperture;
-        // const aperturePass = new ShaderPass(apertureMaterial);
-
-        // ExposureShader 설정
-        const exposureMaterial = createExposureMaterial();
-        exposureMaterial.uniforms["exposure"].value = Math.pow(2, exposure);
-        const exposurePass = new ShaderPass(exposureMaterial);
-
-        //noiseShader 설정
-        // Noise 설정
-        const grainMaterial = createGrainMaterial();
-        grainMaterial.uniforms["amount"].value = Math.min(0.2, iso / 12800); // ISO 값을 기반으로 그레인 강도 설정 (비율 낮춤)
-        const grainPass = new ShaderPass(grainMaterial);
-
-        //composer에 추가
-        composerInstance.addPass(renderPass);
-        composerInstance.addPass(shutterPass);
-        composerInstance.addPass(exposurePass);
-        composerInstance.addPass(grainPass);
-        // composerInstance.addPass(aperturePass);
-
-        composer.current = composerInstance;
-
-        return () => {
-            composerInstance.dispose();
-        };
-    }, [gl, scene, camera, shutterSpeed, exposure, iso, aperture]);
-
-    useFrame((_, delta) => {
-        if (composer.current) {
-            composer.current.render(delta);
-        }
-    }, 1);
-
-    return null;
-}
 
 const PinwheelPage = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -83,7 +28,7 @@ const PinwheelPage = () => {
     return (
         <>
             <div className={StudioStyle.container}>
-                <div className={StudioStyle.canvasContainer}>
+                <div className="m-auto w-[70%] h-[70vh]">
                     <Canvas gl={{ alpha: true }} shadows camera={{ position: [0, 0, 5], fov: 50 }}>
                         <ambientLight intensity={1} />
                         <directionalLight position={[10, 10, 10]} intensity={2} />
@@ -106,7 +51,7 @@ const PinwheelPage = () => {
                         <Effects shutterSpeed={shutterSpeed} iso={iso} aperture={aperture} />
                     </Canvas>
                     {modalIsOpen && ImgUrl ? <Modal setModalIsOpen={setModalIsOpen} ImgUrl={ImgUrl}></Modal> : null}
-                    <div className={StudioStyle.imageOverlay}>
+                    <div className="absolute top-36 m-auto w-[70%]">
                         <img src="/imgs/viewFinder.png" alt="Overlay Image" style={{ width: "100%", height: "100%" }} />
                     </div>
                     <div className="mt-6 setting-info flex justify-center items-center">

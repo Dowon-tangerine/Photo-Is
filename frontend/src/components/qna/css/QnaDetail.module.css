@@ -137,6 +137,7 @@
     border: 1px solid black;
     border-radius: 10px;
     padding: 10px 20px;
+    font-family: "부크크고딕bold";
 }
 
 .comment_list_container{
