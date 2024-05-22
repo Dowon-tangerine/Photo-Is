@@ -185,7 +185,7 @@ const Exhibition: React.FC = () => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
-      threshold: 0, //  Intersection Observer의 옵션, 0일 때는 교차점이 한 번만 발생해도 실행, 1은 모든 영역이 교차해야 콜백 함수가 실행.
+      threshold: 1, //  Intersection Observer의 옵션, 0일 때는 교차점이 한 번만 발생해도 실행, 1은 모든 영역이 교차해야 콜백 함수가 실행.
     });
     // 최하단 요소를 관찰 대상으로 지정함
     const observerTarget = document.getElementById("observer");
@@ -322,7 +322,7 @@ const Exhibition: React.FC = () => {
         <>
             {isExhibition && (
             <>
-            <div className={styles.modal_background} style={{paddingTop: '80px'}}> </div>
+            <div className={styles.modal_background}> </div>
             <img src='/imgs/x.png' alt='x' className={styles.modal_x} onClick={() => {openExhibitionModal();}}></img>
             <div className={styles.open_exhibition_modal_container}>
                 <p className={styles.open_exhibition_title}>Exhibition Info</p>
@@ -513,6 +513,10 @@ const Exhibition: React.FC = () => {
                         className={styles.slide_wrapper}
                         onMouseEnter={onStop}
                         onMouseLeave={onRun}>
+                       {    
+                       followExhibitionList.length == undefined
+                       ?
+                       <>
                         <div
                             className={styles.slide + " " +  styles.original + " " + (
                                 animate ? "" : styles.stop
@@ -587,6 +591,9 @@ const Exhibition: React.FC = () => {
                                 </li>
                             ))}
                         </div>
+                        </>
+                    :<h3 style={{margin: 'auto', fontFamily: '부크크고딕bold'}}>팔로우한 유저가 없습니다...</h3>    
+                    }
                     </ul>
                 </div>
             </div>

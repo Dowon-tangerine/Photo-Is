@@ -636,6 +636,9 @@
     top: 0;
     left: 0;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
