@@ -55,7 +55,7 @@ public class ExhibitionService {
 
         Members member = commonService.findMemberByAuthentication(authentication);
         String posterUrl = photoRepository.findById(request.getPosterId())
-                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION)).getImageUrl();
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_EXHIBITION)).getThumbnailUrl();
 
         Exhibitions exhibition = Exhibitions.builder()
                 .memberId(member)
