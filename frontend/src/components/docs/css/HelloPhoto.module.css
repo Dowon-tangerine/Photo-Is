@@ -2,11 +2,11 @@
   display: flex;
   height: 100vh;
   width: 100vw;
-  overflow: hidden; /* Prevent content overflow */
+  overflow: hidden; 
 }
 
 .sidebar {
-  width: 270px; /* 복구된 너비 */
+  width: 270px; 
   background-color: #000000;
   color: white;
   padding: 20px;
@@ -34,8 +34,8 @@
 }
 
 .sidebar h1 {
-  font-family: 'Bookk Myungjo', serif; /* 글꼴 설정 */
-  font-size: 35px; /* 글꼴 크기 설정 */
+  font-family: 'Bookk Myungjo', serif;
+  font-size: 35px; 
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -64,8 +64,8 @@
 
 .contentContainer {
   flex-grow: 1;
-  overflow-y: auto; /* Enable vertical scrolling */
-  scroll-behavior: smooth; /* Enable smooth scrolling */
+  overflow-y: auto; 
+  scroll-behavior: smooth; 
 }
 
 .content {
@@ -73,38 +73,67 @@
 }
 
 .content h1, .content h2, .content h3 {
-  font-family: 'Bookk Gothic', sans-serif; /* 폰트 설정 */
-  color: black; /* 제목을 검정색으로 설정 */
-  margin-top: 20px; /* 제목 위에 여백 추가 */
+  font-family: 'Bookk Gothic', sans-serif;
+  color: black; 
+  margin-top: 20px; 
 }
+
+.content h2 {
+  padding-left: 20px; 
+}
+
+.content h3 {
+  padding-left: 40px; 
+}
+
+.content ul {
+  padding-left: 40px; 
+  margin-left: 20px; 
+  list-style: none; 
+}
+
+.content li {
+  margin-left: 20px; 
+  padding-left: 20px; 
+}
+
+.content p {
+  padding-top: 15px;
+  padding-left: 60px;
+}
+
+.content img {
+  padding-left: 60px; 
+}
+
 
 .pagination {
   display: flex;
-  justify-content: center; /* Center the pagination */
+  justify-content: center; 
   align-items: center;
-  gap: 100px; /* 100px 간격 */
-  margin-top: 20px;
+  gap: 100px; 
+  margin-top: 80px;
 }
 
 .paginationButton {
-  background-color: #000; /* 검정색 배경 */
-  color: #fff; /* 흰색 글자 */
+  background-color: #000; 
+  color: #fff; 
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); /* 그림자 음영 효과 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 부드러운 전환 효과 */
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
 .paginationButton:hover {
   background-color: rgba(85, 85, 85, 1.5);
   transform: scale(1.1);
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 확대 */
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); 
 }
 
 .paginationButton:disabled {
-  background-color: #555; /* 비활성화된 버튼을 위한 색상 */
+  background-color: #555; 
   cursor: not-allowed;
 }
 
@@ -122,15 +151,15 @@
 }
 
 .chatBotModal {
-  width: 667px; /* 2/3 of the total width */
-  height: 650px; /* 모달 크기 */
+  width: 667px; 
+  height: 650px; 
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  margin-left: 1px; /* Space between the modals */
+  margin-left: 1px; 
 }
 
 .modalHeader {
