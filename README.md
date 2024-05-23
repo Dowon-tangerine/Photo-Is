@@ -106,6 +106,30 @@ Hello, Photo Is!
     <td style="text-align: center;">Frontend</td>
     <td>
       - 화면 설계<br>
+      - 유저 페이지 담당<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 마이페이지 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 마이페이지 API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 마이페이지 내 사진 업로드 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 사진 업로드 API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 마이페이지 내 팔로워 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 팔로워 API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 다른 유저 페이지 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 다른 유저 페이지 API 연결<br>
+      - Community 담당<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- gallery 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- gallery 화면 랭킹 API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- gallery 내 사진 상세 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- gallery 내 사진 상세 화면 API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Q&A 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Q&A 화면 API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Q&A 내 글작성 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Q&A 내 글작성 API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Q&A 내 글 상세보기 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Q&A 내 글 상세보기 API 연결<br>
+      - Exhibition 담당<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Exhibition 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Exhibition API 연결<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Exhibiton 개최 화면 구현<br>
     </td>
   </tr>
   <tr>
@@ -115,9 +139,13 @@ Hello, Photo Is!
       - DB 설계<br>
       - 프로젝트 초기 세팅<br>
       - Members 및 Follows API 구현<br>
+      - 유저 페이지 담당<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 내 정보 수정 화면 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- 내 정보 수정 API 연결<br>
       - Exhibition 담당<br>
         &nbsp;&nbsp;&nbsp;&nbsp;- 3D 가상 전시회 구현<br>
         &nbsp;&nbsp;&nbsp;&nbsp;- Exhibition API 구현<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Exhibition 개최 API 연결<br>
       - UCC 제작
     </td>
   </tr>
