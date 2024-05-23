@@ -219,16 +219,43 @@ Hello, Photo Is!
 <br>
 ![10](/.gitlab/readme_images/10.jpg)
 #### 1. Tutorial
+![11](/.gitlab/readme_images/11.jpg)
+![12](/.gitlab/readme_images/12.jpg)
+<img src="/.gitlab/readme_images/13.gif" width="100%"/>
 #### 2. Free Mode
+![14](/.gitlab/readme_images/14.jpg)
+![15](/.gitlab/readme_images/15.jpg)
+<img src="/.gitlab/readme_images/16.gif" width="100%"/>
 <br>
 
 ### Community
 #### 1. Gallery
+![17](/.gitlab/readme_images/17.jpg)
+![18](/.gitlab/readme_images/18.jpg)
+![19](/.gitlab/readme_images/19.jpg)
+![20](/.gitlab/readme_images/20.jpg)
+![21](/.gitlab/readme_images/21.jpg)
 #### 2. Q&A
 <br>
+![22](/.gitlab/readme_images/22.jpg)
+![23](/.gitlab/readme_images/23.jpg)
+![24](/.gitlab/readme_images/24.jpg)
+
+### Exhibition
+![25](/.gitlab/readme_images/25.jpg)
+![26](/.gitlab/readme_images/26.jpg)
+<img src="/.gitlab/readme_images/27.gif" width="100%"/>
+![31](/.gitlab/readme_images/31.jpg)
+![32](/.gitlab/readme_images/32.jpg)
+![33](/.gitlab/readme_images/33.jpg)
+<img src="/.gitlab/readme_images/34.gif" width="100%"/>
+
 
 ### My Page
 <br>
+![28](/.gitlab/readme_images/28.jpg)
+<img src="/.gitlab/readme_images/29.gif" width="100%"/>
+![30](/.gitlab/readme_images/30.jpg)
 
 <br><br><br>
 
