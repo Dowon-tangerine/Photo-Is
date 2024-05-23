@@ -189,21 +189,35 @@ Hello, Photo Is!
 ## 서비스 화면
 ### Intro
 <br>
-
+![1](/.gitlab/readme_images/1.jpg)
 
 ### Sign Up
 <br>
+![2](/.gitlab/readme_images/2.jpg)
+![3](/.gitlab/readme_images/3.jpg)
+![4](/.gitlab/readme_images/4.jpg)
 
 ### Sign In
 <br>
+![5](/.gitlab/readme_images/5.jpg)
 
 ### Docs
 #### 1. Hello Photo!
+<br>
+![6](/.gitlab/readme_images/6.jpg)
+
 #### 2. Dictionary
+<br>
+![7](/.gitlab/readme_images/7.jpg)
+<img src="/.gitlab/readme_images/8.gif" width="100%"/>
+
 #### 3. Chatbot
 <br>
+![9](/.gitlab/readme_images/9.jpg)
 
 ### Studio
+<br>
+![10](/.gitlab/readme_images/10.jpg)
 #### 1. Tutorial
 #### 2. Free Mode
 <br>
