@@ -158,6 +158,7 @@ const Exhibition: React.FC = () => {
         if(res){
             setExhibitionList(res.exhibition.reverse());
             setFollowExhibitionList(res.followExhibition);
+            console.log(res.followExhibition)
         }
       });
     }
@@ -514,7 +515,7 @@ const Exhibition: React.FC = () => {
                         onMouseEnter={onStop}
                         onMouseLeave={onRun}>
                        {    
-                       followExhibitionList.length == undefined
+                       followExhibitionList.length !== 0
                        ?
                        <>
                         <div
