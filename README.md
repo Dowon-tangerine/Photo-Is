@@ -188,40 +188,41 @@ Hello, Photo Is!
 
 ## 서비스 화면
 ### Intro
-<br>
 ![1](/.gitlab/readme_images/1.jpg)
-
-### Sign Up
 <br>
+### Sign Up
 ![2](/.gitlab/readme_images/2.jpg)
 ![3](/.gitlab/readme_images/3.jpg)
 ![4](/.gitlab/readme_images/4.jpg)
+<br>
 
 ### Sign In
-<br>
 ![5](/.gitlab/readme_images/5.jpg)
+<br>
 
 ### Docs
 #### 1. Hello Photo!
-<br>
 ![6](/.gitlab/readme_images/6.jpg)
 
 #### 2. Dictionary
-<br>
 ![7](/.gitlab/readme_images/7.jpg)
-<img src="/.gitlab/readme_images/8.gif" width="100%"/>
+<img src="/.gitlab/readme_images/8.gif" width="100%" style="display:inline-block"/>
 
 #### 3. Chatbot
-<br>
 ![9](/.gitlab/readme_images/9.jpg)
 
-### Studio
 <br>
+
+### Studio
 ![10](/.gitlab/readme_images/10.jpg)
+
+<br>
+
 #### 1. Tutorial
 ![11](/.gitlab/readme_images/11.jpg)
 ![12](/.gitlab/readme_images/12.jpg)
 <img src="/.gitlab/readme_images/13.gif" width="100%"/>
+
 #### 2. Free Mode
 ![14](/.gitlab/readme_images/14.jpg)
 ![15](/.gitlab/readme_images/15.jpg)
@@ -229,17 +230,22 @@ Hello, Photo Is!
 <br>
 
 ### Community
+
 #### 1. Gallery
 ![17](/.gitlab/readme_images/17.jpg)
 ![18](/.gitlab/readme_images/18.jpg)
 ![19](/.gitlab/readme_images/19.jpg)
 ![20](/.gitlab/readme_images/20.jpg)
 ![21](/.gitlab/readme_images/21.jpg)
-#### 2. Q&A
+
 <br>
+
+#### 2. Q&A
 ![22](/.gitlab/readme_images/22.jpg)
 ![23](/.gitlab/readme_images/23.jpg)
 ![24](/.gitlab/readme_images/24.jpg)
+
+<br>
 
 ### Exhibition
 ![25](/.gitlab/readme_images/25.jpg)
@@ -250,9 +256,9 @@ Hello, Photo Is!
 ![33](/.gitlab/readme_images/33.jpg)
 <img src="/.gitlab/readme_images/34.gif" width="100%"/>
 
+<br>
 
 ### My Page
-<br>
 ![28](/.gitlab/readme_images/28.jpg)
 <img src="/.gitlab/readme_images/29.gif" width="100%"/>
 ![30](/.gitlab/readme_images/30.jpg)
