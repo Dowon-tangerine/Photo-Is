@@ -195,9 +195,9 @@ Hello, Photo Is!
 ![3](/.gitlab/readme_images/3.jpg)
 ![4](/.gitlab/readme_images/4.jpg)
 <br>
-
 ### Sign In
 ![5](/.gitlab/readme_images/5.jpg)
+
 <br>
 
 ### Docs
@@ -215,9 +215,7 @@ Hello, Photo Is!
 
 ### Studio
 ![10](/.gitlab/readme_images/10.jpg)
-
 <br>
-
 #### 1. Tutorial
 ![11](/.gitlab/readme_images/11.jpg)
 ![12](/.gitlab/readme_images/12.jpg)
@@ -227,19 +225,17 @@ Hello, Photo Is!
 ![14](/.gitlab/readme_images/14.jpg)
 ![15](/.gitlab/readme_images/15.jpg)
 <img src="/.gitlab/readme_images/16.gif" width="100%"/>
+
 <br>
 
 ### Community
-
 #### 1. Gallery
 ![17](/.gitlab/readme_images/17.jpg)
 ![18](/.gitlab/readme_images/18.jpg)
 ![19](/.gitlab/readme_images/19.jpg)
 ![20](/.gitlab/readme_images/20.jpg)
 ![21](/.gitlab/readme_images/21.jpg)
-
 <br>
-
 #### 2. Q&A
 ![22](/.gitlab/readme_images/22.jpg)
 ![23](/.gitlab/readme_images/23.jpg)
