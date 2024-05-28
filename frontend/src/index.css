@@ -1,0 +1,50 @@
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+/* @import "./_custom.css"; custom css here */
+
+@import "tailwindcss/utilities";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "부크크고딕";
+    src: url(/fonts/부크크고딕_얇은글씨.ttf);
+}
+
+@font-face {
+    font-family: "부크크고딕bold";
+    src: url(/fonts/부크크고딕_굵은글씨.ttf);
+}
+
+@font-face {
+    font-family: "부크크명조";
+    src: url(/fonts/부크크명조_얇은글씨.ttf);
+}
+
+@font-face {
+    font-family: "부크크명조bold";
+    src: url(/fonts/부크크명조_굵은글씨.ttf);
+}
+@font-face {
+    font-family: "디지털";
+    src: url(/fonts/DS-DIGI.TTF);
+}
+@font-face {
+    font-family: "디지털bold";
+    src: url(/fonts/DS-DIGIB.TTF);
+}
+
+/* 모든 요소에 대한 스크롤바 제거 */
+* {
+    /* 웹킷(Chrome, Safari, Edge) 기반 브라우저에서 스크롤바 제거 */
+    -webkit-scrollbar {
+        display: none;
+    }
+
+    /* Firefox에서 스크롤바 제거 */
+    scrollbar-width: none;
+}
