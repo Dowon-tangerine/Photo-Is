@@ -1,0 +1,92 @@
+.signinContainer {
+  display: flex;
+  height: 100vh;
+  gap: 30px;
+}
+
+.imageSide {
+  flex: 1;
+  position: relative;  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.backgroundImage {
+  width: 100%;
+  height: 100vh; 
+  object-fit: cover; 
+}
+
+.overlayText {
+  position: absolute;
+  top: 40%;  
+  left: 50%;  
+  transform: translate(-50%, -50%);  
+  font-size: 48px;  
+  color: white;  
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.formSide {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 150px;
+  background: rgba(255, 255, 255, 0.95);  
+}
+
+.signinForm h1 {
+  margin-bottom: 30px; 
+  font-size: 24px; 
+  color: #333; 
+}
+
+.signinForm {
+  width: 100%; /* 폼 너비를 조정하여 더 많은 공간 활용 */
+  max-width: 500px; /* 최대 너비 설정 */
+  padding: 40px; /* 기존 패딩 유지 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 모든 폼 요소 사이의 간격을 일관되게 조정 */
+  margin-top: 30px;
+}
+
+.signinForm input[type="text"],
+.signinForm input[type="password"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 5px;
+  height: 50px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+
+.signinForm button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.notsignup {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.signupLink {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+

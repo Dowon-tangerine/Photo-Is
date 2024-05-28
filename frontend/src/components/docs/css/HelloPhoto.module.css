@@ -1,0 +1,315 @@
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; 
+}
+
+.sidebar {
+  width: 270px; 
+  background-color: #000000;
+  color: white;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar h1{
+  margin-top: 80px;
+}
+
+.sidebar button.subItem {
+  display: block;
+  background: grey;
+  color: inherit;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar button.subItem:hover {
+  background-color: rgba(85, 85, 85, 0.8); /* 호버 시 조금 밝은 회색으로 변경, 80% 투명도 유지 */
+}
+
+.sidebar h1 {
+  font-family: 'Bookk Myungjo', serif;
+  font-size: 35px; 
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.sidebar ol {
+  list-style: none;
+  padding: 0;
+  line-height: 30px;
+}
+
+.sidebar button {
+  display: block;
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar button:hover {
+  background-color: #555;
+}
+
+.contentContainer {
+  flex-grow: 1;
+  overflow-y: auto; 
+  scroll-behavior: smooth; 
+}
+
+.content {
+  padding: 20px;
+}
+
+.content h1, .content h2, .content h3 {
+  font-family: 'Bookk Gothic', sans-serif;
+  color: black; 
+  margin-top: 20px; 
+}
+
+.content h2 {
+  padding-left: 20px; 
+}
+
+.content h3 {
+  padding-left: 40px; 
+}
+
+.content ul {
+  padding-left: 40px; 
+  margin-left: 20px; 
+  list-style: none; 
+}
+
+.content li {
+  margin-left: 20px; 
+  padding-left: 20px; 
+}
+
+.content p {
+  padding-top: 15px;
+  padding-left: 60px;
+}
+
+.content img {
+  padding-left: 60px; 
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  gap: 100px; 
+  margin-top: 80px;
+}
+
+.paginationButton {
+  background-color: #000; 
+  color: #fff; 
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.paginationButton:hover {
+  background-color: rgba(85, 85, 85, 1.5);
+  transform: scale(1.1);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.paginationButton:disabled {
+  background-color: #555; 
+  cursor: not-allowed;
+}
+
+.pageIndicator {
+  font-size: 16px;
+  color: #000;
+}
+
+.chatBotContainer {
+  display: flex;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.chatBotModal {
+  width: 667px; 
+  height: 650px; 
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  margin-left: 1px; 
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ccc;
+  border-radius: 10px 10px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.modalHeader span {
+  font-weight: bold;
+}
+
+.modalContent {
+  flex-grow: 1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 전체 내용이 길어지면 스크롤이 생기도록 설정 */
+  scroll-behavior: smooth; /* Enable smooth scrolling */
+  position: relative; /* For toggle button positioning */
+}
+
+.chatContainer {
+  flex-grow: 1;
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 활성화 */
+  padding: 10px;
+  border-bottom: 1px solid #ccc; /* 입력 부분을 구분하는 경계선 추가 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 중앙에 정렬 */
+  scroll-behavior: smooth; /* Enable smooth scrolling */
+}
+
+.botMessage,
+.userMessage {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 75%;
+  word-break: break-word; /* 긴 단어를 자동으로 줄 바꿈 */
+  display: inline-block; /* 메시지를 inline-block으로 설정 */
+}
+
+.botMessage {
+  background-color: #e0e0e0;
+  align-self: flex-start; /* 왼쪽 정렬 */
+}
+
+.userMessage {
+  background-color: #000;
+  color: white;
+  align-self: flex-end; /* 오른쪽 정렬 */
+}
+
+.chatForm {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: #fff; /* 배경색을 흰색으로 */
+}
+
+.questionInput {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  border: none;
+  background-color: #000;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.recommendationsToggle {
+  padding: 10px;
+  margin-bottom: 7px;
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  text-align: center;
+}
+
+.recommendedQuestions {
+  padding: 10px;
+}
+
+.recommendedQuestions p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.recommendedQuestions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recommendedQuestions li {
+  margin: 5px 0;
+  cursor: pointer;
+  color: #000;
+}
+
+/* 챗봇 아이콘 스타일 */
+.chatButton {
+  position: fixed;
+  bottom: 30px;
+  right: 40px;
+  width: 70px;
+  height: 70px;
+  background-color: #000; /* 검은색 배경 */
+  color: white;
+  border: none;
+  border-radius: 50%; /* 원형 버튼 */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+}
+
+.closeButton {
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.chatButton img {
+  width: 35px;
+  height: 35px;
+}
+
+.content p {
+  max-width: 800px; /* 글의 가로 길이를 줄임 */
+  line-height: 1.5; /* 한 줄만 띄움 */
+  font-family: 'Bookk Gothic', sans-serif; /* 폰트 설정 */
+}
+
+.font-bookkGothic {
+  font-family: 'Bookk Gothic', sans-serif;
+}
