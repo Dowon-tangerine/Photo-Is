@@ -163,6 +163,10 @@ Hello, Photo Is!
 
 
 ## 주요 기술 및 개발 환경
+### 서비스 아키텍처
+<br>
+![PhotoIs__7_](/uploads/10a1a31b792cd00d6ef9fe416e76852a/PhotoIs__7_.png)
+
 ### Frontend
 - Visual Studio Code
 - HTML5, CSS3, Typescript, Tailwind
