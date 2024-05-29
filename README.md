@@ -44,7 +44,7 @@ Hello, Photo Is!
 ## 팀 소개
 ### D103 도원귤의🍊
 
-<table border="1" style="width:100%; border-collapse: collapse;">
+<table style="width:100%; border-collapse: collapse;">
   <tr>
     <th style="text-align: center;">이름</th>
     <th style="text-align: center;">역할</th>
@@ -165,7 +165,9 @@ Hello, Photo Is!
 ## 주요 기술 및 개발 환경
 ### 서비스 아키텍처
 <br>
-![PhotoIs__7_](/uploads/10a1a31b792cd00d6ef9fe416e76852a/PhotoIs__7_.png)
+<img alt="image" src="https://github.com/Dowon-tangerine/Photo-Is/assets/78338944/d3d4296c-6ece-43f3-b181-a4538e83fa7b">
+<br>
+<br>
 
 ### Frontend
 - Visual Studio Code
@@ -213,13 +215,13 @@ Hello, Photo Is!
 
 ## 프로젝트 산출물
 ### 와이어프레임
-![PhotoIs_wireframe](/uploads/8aff577e8e5708a032c3cf2aeb082b96/PhotoIs_wireframe.PNG)
+<img alt="image" src="https://github.com/Dowon-tangerine/Photo-Is/assets/78338944/0e41e4c7-2655-4283-bdd5-9b56ebde9f84">
 
 ### UI 디자인
-![PhotoIs_ui-design](/uploads/fc2d12f64227406f75057eebf24bdaec/PhotoIs_ui-design.PNG)
+<img alt="image" src="https://github.com/Dowon-tangerine/Photo-Is/assets/78338944/c242e98c-a651-4dbd-933f-5a59685014f6">
 
 ### ERD
-![photo_is_ERD](/uploads/b1c48452c484ae9a86b64195ebfe07c9/photo_is_ERD.png)
+<img alt="image" src="https://github.com/Dowon-tangerine/Photo-Is/assets/78338944/f31c7ce8-177e-4919-b1ec-42a8f8669177">
 
 ### UCC 및 시연영상
 - UCC : https://youtu.be/ATMvR24_iWM
