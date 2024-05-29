@@ -41,57 +41,6 @@ Hello, Photo Is!
 
 <br>
 
-## 주요 기술 및 개발 환경
-### Frontend
-- Visual Studio Code
-- HTML5, CSS3, Typescript, Tailwind
-- React 18.2.0
-- Vite 5.1.4
-- Zustand
-- three.js
-- R3F
-
-### Backend
-- IntelliJ
-- Java 17
-- Spring Boot 3.2.1
-  - Spring Security
-  - Spring Data JPA
-  - Spring Batch
-- Gradle
-- JWT
-- OpenAI
-- Fast API
-- Redis
-- Amazon RDS
-- Amazon S3 Bucket Cloud
-- MariaDB
-- HeidiSQL
-
-### Infra
-- Amazon EC2
-- Docker
-- Docker Compose
-- Jenkins
-- Nginx
-
-<br>
-
-## 협업툴
-- GitLab : 코드 버전 관리 및 MR과 리뷰
-- Jira : 프로젝트 주차별 일정 관리 및 역할 분담
-- Mattermost : 자료 및 진행 상황 공유
-- Figma : Mockup, Wireframe, UI Design 작업
-- Notion : 기획 및 개발 산출물 관리
-
-<br>
-
-## UCC 및 시연영상
-- UCC : https://youtu.be/ATMvR24_iWM
-- 시연영상 : https://youtu.be/wiT63j4eXmw
-
-<br>
-
 ## 팀 소개
 ### D103 도원귤의🍊
 
@@ -212,6 +161,67 @@ Hello, Photo Is!
 
 <br>
 
+
+## 주요 기술 및 개발 환경
+### Frontend
+- Visual Studio Code
+- HTML5, CSS3, Typescript, Tailwind
+- React 18.2.0
+- Vite 5.1.4
+- Zustand
+- three.js
+- R3F
+
+### Backend
+- IntelliJ
+- Java 17
+- Spring Boot 3.2.1
+  - Spring Security
+  - Spring Data JPA
+  - Spring Batch
+- Gradle
+- JWT
+- OpenAI
+- Fast API
+- Redis
+- Amazon RDS
+- Amazon S3 Bucket Cloud
+- MariaDB
+- HeidiSQL
+
+### Infra
+- Amazon EC2
+- Docker
+- Docker Compose
+- Jenkins
+- Nginx
+
+<br>
+
+## 협업툴
+- GitLab : 코드 버전 관리 및 MR과 리뷰
+- Jira : 프로젝트 주차별 일정 관리 및 역할 분담
+- Mattermost : 자료 및 진행 상황 공유
+- Figma : Mockup, Wireframe, UI Design 작업
+- Notion : 기획 및 개발 산출물 관리
+
+<br>
+
+## 프로젝트 산출물
+### 와이어프레임
+![PhotoIs_wireframe](/uploads/8aff577e8e5708a032c3cf2aeb082b96/PhotoIs_wireframe.PNG)
+
+### UI 디자인
+![PhotoIs_ui-design](/uploads/fc2d12f64227406f75057eebf24bdaec/PhotoIs_ui-design.PNG)
+
+### ERD
+![photo_is_ERD](/uploads/b1c48452c484ae9a86b64195ebfe07c9/photo_is_ERD.png)
+
+### UCC 및 시연영상
+- UCC : https://youtu.be/ATMvR24_iWM
+- 시연영상 : https://youtu.be/wiT63j4eXmw
+
+<br>
 
 
 ## 서비스 화면
